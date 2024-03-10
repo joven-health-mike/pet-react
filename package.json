@@ -9,10 +9,39 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@fontsource/roboto": "^4.5.8",
+    "@mui/icons-material": "^5.11.11",
+    "@mui/material": "^5.11.12",
+    "@mui/styled-engine-sc": "^5.11.11",
+    "@types/node": "^17.0.35",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.5",
+    "@types/react-modal": "^3.13.1",
+    "@types/styled-components": "^5.1.26",
+    "axios": "^0.27.2",
+    "luxon": "^3.0.4",
+    "react-icons": "^4.3.1",
+    "react-modal": "^3.15.1",
+    "react-router-dom": "^6.3.0",
+    "styled-components": "^5.3.8"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-typescript": "^7.17.12",
+    "@testing-library/react": "^13.3.0",
+    "@types/jest": "^28.1.1",
+    "@types/luxon": "^3.0.2",
+    "husky": "^8.0.1",
+    "jest": "^28.1.0",
+    "jest-environment-jsdom": "^28.1.0",
+    "lint-staged": "^13.0.0",
+    "prettier": "2.6.2",
+    "react-test-renderer": "^18.1.0",
+    "ts-jest": "^28.0.4",
+    "typescript": "^4.7.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -36,6 +65,21 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,css,md,ts,tsx}": "prettier --write"
+  },
+  "jest": {
+    "verbose": true,
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
     ]
   }
 }
