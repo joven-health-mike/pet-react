@@ -1,8 +1,9 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React from "react"
-import { Grid, Typography } from "@mui/material"
+import { Grid } from "@mui/material"
 import Navbar from "../navbar/Navbar"
+import UploadDataWidget from "../widgets/UploadDataWidget"
 
 const HomePage: React.FC = () => {
   return (
@@ -15,15 +16,41 @@ const HomePage: React.FC = () => {
   )
 }
 
+const onUploadContractorsClicked = () => {
+  alert("onUpdateContractorsClicked")
+}
+
+const onUploadCustomersClicked = () => {
+  alert("onUploadCustomersClicked")
+}
+
+const onUploadInvoiceParamsClicked = () => {
+  alert("onUploadInvoiceParamsClicked")
+}
+
+const onUploadProviderReportClicked = () => {
+  alert("onUploadProviderReportClicked")
+}
+
 const AdminView: React.FC = () => {
   return (
-    <Grid container>
-      <Grid item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ p: 1 }}>
-        <Typography variant="h4">All Appointments</Typography>
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ p: 1 }}>
-        <Typography variant="h4">All Students</Typography>
-      </Grid>
+    <Grid container direction="column" alignItems="center">
+      <UploadDataWidget
+        prompt="Contractors"
+        callback={onUploadContractorsClicked}
+      />
+      <UploadDataWidget
+        prompt="Customers"
+        callback={onUploadCustomersClicked}
+      />
+      <UploadDataWidget
+        prompt="Invoice Parameters"
+        callback={onUploadInvoiceParamsClicked}
+      />
+      <UploadDataWidget
+        prompt="Provider Report"
+        callback={onUploadProviderReportClicked}
+      />
     </Grid>
   )
 }
