@@ -1,7 +1,8 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
+import { useCSVReader } from "react-papaparse"
 import { buttonStyles } from "../styles/mixins"
 import { Button, Grid, Typography } from "@mui/material"
 
@@ -11,20 +12,54 @@ const CustomButton = styled.a`
 
 type UploadDataWidgetProps = {
   prompt: String
-  callback: React.MouseEventHandler<HTMLButtonElement> | undefined
+  onDataLoaded: (data: string[][]) => void
+  onDataCleared: () => void
 }
 
 const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
   prompt,
-  callback,
+  onDataLoaded,
+  onDataCleared,
 }) => {
+  const { CSVReader } = useCSVReader()
+  const [data, setData] = useState<string[]>([])
+
+  const onRemoveData = () => {
+    setData([])
+    onDataCleared()
+  }
+
   return (
     <>
       <Grid container direction="row" alignItems="center">
         <Typography>{prompt}</Typography>
-        <CustomButton>
-          <Button onClick={callback}>{"Upload File"}</Button>
-        </CustomButton>
+        <CSVReader
+          onUploadAccepted={(results: any) => {
+            setData(results.data)
+            onDataLoaded(results.data)
+          }}
+        >
+          {({
+            getRootProps,
+            acceptedFile,
+            ProgressBar,
+            getRemoveFileProps,
+          }: any) => (
+            <>
+              <CustomButton>
+                <Button {...getRootProps()}>Upload</Button>
+              </CustomButton>
+              {data.length > 0 && (
+                <CustomButton>
+                  <Button {...getRemoveFileProps()} onClick={onRemoveData}>
+                    Remove
+                  </Button>
+                </CustomButton>
+              )}
+              <ProgressBar />
+            </>
+          )}
+        </CSVReader>
       </Grid>
     </>
   )

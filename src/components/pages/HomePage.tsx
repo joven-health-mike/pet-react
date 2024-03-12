@@ -10,6 +10,7 @@ import Contractor from "../../data/Contractor"
 import Customer from "../../data/Customer"
 import InvoiceParams from "../../data/InvoiceParams"
 import Session from "../../data/Session"
+import PayrollCalculator from "../../utils/PayrollCalculator"
 
 const CustomButton = styled.a`
   ${buttonStyles}
@@ -32,89 +33,99 @@ const AdminView: React.FC = () => {
   const [invoiceParams, setInvoiceParams] = useState<InvoiceParams[]>([])
   const [sessions, setSessions] = useState<Session[]>([])
 
-  const onUploadContractorsClicked = () => {
-    const newContractors: Contractor[] = []
-    newContractors.push(
-      new Contractor("Jacek McGuinnness", "Individual", "*1234", "", "")
-    )
+  const onUploadContractorsClicked = (data: string[][]) => {
+    const newContractors: Contractor[] = data.slice(1).map((datum) => {
+      return new Contractor(datum[0], datum[1], datum[2], datum[3], datum[4])
+    })
+
     setContractors(newContractors)
-
-    alert(JSON.stringify(newContractors))
   }
 
-  const onUploadCustomersClicked = () => {
-    const newCustomers: Customer[] = []
-    newCustomers.push(
-      new Customer(
-        "Aardvark Academy",
-        "Aardvark Academy",
-        "someone@aardvark.com",
-        "1234 Main St",
-        "",
-        "",
-        "",
-        "Phoenix",
-        "Arizona",
-        "12345",
-        "USA",
-        "120.0"
+  const onContractorsCleared = () => {
+    setContractors([])
+  }
+
+  const onUploadCustomersClicked = (data: string[][]) => {
+    const newCustomers: Customer[] = data.slice(1).map((datum) => {
+      return new Customer(
+        datum[0],
+        datum[1],
+        datum[2],
+        datum[3],
+        datum[4],
+        datum[5],
+        datum[6],
+        datum[7],
+        datum[8],
+        datum[9],
+        datum[10],
+        datum[11]
       )
-    )
+    })
+
     setCustomers(newCustomers)
-
-    alert(JSON.stringify(newCustomers))
   }
 
-  const onUploadInvoiceParamsClicked = () => {
-    const newInvoiceParams: InvoiceParams[] = []
-    newInvoiceParams.push(
-      new InvoiceParams(
-        "Aardvark Academy",
-        "INV-0302",
-        "For services delivered in February 2024",
-        "03/01/2024",
-        "03/31/2024"
-      )
-    )
+  const onCustomersCleared = () => {
+    setCustomers([])
+    console.log("customers cleared")
+  }
+
+  const onUploadInvoiceParamsClicked = (data: string[][]) => {
+    const newInvoiceParams: InvoiceParams[] = data.slice(1).map((datum) => {
+      return new InvoiceParams(datum[0], datum[1], datum[2], datum[3], datum[4])
+    })
+
     setInvoiceParams(newInvoiceParams)
-
-    alert(JSON.stringify(newInvoiceParams))
   }
 
-  const onUploadProviderReportClicked = () => {
-    const newSessions: Session[] = []
-    newSessions.push(
-      new Session(
-        "Jacek McGuinnes",
-        "Aardvark Academy",
-        "Direct Service",
-        "Mental Health Counseling",
-        "Billy Joe",
-        "Aardvark Academy",
-        "Some notes.",
-        "Present",
-        "03/02/2024",
-        "11:00 A.M.",
-        "11:30 A.M.",
-        "0",
-        "30",
-        "30"
-      )
-    )
-    setSessions(newSessions)
+  const onInvoiceParamsCleared = () => {
+    setInvoiceParams([])
+  }
 
-    alert(JSON.stringify(newSessions))
+  const onUploadProviderReportClicked = (data: string[][]) => {
+    console.log(data[0])
+
+    const newSessions: Session[] = data.slice(1).map((datum) => {
+      return new Session(
+        datum[0],
+        datum[1],
+        datum[2],
+        datum[3],
+        datum[4],
+        datum[5],
+        datum[6],
+        datum[11],
+        datum[13],
+        datum[15],
+        datum[16],
+        datum[17],
+        datum[18],
+        datum[19]
+      )
+    })
+
+    console.log(newSessions)
+
+    setSessions(newSessions)
+  }
+
+  const onProviderReportCleared = () => {
+    setSessions([])
   }
 
   const onRunPayrollClicked = () => {
-    if (
-      contractors.length === 0 ||
-      customers.length === 0 ||
-      sessions.length === 0
-    ) {
+    if (contractors.length === 0 || sessions.length === 0) {
       alert("Cannot run payroll because not all of the data has been uploaded.")
     } else {
-      alert("Running Payroll...")
+      const contractorHours = new PayrollCalculator(
+        contractors,
+        sessions
+      ).calculate()
+
+      contractorHours.forEach((hours, name) => {
+        console.log(`Key: ${name}, Total Hours: ${hours.totalHours()}`)
+      })
     }
   }
 
@@ -137,19 +148,23 @@ const AdminView: React.FC = () => {
     <Grid container direction="column" alignItems="center">
       <UploadDataWidget
         prompt="Contractors"
-        callback={onUploadContractorsClicked}
+        onDataLoaded={onUploadContractorsClicked}
+        onDataCleared={onContractorsCleared}
       />
       <UploadDataWidget
         prompt="Customers"
-        callback={onUploadCustomersClicked}
+        onDataLoaded={onUploadCustomersClicked}
+        onDataCleared={onCustomersCleared}
       />
       <UploadDataWidget
         prompt="Invoice Parameters"
-        callback={onUploadInvoiceParamsClicked}
+        onDataLoaded={onUploadInvoiceParamsClicked}
+        onDataCleared={onInvoiceParamsCleared}
       />
       <UploadDataWidget
         prompt="Provider Report"
-        callback={onUploadProviderReportClicked}
+        onDataLoaded={onUploadProviderReportClicked}
+        onDataCleared={onProviderReportCleared}
       />
       <CustomButton>
         <Button onClick={onRunPayrollClicked}>Run Payroll</Button>
