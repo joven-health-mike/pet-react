@@ -12,6 +12,7 @@ import InvoiceParams from "../../data/InvoiceParams"
 import Session from "../../data/Session"
 import PayrollCalculator from "../../utils/PayrollCalculator"
 import AccountingCode from "../../data/AccountingCode"
+import InvoiceCalculator from "../../utils/InvoiceCalculator"
 
 const CustomButton = styled.a`
   ${buttonStyles}
@@ -172,7 +173,28 @@ const AdminView: React.FC = () => {
         "Cannot run invoices because not all of the data has been uploaded."
       )
     } else {
-      alert("Running Invoices...")
+      const customerSessionInfos = new InvoiceCalculator(
+        accountingCodes,
+        contractors,
+        customers,
+        invoiceParams,
+        sessions
+      ).calculate()
+
+      var csvOutput: string =
+        "ContactName,EmailAddress,POAddressLine1,POAddressLine2,POAddressLine3,POAddressLine4,POCity,PORegion,POPostalCode,POCountry,SAAddressLine1,SAAddressLine2,SAAddressLine3,SAAddressLine4,SACity,SARegion,SAPostalCode,SACountry,InvoiceNumber,Reference,InvoiceDate,DueDate,PlannedDate,Total,TaxTotal,InvoiceAmountPaid,InvoiceAmountDue,InventoryItemCode,Description,Quantity,UnitAmount,Discount,LineAmount,AccountCode,TaxType,TaxAmount,TrackingName1,TrackingOption1,TrackingName2,TrackingOption2,Currency,Type,Sent,Status\n"
+
+      customerSessionInfos.forEach((sessionInfos, customer) => {
+        var invoiceTotal = 0
+        sessionInfos.forEach((sessionInfo) => {
+          invoiceTotal += parseFloat(sessionInfo.lineAmount)
+        })
+        const invoiceTotalStr = invoiceTotal.toFixed(2)
+        sessionInfos.forEach((sessionInfo) => {
+          csvOutput += `${customer.xeroName},${customer.email},${customer.address1},${customer.address2},${customer.address3},${customer.address4},${customer.city},${customer.state},${customer.zip},${customer.country},${customer.address1},${customer.address2},${customer.address3},${customer.address4},${customer.city},${customer.state},${customer.zip},${customer.country},${sessionInfo.lineInvoiceParams.invoiceNumber},${sessionInfo.lineInvoiceParams.reference},${sessionInfo.lineInvoiceParams.invoiceDate},${sessionInfo.lineInvoiceParams.dueDate},,${invoiceTotalStr},0,0,${invoiceTotalStr},,${sessionInfo.lineDescription},${sessionInfo.lineQuantity},${sessionInfo.lineRate},,${sessionInfo.lineAmount},${sessionInfo.lineAccountCode},Tax Exempt,,,,,,USD,Sales Invoice,,Draft\n`
+        })
+      })
+      downloadCsv(csvOutput, "invoices.csv")
     }
   }
 
