@@ -123,10 +123,32 @@ const AdminView: React.FC = () => {
         sessions
       ).calculate()
 
-      contractorHours.forEach((hours, name) => {
-        console.log(`Key: ${name}, Total Hours: ${hours.totalHours()}`)
+      var csvOutput: string =
+        "contractor_type,first_name,last_name,ssn,business_name,ein,memo,hours_worked,wage,reimbursement,bonus,invoice_number\n"
+
+      contractorHours.forEach((hours, contractor) => {
+        const [firstName, lastName] = contractor.counselorName.split(" ")
+        csvOutput += `${contractor.gustoType},${firstName},${lastName},${
+          contractor.tin
+        },${contractor.gustoBizName},${contractor.gustoFEIN},,${hours
+          .totalHours()
+          .toString()},,,,N/A\n`
       })
+      downloadCsv(csvOutput, "payroll.csv")
     }
+  }
+
+  const downloadCsv = (dataStr: string, filename: string) => {
+    const blob = new Blob([dataStr], { type: "text/csv" })
+    const url = URL.createObjectURL(blob)
+
+    const a = document.createElement("a")
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 
   const onRunInvoicesClicked = () => {

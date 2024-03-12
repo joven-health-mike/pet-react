@@ -4,32 +4,31 @@ import Session from "../data/Session"
 export default class PayrollCalculator {
   constructor(public contractors: Contractor[], public sessions: Session[]) {}
 
-  calculate(): Map<string, ContractorTime> {
+  calculate(): Map<Contractor, ContractorTime> {
     const counselorMap = new Map()
 
     for (const session of this.sessions) {
-      const providerName = session.providerName
-      if (!counselorMap.has(providerName)) {
-        counselorMap.set(providerName, new ContractorTime(0, 0, 0, 0))
+      const contractor = getContractorForName(
+        this.contractors,
+        session.providerName
+      )
+      if (!counselorMap.has(contractor)) {
+        counselorMap.set(contractor, new ContractorTime(0, 0, 0, 0))
       }
       if (
         session.directIndirect === "Direct Service" &&
         session.presentAbsent === "Present"
       ) {
-        counselorMap.get(providerName).directTime += parseFloat(
-          session.totalTime
-        )
-        counselorMap.get(providerName).adminTime +=
+        counselorMap.get(contractor).directTime += parseFloat(session.totalTime)
+        counselorMap.get(contractor).adminTime +=
           parseFloat(session.totalTime) * 0.2
       } else if (
         session.directIndirect === "Direct Service" &&
         session.presentAbsent === "Absent - No Notice"
       ) {
-        counselorMap.get(providerName).noShowTime += parseFloat(
-          session.totalTime
-        )
+        counselorMap.get(contractor).noShowTime += parseFloat(session.totalTime)
       } else if (session.directIndirect === "InDirect Service") {
-        counselorMap.get(providerName).indirectTime += parseFloat(
+        counselorMap.get(contractor).indirectTime += parseFloat(
           session.totalTime
         )
       }
@@ -37,6 +36,10 @@ export default class PayrollCalculator {
 
     return counselorMap
   }
+}
+
+function getContractorForName(contractors: Contractor[], name: string) {
+  return contractors.find((contractor) => contractor.counselorName === name)
 }
 
 function minutesToHours(minutes: number) {
