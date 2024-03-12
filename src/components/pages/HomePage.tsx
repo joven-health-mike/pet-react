@@ -11,6 +11,7 @@ import Customer from "../../data/Customer"
 import InvoiceParams from "../../data/InvoiceParams"
 import Session from "../../data/Session"
 import PayrollCalculator from "../../utils/PayrollCalculator"
+import AccountingCode from "../../data/AccountingCode"
 
 const CustomButton = styled.a`
   ${buttonStyles}
@@ -32,6 +33,7 @@ const AdminView: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [invoiceParams, setInvoiceParams] = useState<InvoiceParams[]>([])
   const [sessions, setSessions] = useState<Session[]>([])
+  const [accountingCodes, setAccountingCodes] = useState<AccountingCode[]>([])
 
   const onUploadContractorsClicked = (data: string[][]) => {
     const newContractors: Contractor[] = data.slice(1).map((datum) => {
@@ -68,7 +70,6 @@ const AdminView: React.FC = () => {
 
   const onCustomersCleared = () => {
     setCustomers([])
-    console.log("customers cleared")
   }
 
   const onUploadInvoiceParamsClicked = (data: string[][]) => {
@@ -84,8 +85,6 @@ const AdminView: React.FC = () => {
   }
 
   const onUploadProviderReportClicked = (data: string[][]) => {
-    console.log(data[0])
-
     const newSessions: Session[] = data.slice(1).map((datum) => {
       return new Session(
         datum[0],
@@ -105,13 +104,23 @@ const AdminView: React.FC = () => {
       )
     })
 
-    console.log(newSessions)
-
     setSessions(newSessions)
   }
 
   const onProviderReportCleared = () => {
     setSessions([])
+  }
+
+  const onUploadAccountingCodesClicked = (data: string[][]) => {
+    const newAccountingCodes: AccountingCode[] = data.slice(1).map((datum) => {
+      return new AccountingCode(datum[0], datum[1])
+    })
+
+    setAccountingCodes(newAccountingCodes)
+  }
+
+  const onAccountingCodesCleared = () => {
+    setAccountingCodes([])
   }
 
   const onRunPayrollClicked = () => {
@@ -153,6 +162,7 @@ const AdminView: React.FC = () => {
 
   const onRunInvoicesClicked = () => {
     if (
+      accountingCodes.length === 0 ||
       contractors.length === 0 ||
       customers.length === 0 ||
       invoiceParams.length === 0 ||
@@ -168,6 +178,11 @@ const AdminView: React.FC = () => {
 
   return (
     <Grid container direction="column" alignItems="center">
+      <UploadDataWidget
+        prompt="Accounting Codes"
+        onDataLoaded={onUploadAccountingCodesClicked}
+        onDataCleared={onAccountingCodesCleared}
+      />
       <UploadDataWidget
         prompt="Contractors"
         onDataLoaded={onUploadContractorsClicked}
