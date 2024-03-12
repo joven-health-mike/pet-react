@@ -24,7 +24,6 @@ export default class InvoiceCalculator {
         session.schoolName
       )
       const customer = getCustomerForName(this.customers, session.schoolName)
-      console.log(`found customer: ${customer!.customerName}`)
       if (!customerMap.has(customer)) {
         customerMap.set(customer, [])
       }
