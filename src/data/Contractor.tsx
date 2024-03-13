@@ -7,3 +7,13 @@ export default class Contractor {
     public gustoFEIN: string
   ) {}
 }
+
+export const createContractor = (dataArray: string[]) => {
+  return new Contractor(
+    dataArray[0],
+    dataArray[1],
+    dataArray[2],
+    dataArray[3],
+    dataArray[4]
+  )
+}

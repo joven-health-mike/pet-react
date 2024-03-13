@@ -16,3 +16,22 @@ export default class Session {
     public totalTime: string
   ) {}
 }
+
+export const createSession = (dataArray: string[]) => {
+  return new Session(
+    dataArray[0],
+    dataArray[1],
+    dataArray[2],
+    dataArray[3],
+    dataArray[4],
+    dataArray[5],
+    dataArray[6],
+    dataArray[11],
+    dataArray[13],
+    dataArray[15],
+    dataArray[16],
+    dataArray[17],
+    dataArray[18],
+    dataArray[19]
+  )
+}
