@@ -30,9 +30,14 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.24.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/preset-typescript": "^7.17.12",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/preset-typescript": "^7.23.3",
+    "@types/jest": "^29.5.12",
     "@types/luxon": "^3.0.2",
+    "babel-jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^13.0.0",
     "prettier": "2.6.2",
     "react-test-renderer": "^18.1.0",
@@ -41,7 +46,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
