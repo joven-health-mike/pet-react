@@ -4,9 +4,9 @@ import React, { useState } from "react"
 import styled from "styled-components"
 import { useCSVReader } from "react-papaparse"
 import { buttonStyles } from "../styles/mixins"
-import { Button, Grid, Typography } from "@mui/material"
+import { Grid, Typography } from "@mui/material"
 
-const CustomButton = styled.a`
+const CustomButton = styled.button`
   ${buttonStyles}
 `
 
@@ -46,14 +46,10 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
             getRemoveFileProps,
           }: any) => (
             <>
-              <CustomButton>
-                <Button {...getRootProps()}>Upload</Button>
-              </CustomButton>
+              <CustomButton {...getRootProps()}>Upload</CustomButton>
               {data.length > 0 && (
-                <CustomButton>
-                  <Button {...getRemoveFileProps()} onClick={onRemoveData}>
-                    Remove
-                  </Button>
+                <CustomButton {...getRemoveFileProps()} onClick={onRemoveData}>
+                  Remove
                 </CustomButton>
               )}
               <ProgressBar />

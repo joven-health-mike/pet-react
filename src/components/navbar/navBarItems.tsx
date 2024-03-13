@@ -1,7 +1,7 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React, { ReactElement } from "react"
-import { FaHome } from "react-icons/fa"
+import { FaHome, FaMoneyBill, FaMoneyCheck } from "react-icons/fa"
 import styled from "styled-components"
 import image from "../../assets/Logo-192sq-alphabg.png"
 
@@ -26,5 +26,15 @@ export const allNavItems: NavItem[] = [
     title: "Home",
     icon: <FaHome />,
     path: "/",
+  },
+  {
+    title: "Payroll",
+    icon: <FaMoneyBill />,
+    path: "/payroll",
+  },
+  {
+    title: "Invoices",
+    icon: <FaMoneyCheck />,
+    path: "/invoices",
   },
 ]
