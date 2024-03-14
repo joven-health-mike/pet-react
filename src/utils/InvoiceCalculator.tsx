@@ -34,12 +34,12 @@ export default class InvoiceCalculator {
         description += " - Absent"
       }
       sessionInfo.lineDescription = description
-      sessionInfo.lineQuantity = `${minutesToHours(
-        parseInt(session.totalTime)
+      sessionInfo.lineQuantity = `${parseFloat(
+        minutesToHours(parseFloat(session.totalTime)).toFixed(3)
       )}`
       sessionInfo.lineRate = customer!.hourlyRate
       sessionInfo.lineAmount = `${calculateLineAmount(
-        sessionInfo.lineQuantity,
+        minutesToHours(parseFloat(session.totalTime)).toString(),
         sessionInfo.lineRate
       )}`
       sessionInfo.lineAccountCode = getAccountingCodeForName(
@@ -73,16 +73,15 @@ function getAccountingCodeForName(
   )
 }
 
-function calculateLineAmount(quantity: string, rate: string) {
+export function calculateLineAmount(quantity: string, rate: string) {
   const quantityFloat = parseFloat(quantity)
   const rateFloat = parseFloat(rate)
   const lineAmountFloat = quantityFloat * rateFloat
   return parseFloat(lineAmountFloat.toFixed(2))
 }
 
-function minutesToHours(minutes: number) {
-  const hours = minutes / 60
-  return parseFloat(hours.toFixed(3))
+export function minutesToHours(minutes: number) {
+  return minutes / 60
 }
 
 export class SessionInfo {
