@@ -12,6 +12,7 @@ import PayrollCalculator from "../../utils/PayrollCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
 import { HEADERS, createPayrollLine } from "../../outputs/Payroll"
+import { adaptTeleTeachersDataForPayroll } from "../../utils/TeleTeachersAdapter"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -38,7 +39,7 @@ const PayrollPage: React.FC = () => {
     var csvOutput: string = HEADERS
 
     contractorHours.forEach((hours, contractor) => {
-      csvOutput += createPayrollLine(contractor, hours.totalHours.toString())
+      csvOutput += createPayrollLine(contractor, hours.totalHours().toString())
     })
     downloadCsv(csvOutput, "payroll.csv")
   }
@@ -62,6 +63,19 @@ const PayrollPage: React.FC = () => {
           prompt="Provider Report"
           onDataLoaded={(data: string[][]) =>
             handleUploadData(data, setSessions, createSession)
+          }
+          onDataCleared={() => {
+            setSessions([])
+          }}
+        />
+        <UploadDataWidget
+          prompt="Provider Report (TeleTeachers)"
+          onDataLoaded={(data: string[][]) =>
+            handleUploadData(
+              adaptTeleTeachersDataForPayroll(data),
+              setSessions,
+              createSession
+            )
           }
           onDataCleared={() => {
             setSessions([])

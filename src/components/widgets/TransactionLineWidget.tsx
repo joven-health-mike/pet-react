@@ -22,7 +22,6 @@ const TransactionLineWidget: React.FC<TransactionLineWidgetProps> = ({
   onDataLoaded,
   onDataCleared,
 }) => {
-  console.log("Created widget with index: " + index)
   const [data, setData] = useState<string[]>(initialData)
 
   return (

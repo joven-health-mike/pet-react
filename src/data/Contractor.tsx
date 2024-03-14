@@ -13,7 +13,8 @@ export const createContractor = (dataArray: string[]) => {
     dataArray[0],
     dataArray[1],
     dataArray[2],
-    dataArray[3],
+    // wrap the biz name in quotes in case it includes a comma
+    `"${dataArray[3]}"`,
     dataArray[4]
   )
 }

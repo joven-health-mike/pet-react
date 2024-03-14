@@ -55,7 +55,11 @@ export default class InvoiceCalculator {
 }
 
 function getCustomerForName(customers: Customer[], name: string) {
-  return customers.find((customer) => customer.customerName === name)
+  const customer = customers.find((customer) => customer.customerName === name)
+  if (customer === undefined) {
+    console.log("Customer not found: ", name)
+  }
+  return customer
 }
 
 function getInvoiceParamsForName(invoiceParams: InvoiceParams[], name: string) {

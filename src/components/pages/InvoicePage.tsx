@@ -15,6 +15,7 @@ import InvoiceCalculator from "../../utils/InvoiceCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
 import { HEADERS, createInvoiceLine } from "../../outputs/Invoices"
+import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -109,6 +110,17 @@ const InvoicePage: React.FC = () => {
           prompt="Provider Report"
           onDataLoaded={(data: string[][]) =>
             handleUploadData(data, setSessions, createSession)
+          }
+          onDataCleared={() => setSessions([])}
+        />
+        <UploadDataWidget
+          prompt="Provider Report (TeleTeachers)"
+          onDataLoaded={(data: string[][]) =>
+            handleUploadData(
+              adaptTeleTeachersDataForInvoices(data),
+              setSessions,
+              createSession
+            )
           }
           onDataCleared={() => setSessions([])}
         />
