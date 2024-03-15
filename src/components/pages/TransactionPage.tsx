@@ -6,7 +6,10 @@ import { buttonStyles } from "../styles/mixins"
 import { Grid } from "@mui/material"
 import Navbar from "../navbar/Navbar"
 import { downloadCsv } from "../../utils/CsvHelper"
-import { HEADERS, createTransactionLine } from "../../outputs/Transactions"
+import {
+  TRANSACTION_HEADERS,
+  createTransactionLine,
+} from "../../outputs/Transactions"
 import TransactionLineWidget from "../widgets/TransactionLineWidget"
 
 const CustomButton = styled.button`
@@ -22,7 +25,7 @@ const TransactionsPage: React.FC = () => {
   }
 
   const processAndDownloadTransactions = () => {
-    var csvOutput: string = HEADERS
+    var csvOutput: string = TRANSACTION_HEADERS
 
     transactions.forEach((inputs) => {
       csvOutput += createTransactionLine(inputs)

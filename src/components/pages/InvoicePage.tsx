@@ -14,7 +14,7 @@ import AccountingCode, { createAccountingCode } from "../../data/AccountingCode"
 import InvoiceCalculator from "../../utils/InvoiceCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
-import { HEADERS, createInvoiceLine } from "../../outputs/Invoices"
+import { INVOICE_HEADERS, createInvoiceLine } from "../../outputs/Invoices"
 import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 
 const CustomButton = styled.button`
@@ -57,7 +57,7 @@ const InvoicePage: React.FC = () => {
       sessions
     ).calculate()
 
-    var csvOutput: string = HEADERS
+    var csvOutput: string = INVOICE_HEADERS
 
     customerSessionInfos.forEach((sessionInfos, customer) => {
       var invoiceTotal = 0

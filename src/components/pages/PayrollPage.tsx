@@ -11,8 +11,13 @@ import Session, { createSession } from "../../data/Session"
 import PayrollCalculator from "../../utils/PayrollCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
-import { HEADERS, createPayrollLine } from "../../outputs/Payroll"
+import { PAYROLL_HEADERS, createPayrollLine } from "../../outputs/Payroll"
 import { adaptTeleTeachersDataForPayroll } from "../../utils/TeleTeachersAdapter"
+import {
+  TRANSACTION_HEADERS,
+  createTransactionLine,
+} from "../../outputs/Transactions"
+import { todaysDate } from "../../utils/DateUtils"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -30,13 +35,45 @@ const PayrollPage: React.FC = () => {
     }
   }
 
+  const onCreateTransactionsClicked = () => {
+    if (contractors.length === 0 || sessions.length === 0) {
+      alert(
+        "Cannot create transactions because not all of the data has been uploaded."
+      )
+    } else {
+      processAndDownloadTransactions()
+    }
+  }
+
+  const processAndDownloadTransactions = () => {
+    const contractorHours = new PayrollCalculator(
+      contractors,
+      sessions
+    ).calculate()
+
+    let csvOutput: string = TRANSACTION_HEADERS
+    const today = todaysDate()
+
+    contractorHours.forEach((hours, contractor) => {
+      const wage = (hours.totalHours() * parseFloat(contractor.hourlyRate))
+        .toFixed(2)
+        .toString()
+      csvOutput += createTransactionLine([
+        today,
+        wage,
+        contractor.counselorName,
+      ])
+    })
+    downloadCsv(csvOutput, "transactions.csv")
+  }
+
   const processAndDownloadPayroll = () => {
     const contractorHours = new PayrollCalculator(
       contractors,
       sessions
     ).calculate()
 
-    var csvOutput: string = HEADERS
+    var csvOutput: string = PAYROLL_HEADERS
 
     contractorHours.forEach((hours, contractor) => {
       csvOutput += createPayrollLine(contractor, hours.totalHours().toString())
@@ -82,6 +119,9 @@ const PayrollPage: React.FC = () => {
           }}
         />
         <CustomButton onClick={onRunPayrollClicked}>Run Payroll</CustomButton>
+        <CustomButton onClick={onCreateTransactionsClicked}>
+          Create Transactions
+        </CustomButton>
       </Grid>
     </>
   )

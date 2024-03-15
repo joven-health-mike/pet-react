@@ -1,6 +1,6 @@
 import Contractor from "../data/Contractor"
 
-export const HEADERS =
+export const PAYROLL_HEADERS =
   "contractor_type,first_name,last_name,ssn,business_name,ein,memo,hours_worked,wage,reimbursement,bonus,invoice_number\n"
 
 export const createPayrollLine = (
