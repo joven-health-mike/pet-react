@@ -2,27 +2,19 @@
 
 import React, { useState } from "react"
 import { FormControl, Grid, Input, InputLabel } from "@mui/material"
-import styled from "styled-components"
-import { buttonStyles } from "../styles/mixins"
-
-const CustomButton = styled.button`
-  ${buttonStyles}
-`
 
 type TransactionLineWidgetProps = {
-  index: number
   initialData: string[]
-  onDataLoaded: (data: string[], index: number) => void
-  onDataCleared: (index: number) => void
+  onDataChanged: (data: string[]) => void
 }
 
 const TransactionLineWidget: React.FC<TransactionLineWidgetProps> = ({
-  index,
   initialData,
-  onDataLoaded,
-  onDataCleared,
+  onDataChanged,
 }) => {
-  const [data, setData] = useState<string[]>(initialData)
+  const [date, setDate] = useState<string>(initialData[0])
+  const [amount, setAmount] = useState<string>(initialData[1])
+  const [payee, setPayee] = useState<string>(initialData[2])
 
   return (
     <>
@@ -31,9 +23,10 @@ const TransactionLineWidget: React.FC<TransactionLineWidgetProps> = ({
           <InputLabel id="date">Date</InputLabel>
           <Input
             id="date"
-            value={data[0]}
+            value={date}
             onChange={(e) => {
-              setData([e.target.value, data[1], data[2]])
+              setDate(e.target.value)
+              onDataChanged([e.target.value, amount, payee])
             }}
           />
         </FormControl>
@@ -41,9 +34,10 @@ const TransactionLineWidget: React.FC<TransactionLineWidgetProps> = ({
           <InputLabel id="amount">Amount</InputLabel>
           <Input
             id="amount"
-            value={data[1]}
+            value={amount}
             onChange={(e) => {
-              setData([data[0], e.target.value, data[2]])
+              setAmount(e.target.value)
+              onDataChanged([date, e.target.value, payee])
             }}
           />
         </FormControl>
@@ -51,31 +45,13 @@ const TransactionLineWidget: React.FC<TransactionLineWidgetProps> = ({
           <InputLabel id="payee">Payee</InputLabel>
           <Input
             id="payee"
-            value={data[2]}
+            value={payee}
             onChange={(e) => {
-              setData([data[0], data[1], e.target.value])
+              setPayee(e.target.value)
+              onDataChanged([date, amount, e.target.value])
             }}
           />
         </FormControl>
-        <CustomButton
-          onClick={() => {
-            if (data[0] !== "" && data[1] !== "" && data[2] !== "") {
-              onDataLoaded(data, index)
-            } else {
-              alert("Please fill out all data for this row.")
-            }
-          }}
-        >
-          +
-        </CustomButton>
-        <CustomButton
-          onClick={() => {
-            setData(["", "", ""])
-            onDataCleared(index)
-          }}
-        >
-          X
-        </CustomButton>
       </Grid>
     </>
   )

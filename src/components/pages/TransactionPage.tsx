@@ -10,14 +10,13 @@ import {
   TRANSACTION_HEADERS,
   createTransactionLine,
 } from "../../outputs/Transactions"
-import TransactionLineWidget from "../widgets/TransactionLineWidget"
+import TransactionLineList from "../widgets/TransactionLineList"
 
 const CustomButton = styled.button`
   ${buttonStyles}
 `
 
 const TransactionsPage: React.FC = () => {
-  const [rowIndex, setRowIndex] = useState<number>(0)
   const [transactions, setTransactions] = useState<string[][]>([])
 
   const onRunTransactionsClicked = () => {
@@ -33,48 +32,18 @@ const TransactionsPage: React.FC = () => {
     downloadCsv(csvOutput, "transactions.csv")
   }
 
-  const onTransactionLoaded = (data: string[], index: number) => {
-    if (index < rowIndex) {
-      const transactionsCopy = [...transactions]
-      transactionsCopy[index] = data
-      setTransactions(transactionsCopy)
-    } else {
-      setTransactions([...transactions, data])
-      setRowIndex(rowIndex + 1)
-    }
-  }
-
-  const onTransactionCleared = (index: number) => {
-    const transactionsCopy = [...transactions]
-    transactionsCopy.splice(index, 1)
-    setTransactions(transactionsCopy)
-    setRowIndex(Math.max(rowIndex - 1, 0))
-  }
-
   return (
     <>
       <nav>
         <Navbar />
       </nav>
-      <Grid container direction="row">
-        {transactions.map((transaction, index) => {
-          return (
-            <TransactionLineWidget
-              key={index}
-              index={index}
-              initialData={transaction}
-              onDataLoaded={onTransactionLoaded}
-              onDataCleared={onTransactionCleared}
-            ></TransactionLineWidget>
-          )
-        })}
-        <TransactionLineWidget
-          key={rowIndex}
-          index={rowIndex}
-          initialData={["", "", ""]}
-          onDataLoaded={onTransactionLoaded}
-          onDataCleared={onTransactionCleared}
-        ></TransactionLineWidget>
+      <Grid container direction="column">
+        <TransactionLineList
+          onDataChanged={(data: string[][]) => {
+            console.log(`onDataChanged: ${data.toString()}`)
+            setTransactions(data)
+          }}
+        />
         <CustomButton onClick={onRunTransactionsClicked}>
           Run Transactions
         </CustomButton>
