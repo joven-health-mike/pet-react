@@ -30,6 +30,14 @@ export default class InvoiceCalculator {
 
       const sessionInfo = new SessionInfo("", "", "", "", "", invoiceParams!)
       var description = session.serviceName
+      if (
+        session.directIndirect === "Direct Service" &&
+        session.schoolName.includes("Teacher")
+      ) {
+        description += " - Teacher"
+      } else {
+        description += " - Student"
+      }
       if (session.presentAbsent === "Absent - No Notice") {
         description += " - Absent"
       }
