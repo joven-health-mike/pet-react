@@ -19,19 +19,19 @@ export default class Session {
 
 export const createSession = (dataArray: string[]) => {
   return new Session(
-    dataArray[0],
-    dataArray[1],
-    dataArray[2],
-    dataArray[3],
-    dataArray[4],
-    dataArray[5],
-    dataArray[6],
-    dataArray[11],
-    dataArray[13],
-    dataArray[15],
-    dataArray[16],
-    dataArray[17],
-    dataArray[18],
-    dataArray[19]
+    dataArray[0].trim(),
+    dataArray[1].trim(),
+    dataArray[2].trim(),
+    dataArray[3].trim(),
+    dataArray[4].trim(),
+    dataArray[5].trim(),
+    dataArray[6].trim(),
+    dataArray[11].trim(),
+    dataArray[13].trim(),
+    dataArray[15].trim(),
+    dataArray[16].trim(),
+    dataArray[17].trim(),
+    dataArray[18].trim(),
+    dataArray[19].trim()
   )
 }

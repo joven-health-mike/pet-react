@@ -10,3 +10,18 @@ export const downloadCsv = (dataStr: string, filename: string) => {
   document.body.removeChild(a)
   URL.revokeObjectURL(url)
 }
+
+export const makeCSVSafe = (input: string) => {
+  // If the string contains double quotes, escape them by doubling them up
+  let output = input
+    .replace(/"/g, '""')
+    .replace(/\\/g, "\\\\")
+    .replace(/\n/g, " ")
+
+  // If the string contains commas, double quotes, or line breaks, enclose it within double quotes
+  if (output.includes(",") || output.includes('"') || output.includes("\n")) {
+    output = '"' + output + '"'
+  }
+
+  return output.trim()
+}

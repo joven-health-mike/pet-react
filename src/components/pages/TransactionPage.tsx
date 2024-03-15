@@ -37,7 +37,7 @@ const TransactionsPage: React.FC = () => {
       <nav>
         <Navbar />
       </nav>
-      <Grid container direction="column">
+      <Grid container direction="column" alignItems="center">
         <TransactionLineList
           onDataChanged={(data: string[][]) => {
             console.log(`onDataChanged: ${data.toString()}`)

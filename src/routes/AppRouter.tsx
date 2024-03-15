@@ -6,6 +6,7 @@ import HomePage from "../components/pages/HomePage"
 import PayrollPage from "../components/pages/PayrollPage"
 import InvoicePage from "../components/pages/InvoicePage"
 import TransactionsPage from "../components/pages/TransactionPage"
+import ToolsPage from "../components/pages/ToolsPage"
 
 const AppRouter: React.FC = () => {
   return <PrivateRoutes />
@@ -16,6 +17,7 @@ export const AvailableRoutes = [
   { url: "/payroll", element: <PayrollPage /> },
   { url: "/invoices", element: <InvoicePage /> },
   { url: "/transactions", element: <TransactionsPage /> },
+  { url: "/tools", element: <ToolsPage /> },
 ]
 
 export default AppRouter
