@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
-import { Grid } from "@mui/material"
+import { Grid, Typography } from "@mui/material"
 import Navbar from "../navbar/Navbar"
 import { downloadCsv } from "../../utils/CsvHelper"
 import {
@@ -37,6 +37,9 @@ const TransactionsPage: React.FC = () => {
       <nav>
         <Navbar />
       </nav>
+      <Typography variant="h4" sx={{ mt: 5 }}>
+        Transactions
+      </Typography>
       <Grid container direction="column" alignItems="center">
         <TransactionLineList
           onDataChanged={(data: string[][]) => {

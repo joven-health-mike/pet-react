@@ -13,7 +13,7 @@ const CustomButton = styled.button`
 `
 
 const HomePage: React.FC = () => {
-  let navigate = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <>

@@ -3,7 +3,7 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
-import { Grid } from "@mui/material"
+import { Grid, Typography } from "@mui/material"
 import Navbar from "../navbar/Navbar"
 import UploadDataWidget from "../widgets/UploadDataWidget"
 import Contractor, { createContractor } from "../../data/Contractor"
@@ -77,6 +77,9 @@ const InvoicePage: React.FC = () => {
       <nav>
         <Navbar />
       </nav>
+      <Typography variant="h4" sx={{ mt: 5 }}>
+        Invoices
+      </Typography>
       <Grid container direction="column" alignItems="center">
         <UploadDataWidget
           prompt="Accounting Codes"
