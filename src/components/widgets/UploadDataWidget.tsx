@@ -1,10 +1,11 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useCSVReader } from "react-papaparse"
 import { buttonStyles } from "../styles/mixins"
 import { Grid, Typography } from "@mui/material"
+import CheckIcon from "@mui/icons-material/Check"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -37,6 +38,7 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
   const { CSVReader } = useCSVReader()
   const [data, setData] = useState<string[]>([])
   const [data2, setData2] = useState<string[]>([])
+  const [dataLoaded, setDataLoaded] = useState<boolean>(false)
 
   const onRemoveData = () => {
     setData([])
@@ -50,11 +52,20 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
     }
   }
 
+  useEffect(() => {
+    if (data.length > 0 || data2.length > 0) {
+      setDataLoaded(true)
+    } else {
+      setDataLoaded(false)
+    }
+  }, [data.length, data2.length])
+
   return (
     <>
       <Typography variant="h5" sx={{ mt: 3 }}>
         {prompt}
       </Typography>
+      {dataLoaded && <CheckIcon sx={{ color: "green", fontSize: "40px" }} />}
       <Typography sx={{ mt: 1, mb: 3, mr: 3 }}>{subPrompt}</Typography>
       <Grid container direction={"row"} alignItems={"center"} sx={{ p: 1 }}>
         <Grid
@@ -81,12 +92,14 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
               <>
                 <CustomButton {...getRootProps()}>{button1Text}</CustomButton>
                 {data.length > 0 && (
-                  <CustomButton
-                    {...getRemoveFileProps()}
-                    onClick={onRemoveData}
-                  >
-                    Remove
-                  </CustomButton>
+                  <>
+                    <CustomButton
+                      {...getRemoveFileProps()}
+                      onClick={onRemoveData}
+                    >
+                      Remove
+                    </CustomButton>
+                  </>
                 )}
                 <ProgressBar />
               </>
@@ -112,12 +125,14 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
                 <>
                   <CustomButton {...getRootProps()}>{button2Text}</CustomButton>
                   {data2.length > 0 && (
-                    <CustomButton
-                      {...getRemoveFileProps()}
-                      onClick={onRemoveData2}
-                    >
-                      Remove
-                    </CustomButton>
+                    <>
+                      <CustomButton
+                        {...getRemoveFileProps()}
+                        onClick={onRemoveData2}
+                      >
+                        Remove
+                      </CustomButton>
+                    </>
                   )}
                   <ProgressBar />
                 </>
