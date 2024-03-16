@@ -19,6 +19,10 @@ import {
 } from "../../outputs/Transactions"
 import { todaysDate } from "../../utils/DateUtils"
 import HorizontalLine from "../widgets/HorizontalLine"
+import {
+  PAYROLL_SUMMARY_HEADERS,
+  createPayrollSummaryLine,
+} from "../../outputs/PayrollSummary"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -64,6 +68,20 @@ const PayrollPage: React.FC = () => {
       csvOutput += createPayrollLine(contractor, hours.totalHours().toString())
     })
     downloadCsv(csvOutput, "payroll.csv")
+  }
+
+  const processAndDownloadSummary = () => {
+    const contractorHours = new PayrollCalculator(
+      contractors,
+      sessions
+    ).calculate()
+
+    var csvOutput: string = PAYROLL_SUMMARY_HEADERS
+
+    contractorHours.forEach((hours, contractor) => {
+      csvOutput += createPayrollSummaryLine(contractor, hours)
+    })
+    downloadCsv(csvOutput, "payroll-summary.csv")
   }
 
   useEffect(() => {
@@ -157,6 +175,19 @@ const PayrollPage: React.FC = () => {
               >
                 <CustomButton onClick={() => processAndDownloadTransactions()}>
                   Download Transactions File
+                </CustomButton>
+              </Grid>
+              <Grid
+                item
+                xs={true}
+                sm={true}
+                md={true}
+                lg={true}
+                xl={true}
+                sx={{ p: 1 }}
+              >
+                <CustomButton onClick={() => processAndDownloadSummary()}>
+                  Download Summary File
                 </CustomButton>
               </Grid>
             </Grid>
