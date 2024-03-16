@@ -18,6 +18,7 @@ import {
   createTransactionLine,
 } from "../../outputs/Transactions"
 import { todaysDate } from "../../utils/DateUtils"
+import HorizontalLine from "../widgets/HorizontalLine"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -28,24 +29,6 @@ const PayrollPage: React.FC = () => {
   const [contractors, setContractors] = useState<Contractor[]>([])
   const [sessions, setSessions] = useState<Session[]>([])
   const [readyToDownload, setReadyToDownload] = useState<boolean>(false)
-
-  const onRunPayrollClicked = () => {
-    if (contractors.length === 0 || sessions.length === 0) {
-      alert("Cannot run payroll because not all of the data has been uploaded.")
-    } else {
-      processAndDownloadPayroll()
-    }
-  }
-
-  const onCreateTransactionsClicked = () => {
-    if (contractors.length === 0 || sessions.length === 0) {
-      alert(
-        "Cannot create transactions because not all of the data has been uploaded."
-      )
-    } else {
-      processAndDownloadTransactions()
-    }
-  }
 
   const processAndDownloadTransactions = () => {
     const contractorHours = new PayrollCalculator(
@@ -98,41 +81,47 @@ const PayrollPage: React.FC = () => {
         Payroll
       </Typography>
       <Grid container direction="column" alignItems="center">
-        <UploadDataWidget
-          prompt="Contractors"
-          subPrompt="Data for contractors can be found in the **PET Program Inputs** sheet."
-          onDataLoaded={(data: string[][]) => {
-            handleUploadData(data, setContractors, createContractor)
-          }}
-          onDataCleared={() => {
-            setContractors([])
-          }}
-        />
-        <UploadDataWidget
-          prompt="Provider Report"
-          subPrompt="The Provider Report can be exported from either the **Session Analysis Dashboard (SAD)** or from **TeleTeachers**. Select the option that coorelates with where the data was exported from."
-          button1Text={"Upload SAD Format"}
-          button2Text={"Upload TeleTeachers Format"}
-          enableSecondOption={true}
-          onDataLoaded={(data: string[][]) => {
-            handleUploadData(data, setSessions, createSession)
-          }}
-          onDataCleared={() => {
-            setSessions([])
-            setReadyToDownload(false)
-          }}
-          onData2Loaded={(data: string[][]) => {
-            handleUploadData(
-              adaptTeleTeachersDataForPayroll(data),
-              setSessions,
-              createSession
-            )
-          }}
-          onData2Cleared={() => {
-            setSessions([])
-            setReadyToDownload(false)
-          }}
-        />
+        <>
+          <UploadDataWidget
+            prompt="Contractors"
+            subPrompt="Data for contractors can be found in the **PET Program Inputs** sheet."
+            onDataLoaded={(data: string[][]) => {
+              handleUploadData(data, setContractors, createContractor)
+            }}
+            onDataCleared={() => {
+              setContractors([])
+            }}
+          />
+          <HorizontalLine />
+        </>
+        <>
+          <UploadDataWidget
+            prompt="Provider Report"
+            subPrompt="The Provider Report can be exported from either the **Session Analysis Dashboard (SAD)** or from **TeleTeachers**. Select the option that coorelates with where the data was exported from."
+            button1Text={"Upload SAD Format"}
+            button2Text={"Upload TeleTeachers Format"}
+            enableSecondOption={true}
+            onDataLoaded={(data: string[][]) => {
+              handleUploadData(data, setSessions, createSession)
+            }}
+            onDataCleared={() => {
+              setSessions([])
+              setReadyToDownload(false)
+            }}
+            onData2Loaded={(data: string[][]) => {
+              handleUploadData(
+                adaptTeleTeachersDataForPayroll(data),
+                setSessions,
+                createSession
+              )
+            }}
+            onData2Cleared={() => {
+              setSessions([])
+              setReadyToDownload(false)
+            }}
+          />
+          <HorizontalLine />
+        </>
         {readyToDownload && (
           <>
             <Typography variant="h5" sx={{ mt: 3 }}>
@@ -153,7 +142,7 @@ const PayrollPage: React.FC = () => {
                 xl={true}
                 sx={{ p: 1 }}
               >
-                <CustomButton onClick={onRunPayrollClicked}>
+                <CustomButton onClick={() => processAndDownloadPayroll()}>
                   Download Payroll File
                 </CustomButton>
               </Grid>
@@ -166,7 +155,7 @@ const PayrollPage: React.FC = () => {
                 xl={true}
                 sx={{ p: 1 }}
               >
-                <CustomButton onClick={onCreateTransactionsClicked}>
+                <CustomButton onClick={() => processAndDownloadTransactions()}>
                   Download Transactions File
                 </CustomButton>
               </Grid>

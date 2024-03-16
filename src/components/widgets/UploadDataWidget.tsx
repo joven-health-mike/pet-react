@@ -55,7 +55,7 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
       <Typography variant="h5" sx={{ mt: 3 }}>
         {prompt}
       </Typography>
-      <Typography sx={{ mt: 1, mb: 3 }}>{subPrompt}</Typography>
+      <Typography sx={{ mt: 1, mb: 3, mr: 3 }}>{subPrompt}</Typography>
       <Grid container direction={"row"} alignItems={"center"} sx={{ p: 1 }}>
         <Grid
           item
@@ -126,13 +126,6 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
           </Grid>
         )}
       </Grid>
-      <div
-        style={{
-          borderBottom: "0.1em solid black",
-          padding: "0.5em",
-          minWidth: "100%",
-        }}
-      ></div>
     </>
   )
 }

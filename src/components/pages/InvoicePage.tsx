@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
 import { Grid, Typography } from "@mui/material"
@@ -16,6 +16,11 @@ import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
 import { INVOICE_HEADERS, createInvoiceLine } from "../../outputs/Invoices"
 import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
+import HorizontalLine from "../widgets/HorizontalLine"
+import {
+  INVOICE_SUMMARY_HEADERS,
+  createInvoiceSummaryLine,
+} from "../../outputs/InvoiceSummary"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -27,26 +32,27 @@ const InvoicePage: React.FC = () => {
   const [invoiceParams, setInvoiceParams] = useState<InvoiceParams[]>([])
   const [sessions, setSessions] = useState<Session[]>([])
   const [accountingCodes, setAccountingCodes] = useState<AccountingCode[]>([])
+  const [readyToDownload, setReadyToDownload] = useState<boolean>(false)
 
-  const readyToRunInvoices = () => {
-    return (
-      accountingCodes.length === 0 ||
-      contractors.length === 0 ||
-      customers.length === 0 ||
-      invoiceParams.length === 0 ||
-      sessions.length === 0
-    )
-  }
-
-  const onRunInvoicesClicked = () => {
-    if (readyToRunInvoices()) {
-      alert(
-        "Cannot run invoices because not all of the data has been uploaded."
-      )
+  useEffect(() => {
+    if (
+      accountingCodes.length > 0 &&
+      contractors.length > 0 &&
+      customers.length > 0 &&
+      invoiceParams.length > 0 &&
+      sessions.length > 0
+    ) {
+      setReadyToDownload(true)
     } else {
-      processAndDownloadInvoices()
+      setReadyToDownload(false)
     }
-  }
+  }, [
+    accountingCodes.length,
+    contractors.length,
+    customers.length,
+    invoiceParams.length,
+    sessions.length,
+  ])
 
   const processAndDownloadInvoices = () => {
     const customerSessionInfos = new InvoiceCalculator(
@@ -72,6 +78,57 @@ const InvoicePage: React.FC = () => {
     downloadCsv(csvOutput, "invoices.csv")
   }
 
+  const processAndDownloadSummary = () => {
+    const customerSessionInfos = new InvoiceCalculator(
+      accountingCodes,
+      contractors,
+      customers,
+      invoiceParams,
+      sessions
+    ).calculate()
+
+    let csvOutput: string = INVOICE_SUMMARY_HEADERS
+    const customerMap: Map<Customer, number[]> = new Map()
+
+    customerSessionInfos.forEach((sessionInfos, customer) => {
+      if (!customerMap.has(customer)) {
+        customerMap.set(customer, [0, 0])
+      }
+      let invoiceTotal = 0
+      let invoiceTotalHours = 0
+      sessionInfos.forEach((sessionInfo) => {
+        invoiceTotal += parseFloat(sessionInfo.lineAmount)
+        invoiceTotalHours += parseFloat(sessionInfo.lineQuantity)
+      })
+      const oldInvoiceTotal = customerMap.get(customer)![0]
+      const oldInvoiceTotalHours = customerMap.get(customer)![1]
+      customerMap.set(customer, [
+        oldInvoiceTotal + invoiceTotal,
+        oldInvoiceTotalHours + invoiceTotalHours,
+      ])
+    })
+
+    const customerArray = Array.from(customerMap)
+    customerArray.sort((a, b) => {
+      const aValue = a[1][1] // Second element of value array of 'a'
+      const bValue = b[1][1] // Second element of value array of 'b'
+
+      // Sort in descending order
+      return bValue - aValue
+    })
+
+    customerArray.forEach(([customer, values]) => {
+      if (!customerMap.has(customer)) return
+      csvOutput += createInvoiceSummaryLine(
+        customer,
+        values[0].toFixed(2),
+        values[1].toFixed(3)
+      )
+    })
+
+    downloadCsv(csvOutput, "invoice-summary.csv")
+  }
+
   return (
     <>
       <nav>
@@ -81,60 +138,164 @@ const InvoicePage: React.FC = () => {
         Invoices
       </Typography>
       <Grid container direction="column" alignItems="center">
-        <UploadDataWidget
-          prompt="Accounting Codes"
-          subPrompt=""
-          onDataLoaded={(data: string[][]) =>
-            handleUploadData(data, setAccountingCodes, createAccountingCode)
-          }
-          onDataCleared={() => setAccountingCodes([])}
-        />
-        <UploadDataWidget
-          prompt="Contractors"
-          subPrompt=""
-          onDataLoaded={(data: string[][]) =>
-            handleUploadData(data, setContractors, createContractor)
-          }
-          onDataCleared={() => setContractors([])}
-        />
-        <UploadDataWidget
-          prompt="Customers"
-          subPrompt=""
-          onDataLoaded={(data: string[][]) =>
-            handleUploadData(data, setCustomers, createCustomer)
-          }
-          onDataCleared={() => setCustomers([])}
-        />
-        <UploadDataWidget
-          prompt="Invoice Parameters"
-          subPrompt=""
-          onDataLoaded={(data: string[][]) =>
-            handleUploadData(data, setInvoiceParams, createInvoiceParams)
-          }
-          onDataCleared={() => setInvoiceParams([])}
-        />
-        <UploadDataWidget
-          prompt="Provider Report"
-          subPrompt=""
-          onDataLoaded={(data: string[][]) =>
-            handleUploadData(data, setSessions, createSession)
-          }
-          onDataCleared={() => setSessions([])}
-        />
-        <UploadDataWidget
-          prompt="Provider Report (TeleTeachers)"
-          subPrompt=""
-          onDataLoaded={(data: string[][]) =>
-            handleUploadData(
-              adaptTeleTeachersDataForInvoices(data),
-              setSessions,
-              createSession
-            )
-          }
-          onDataCleared={() => setSessions([])}
-        />
-
-        <CustomButton onClick={onRunInvoicesClicked}>Run Invoices</CustomButton>
+        <Grid container direction="row" alignItems="center">
+          <Grid
+            item
+            xs={true}
+            sm={true}
+            md={true}
+            lg={true}
+            xl={true}
+            sx={{ p: 1 }}
+          >
+            <UploadDataWidget
+              prompt="Accounting Codes"
+              subPrompt="Data for accounting codes can be found in the **PET Program Inputs** sheet."
+              onDataLoaded={(data: string[][]) =>
+                handleUploadData(data, setAccountingCodes, createAccountingCode)
+              }
+              onDataCleared={() => {
+                setAccountingCodes([])
+                setReadyToDownload(false)
+              }}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={true}
+            sm={true}
+            md={true}
+            lg={true}
+            xl={true}
+            sx={{ p: 1 }}
+          >
+            <UploadDataWidget
+              prompt="Contractors"
+              subPrompt="Data for contractors can be found in the **PET Program Inputs** sheet."
+              onDataLoaded={(data: string[][]) =>
+                handleUploadData(data, setContractors, createContractor)
+              }
+              onDataCleared={() => {
+                setContractors([])
+                setReadyToDownload(false)
+              }}
+            />
+          </Grid>
+        </Grid>
+        <HorizontalLine />
+        <Grid container direction="row" alignItems="center">
+          <Grid
+            item
+            xs={true}
+            sm={true}
+            md={true}
+            lg={true}
+            xl={true}
+            sx={{ p: 1 }}
+          >
+            <UploadDataWidget
+              prompt="Customers"
+              subPrompt="Data for customers can be found in the **PET Program Inputs** sheet."
+              onDataLoaded={(data: string[][]) =>
+                handleUploadData(data, setCustomers, createCustomer)
+              }
+              onDataCleared={() => {
+                setCustomers([])
+                setReadyToDownload(false)
+              }}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={true}
+            sm={true}
+            md={true}
+            lg={true}
+            xl={true}
+            sx={{ p: 1 }}
+          >
+            <UploadDataWidget
+              prompt="Invoice Parameters"
+              subPrompt="Data for invoice parameters can be found in the **PET Program Inputs** sheet."
+              onDataLoaded={(data: string[][]) =>
+                handleUploadData(data, setInvoiceParams, createInvoiceParams)
+              }
+              onDataCleared={() => {
+                setInvoiceParams([])
+                setReadyToDownload(false)
+              }}
+            />
+          </Grid>
+        </Grid>
+        <HorizontalLine />
+        <>
+          <UploadDataWidget
+            prompt="Provider Report"
+            subPrompt="The Provider Report can be exported from either the **Session Analysis Dashboard (SAD)** or from **TeleTeachers**. Select the option that coorelates with where the data was exported from."
+            button1Text={"Upload SAD Format"}
+            button2Text={"Upload TeleTeachers Format"}
+            enableSecondOption={true}
+            onDataLoaded={(data: string[][]) => {
+              handleUploadData(data, setSessions, createSession)
+            }}
+            onDataCleared={() => {
+              setSessions([])
+              setReadyToDownload(false)
+            }}
+            onData2Loaded={(data: string[][]) => {
+              handleUploadData(
+                adaptTeleTeachersDataForInvoices(data),
+                setSessions,
+                createSession
+              )
+            }}
+            onData2Cleared={() => {
+              setSessions([])
+              setReadyToDownload(false)
+            }}
+          />
+          <HorizontalLine />
+        </>
+        {readyToDownload && (
+          <>
+            <Typography variant="h5" sx={{ mt: 3 }}>
+              What would you like to do?
+            </Typography>
+            <Grid
+              container
+              direction={"row"}
+              alignItems={"center"}
+              sx={{ p: 1 }}
+            >
+              <Grid
+                item
+                xs={true}
+                sm={true}
+                md={true}
+                lg={true}
+                xl={true}
+                sx={{ p: 1 }}
+              >
+                <CustomButton onClick={() => processAndDownloadInvoices()}>
+                  Download Invoices File
+                </CustomButton>
+              </Grid>
+              <Grid
+                item
+                xs={true}
+                sm={true}
+                md={true}
+                lg={true}
+                xl={true}
+                sx={{ p: 1 }}
+              >
+                <CustomButton onClick={() => processAndDownloadSummary()}>
+                  Download Summary
+                </CustomButton>
+              </Grid>
+            </Grid>
+          </>
+        )}
       </Grid>
     </>
   )

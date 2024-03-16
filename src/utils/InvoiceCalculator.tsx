@@ -29,7 +29,19 @@ export default class InvoiceCalculator {
       }
 
       const sessionInfo = new SessionInfo("", "", "", "", "", invoiceParams!)
-      var description = session.serviceName
+      let description = session.serviceName
+      if (session.presentAbsent === "Absent - No Notice") {
+        description += " - Absent"
+      }
+      sessionInfo.lineAccountCode = getAccountingCodeForName(
+        this.accountingCodes,
+        description
+      )!.accountCode
+
+      description = session.serviceName
+      if (session.presentAbsent === "Absent - No Notice") {
+        description += " - Absent"
+      }
       if (
         session.directIndirect === "Direct Service" &&
         session.schoolName.includes("Teacher")
@@ -37,9 +49,6 @@ export default class InvoiceCalculator {
         description += " - Teacher"
       } else {
         description += " - Student"
-      }
-      if (session.presentAbsent === "Absent - No Notice") {
-        description += " - Absent"
       }
       sessionInfo.lineDescription = description
       sessionInfo.lineQuantity = `${parseFloat(
@@ -50,10 +59,6 @@ export default class InvoiceCalculator {
         minutesToHours(parseFloat(session.totalTime)).toString(),
         sessionInfo.lineRate
       )}`
-      sessionInfo.lineAccountCode = getAccountingCodeForName(
-        this.accountingCodes,
-        description
-      )!.accountCode
 
       customerMap.get(customer).push(sessionInfo)
     }
