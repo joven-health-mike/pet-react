@@ -83,6 +83,7 @@ const InvoicePage: React.FC = () => {
       <Grid container direction="column" alignItems="center">
         <UploadDataWidget
           prompt="Accounting Codes"
+          subPrompt=""
           onDataLoaded={(data: string[][]) =>
             handleUploadData(data, setAccountingCodes, createAccountingCode)
           }
@@ -90,6 +91,7 @@ const InvoicePage: React.FC = () => {
         />
         <UploadDataWidget
           prompt="Contractors"
+          subPrompt=""
           onDataLoaded={(data: string[][]) =>
             handleUploadData(data, setContractors, createContractor)
           }
@@ -97,6 +99,7 @@ const InvoicePage: React.FC = () => {
         />
         <UploadDataWidget
           prompt="Customers"
+          subPrompt=""
           onDataLoaded={(data: string[][]) =>
             handleUploadData(data, setCustomers, createCustomer)
           }
@@ -104,6 +107,7 @@ const InvoicePage: React.FC = () => {
         />
         <UploadDataWidget
           prompt="Invoice Parameters"
+          subPrompt=""
           onDataLoaded={(data: string[][]) =>
             handleUploadData(data, setInvoiceParams, createInvoiceParams)
           }
@@ -111,6 +115,7 @@ const InvoicePage: React.FC = () => {
         />
         <UploadDataWidget
           prompt="Provider Report"
+          subPrompt=""
           onDataLoaded={(data: string[][]) =>
             handleUploadData(data, setSessions, createSession)
           }
@@ -118,6 +123,7 @@ const InvoicePage: React.FC = () => {
         />
         <UploadDataWidget
           prompt="Provider Report (TeleTeachers)"
+          subPrompt=""
           onDataLoaded={(data: string[][]) =>
             handleUploadData(
               adaptTeleTeachersDataForInvoices(data),

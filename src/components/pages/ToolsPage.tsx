@@ -49,6 +49,7 @@ const ToolsPage: React.FC = () => {
       <Grid container direction="column" alignItems="center">
         <UploadDataWidget
           prompt="Provider Report (TeleTeachers)"
+          subPrompt=""
           onDataLoaded={(data: string[][]) =>
             handleUploadData(
               adaptTeleTeachersDataForPayroll(data),
