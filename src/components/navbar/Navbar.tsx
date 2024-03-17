@@ -64,20 +64,22 @@ const ListItem = styled.li`
 const Navbar: React.FC = () => {
   return (
     <>
-      <IconContext.Provider value={{ color: "#fff" }}>
-        <Wrapper>
-          <List>
-            {allNavItems.map((item: NavItem, index: number) => (
-              <ListItem key={index}>
-                <StyledLink to={item.path}>
-                  {item.icon}
-                  <LinkTitle>{item.title}</LinkTitle>
-                </StyledLink>
-              </ListItem>
-            ))}
-          </List>
-        </Wrapper>
-      </IconContext.Provider>
+      <nav>
+        <IconContext.Provider value={{ color: "#fff" }}>
+          <Wrapper>
+            <List>
+              {allNavItems.map((item: NavItem, index: number) => (
+                <ListItem key={index}>
+                  <StyledLink to={item.path}>
+                    {item.icon}
+                    <LinkTitle>{item.title}</LinkTitle>
+                  </StyledLink>
+                </ListItem>
+              ))}
+            </List>
+          </Wrapper>
+        </IconContext.Provider>
+      </nav>
     </>
   )
 }
