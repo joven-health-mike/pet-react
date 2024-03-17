@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
 import { Grid, Typography } from "@mui/material"
@@ -11,6 +11,7 @@ import {
   createTransactionLine,
 } from "../../outputs/Transactions"
 import TransactionLineList from "../widgets/TransactionLineList"
+import HorizontalLine from "../widgets/HorizontalLine"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -18,6 +19,7 @@ const CustomButton = styled.button`
 
 const TransactionsPage: React.FC = () => {
   const [transactions, setTransactions] = useState<string[][]>([])
+  const [readyToDownload, setReadyToDownload] = useState<boolean>(false)
 
   const onRunTransactionsClicked = () => {
     processAndDownloadTransactions()
@@ -27,10 +29,26 @@ const TransactionsPage: React.FC = () => {
     var csvOutput: string = TRANSACTION_HEADERS
 
     transactions.forEach((inputs) => {
-      csvOutput += createTransactionLine(inputs)
+      let hasFullData = true
+      for (let i = 0; i < inputs.length; i++) {
+        if (inputs[i] === "") {
+          hasFullData = false
+        }
+      }
+      if (hasFullData) {
+        csvOutput += createTransactionLine(inputs)
+      }
     })
     downloadCsv(csvOutput, "transactions.csv")
   }
+
+  useEffect(() => {
+    if (transactions.length > 0) {
+      setReadyToDownload(true)
+    } else {
+      setReadyToDownload(false)
+    }
+  }, [transactions.length])
 
   return (
     <>
@@ -43,13 +61,27 @@ const TransactionsPage: React.FC = () => {
       <Grid container direction="column" alignItems="center">
         <TransactionLineList
           onDataChanged={(data: string[][]) => {
-            console.log(`onDataChanged: ${data.toString()}`)
             setTransactions(data)
           }}
         />
-        <CustomButton onClick={onRunTransactionsClicked}>
-          Run Transactions
-        </CustomButton>
+        <HorizontalLine />
+        {readyToDownload && (
+          <Grid container direction={"row"} alignItems={"center"} sx={{ p: 1 }}>
+            <Grid
+              item
+              xs={true}
+              sm={true}
+              md={true}
+              lg={true}
+              xl={true}
+              sx={{ p: 1 }}
+            >
+              <CustomButton onClick={onRunTransactionsClicked}>
+                Run Transactions
+              </CustomButton>
+            </Grid>
+          </Grid>
+        )}
       </Grid>
     </>
   )

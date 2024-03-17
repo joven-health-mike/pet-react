@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Grid } from "@mui/material"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
@@ -20,53 +20,54 @@ const TransactionLineList: React.FC<TransactionLineListProps> = ({
   const [widgets, setWidgets] = useState<React.JSX.Element[]>([])
   const [data, setData] = useState<string[][]>([])
 
-  const updateLines = (oldSize: number, newSize: number) => {
-    if (oldSize === newSize) {
-      return
+  useEffect(() => {
+    console.log(`onWidgetsLengthChanged`)
+    if (widgets.length > data.length) {
+      const newData = [...data, ["", "", ""]]
+      setData(newData)
+      onDataChanged(newData)
+    } else if (widgets.length < data.length) {
+      const newData = [...data]
+      newData.splice(data.length - 1)
+      setData(newData)
+      onDataChanged(newData)
     }
-    // Generate JSX objects using map()
-    const newWidgets = Array.from({ length: newSize }, (_, index) => {
-      let initialData = ["", "", ""]
-
-      if (index < oldSize) {
-        initialData = data[index]
-      }
-
-      onWidgetDataChanged(index, initialData)
-
-      return (
-        <TransactionLineWidget
-          key={index}
-          initialData={initialData}
-          onDataChanged={(data) => onWidgetDataChanged(index, data)}
-        />
-      )
-    })
-
-    setWidgets(newWidgets)
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [widgets.length])
 
   const onWidgetDataChanged = (index: number, datum: string[]) => {
-    const dataCopy = [...data]
-    dataCopy[index] = datum
-    setData(dataCopy)
-    onDataChanged(dataCopy)
+    setData((oldData) => {
+      const dataCopy = [...oldData]
+      dataCopy[index] = datum
+      onDataChanged(dataCopy)
+      return dataCopy
+    })
   }
 
-  const expandData = () => {
-    updateLines(widgets.length, widgets.length + 1)
+  const expandWidget = () => {
+    const index = widgets.length
+    setWidgets([
+      ...widgets,
+      <TransactionLineWidget
+        key={index}
+        initialData={["", "", ""]}
+        onDataChanged={(datum) => onWidgetDataChanged(index, datum)}
+      />,
+    ])
   }
 
-  const contractData = () => {
-    updateLines(widgets.length, widgets.length - 1)
+  const contractWidget = () => {
+    const widgetsCopy = [...widgets]
+    widgetsCopy.splice(widgets.length - 1)
+    setWidgets(widgetsCopy)
   }
 
   return (
     <>
       <Grid container direction="column" alignItems="center">
         {widgets}
-        <CustomButton onClick={expandData}>+</CustomButton>
-        <CustomButton onClick={contractData}>X</CustomButton>
+        <CustomButton onClick={expandWidget}>+</CustomButton>
+        <CustomButton onClick={contractWidget}>X</CustomButton>
       </Grid>
     </>
   )
