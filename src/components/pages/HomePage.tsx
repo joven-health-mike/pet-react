@@ -42,6 +42,11 @@ const HomePage: React.FC = () => {
         <Grid item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ p: 1 }}>
           <CustomButton onClick={() => navigate("/tools")}>Tools</CustomButton>
         </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ p: 1 }}>
+          <CustomButton onClick={() => navigate("/analytics")}>
+            Analytics
+          </CustomButton>
+        </Grid>
       </Grid>
     </>
   )

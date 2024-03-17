@@ -3,6 +3,7 @@
 import React, { ReactElement } from "react"
 import {
   FaBiohazard,
+  FaChartLine,
   FaHome,
   FaMoneyBill,
   FaMoneyCheck,
@@ -52,5 +53,10 @@ export const allNavItems: NavItem[] = [
     title: "Tools",
     icon: <FaTools />,
     path: "/tools",
+  },
+  {
+    title: "Analytics",
+    icon: <FaChartLine />,
+    path: "/analytics",
   },
 ]
