@@ -40,4 +40,15 @@ const inputStyles = css`
   margin-bottom: 20px;
 `
 
-export { buttonStyles, h1Styles, linkStyles, spanStyles, inputStyles }
+const chartStyles = css`
+  padding: 100px;
+`
+
+export {
+  buttonStyles,
+  h1Styles,
+  linkStyles,
+  spanStyles,
+  inputStyles,
+  chartStyles,
+}

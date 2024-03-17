@@ -6,7 +6,7 @@ import DefaultText from "./DefaultText"
 import DefaultGrid from "./DefaultGrid"
 import DefaultGridItem from "./DefaultGridItem"
 import CsvLoader from "./CsvLoader"
-import GreenCheckMark from "../Icons/GreenCheckMark"
+import GreenCheckMark from "../icons/GreenCheckMark"
 
 type UploadDataWidgetProps = {
   prompt: string
