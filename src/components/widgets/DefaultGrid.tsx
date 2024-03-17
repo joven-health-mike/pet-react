@@ -5,7 +5,7 @@ import React, { ReactNode } from "react"
 
 type DefaultGridProps = {
   direction?: GridDirection | undefined
-  children: ReactNode
+  children?: ReactNode
 }
 
 const DefaultGrid: React.FC<DefaultGridProps> = ({
@@ -14,7 +14,7 @@ const DefaultGrid: React.FC<DefaultGridProps> = ({
 }) => {
   return (
     <>
-      <Grid container direction={direction} sx={{ p: 10 }}>
+      <Grid container direction={direction} alignItems={"center"} sx={{ p: 1 }}>
         {children}
       </Grid>
     </>

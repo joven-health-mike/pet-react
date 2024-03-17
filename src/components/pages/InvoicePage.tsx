@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
-import { Grid, Typography } from "@mui/material"
 import Navbar from "../navbar/Navbar"
 import UploadDataWidget from "../widgets/UploadDataWidget"
 import Contractor, { createContractor } from "../../data/Contractor"
@@ -22,6 +21,10 @@ import {
   createInvoiceSummaryLine,
 } from "../../outputs/InvoiceSummary"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
+import DefaultHeader from "../widgets/DefaultHeader"
+import DefaultGrid from "../widgets/DefaultGrid"
+import DefaultGridItem from "../widgets/DefaultGridItem"
+import DefaultSubHeader from "../widgets/DefaultSubHeader"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -132,23 +135,11 @@ const InvoicePage: React.FC = () => {
 
   return (
     <>
-      <nav>
-        <Navbar />
-      </nav>
-      <Typography variant="h4" sx={{ mt: 5 }}>
-        Invoices
-      </Typography>
-      <Grid container direction="column" alignItems="center">
-        <Grid container direction="row" alignItems="center">
-          <Grid
-            item
-            xs={true}
-            sm={true}
-            md={true}
-            lg={true}
-            xl={true}
-            sx={{ p: 1 }}
-          >
+      <Navbar />
+      <DefaultHeader>Invoices</DefaultHeader>
+      <DefaultGrid direction="column">
+        <DefaultGrid direction="row">
+          <DefaultGridItem>
             <UploadDataWidget
               prompt="Accounting Codes"
               subPrompt="Data for accounting codes can be found in the **PET Program Inputs** sheet."
@@ -160,16 +151,8 @@ const InvoicePage: React.FC = () => {
                 setReadyToDownload(false)
               }}
             />
-          </Grid>
-          <Grid
-            item
-            xs={true}
-            sm={true}
-            md={true}
-            lg={true}
-            xl={true}
-            sx={{ p: 1 }}
-          >
+          </DefaultGridItem>
+          <DefaultGridItem>
             <UploadDataWidget
               prompt="Contractors"
               subPrompt="Data for contractors can be found in the **PET Program Inputs** sheet."
@@ -181,19 +164,11 @@ const InvoicePage: React.FC = () => {
                 setReadyToDownload(false)
               }}
             />
-          </Grid>
-        </Grid>
+          </DefaultGridItem>
+        </DefaultGrid>
         <HorizontalLine />
-        <Grid container direction="row" alignItems="center">
-          <Grid
-            item
-            xs={true}
-            sm={true}
-            md={true}
-            lg={true}
-            xl={true}
-            sx={{ p: 1 }}
-          >
+        <DefaultGrid direction="row">
+          <DefaultGridItem>
             <UploadDataWidget
               prompt="Customers"
               subPrompt="Data for customers can be found in the **PET Program Inputs** sheet."
@@ -205,16 +180,8 @@ const InvoicePage: React.FC = () => {
                 setReadyToDownload(false)
               }}
             />
-          </Grid>
-          <Grid
-            item
-            xs={true}
-            sm={true}
-            md={true}
-            lg={true}
-            xl={true}
-            sx={{ p: 1 }}
-          >
+          </DefaultGridItem>
+          <DefaultGridItem>
             <UploadDataWidget
               prompt="Invoice Parameters"
               subPrompt="Data for invoice parameters can be found in the **PET Program Inputs** sheet."
@@ -226,63 +193,42 @@ const InvoicePage: React.FC = () => {
                 setReadyToDownload(false)
               }}
             />
-          </Grid>
-        </Grid>
+          </DefaultGridItem>
+        </DefaultGrid>
         <HorizontalLine />
-        <>
-          <ProviderReportUploadWidget
-            onSessionsLoaded={(sessions: Session[]) => {
-              setSessions(sessions)
-            }}
-            onSessionsCleared={() => {
-              setSessions([])
-            }}
-            sessionFactory={createSession}
-            sessionDataAdapter={adaptTeleTeachersDataForInvoices}
-          />
-          <HorizontalLine />
-        </>
+        <DefaultGrid direction="row">
+          <DefaultGridItem>
+            <ProviderReportUploadWidget
+              onSessionsLoaded={(sessions: Session[]) => {
+                setSessions(sessions)
+              }}
+              onSessionsCleared={() => {
+                setSessions([])
+              }}
+              sessionFactory={createSession}
+              sessionDataAdapter={adaptTeleTeachersDataForInvoices}
+            />
+          </DefaultGridItem>
+        </DefaultGrid>
+        <HorizontalLine />
         {readyToDownload && (
-          <>
-            <Typography variant="h5" sx={{ mt: 3 }}>
-              What would you like to do?
-            </Typography>
-            <Grid
-              container
-              direction={"row"}
-              alignItems={"center"}
-              sx={{ p: 1 }}
-            >
-              <Grid
-                item
-                xs={true}
-                sm={true}
-                md={true}
-                lg={true}
-                xl={true}
-                sx={{ p: 1 }}
-              >
+          <DefaultGrid direction="column">
+            <DefaultSubHeader>What would you like to do?</DefaultSubHeader>
+            <DefaultGrid direction="row">
+              <DefaultGridItem>
                 <CustomButton onClick={() => processAndDownloadInvoices()}>
                   Download Invoices File
                 </CustomButton>
-              </Grid>
-              <Grid
-                item
-                xs={true}
-                sm={true}
-                md={true}
-                lg={true}
-                xl={true}
-                sx={{ p: 1 }}
-              >
+              </DefaultGridItem>
+              <DefaultGridItem>
                 <CustomButton onClick={() => processAndDownloadSummary()}>
                   Download Summary
                 </CustomButton>
-              </Grid>
-            </Grid>
-          </>
+              </DefaultGridItem>
+            </DefaultGrid>
+          </DefaultGrid>
         )}
-      </Grid>
+      </DefaultGrid>
     </>
   )
 }
