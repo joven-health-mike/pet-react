@@ -14,6 +14,7 @@ import {
   createSadLine,
 } from "../../outputs/SessionAnalysisDashboard"
 import { downloadCsv } from "../../utils/CsvHelper"
+import HorizontalLine from "../widgets/HorizontalLine"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -49,7 +50,7 @@ const ToolsPage: React.FC = () => {
       <Grid container direction="column" alignItems="center">
         <UploadDataWidget
           prompt="Provider Report (TeleTeachers)"
-          subPrompt=""
+          subPrompt="This is a report exported from **TeleTeachers**."
           onDataLoaded={(data: string[][]) =>
             handleUploadData(
               adaptTeleTeachersDataForPayroll(data),
@@ -61,9 +62,22 @@ const ToolsPage: React.FC = () => {
             setSessions([])
           }}
         />
-        <CustomButton onClick={onConvertClicked}>
-          Convert TeleTeachers Data to SAD Format
-        </CustomButton>
+        <HorizontalLine />
+        <Grid container direction={"row"} alignItems={"center"} sx={{ p: 1 }}>
+          <Grid
+            item
+            xs={true}
+            sm={true}
+            md={true}
+            lg={true}
+            xl={true}
+            sx={{ p: 1 }}
+          >
+            <CustomButton onClick={onConvertClicked}>
+              Convert TeleTeachers Data to SAD Format
+            </CustomButton>
+          </Grid>
+        </Grid>
       </Grid>
     </>
   )
