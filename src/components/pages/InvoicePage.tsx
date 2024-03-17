@@ -21,6 +21,7 @@ import {
   INVOICE_SUMMARY_HEADERS,
   createInvoiceSummaryLine,
 } from "../../outputs/InvoiceSummary"
+import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -229,30 +230,15 @@ const InvoicePage: React.FC = () => {
         </Grid>
         <HorizontalLine />
         <>
-          <UploadDataWidget
-            prompt="Provider Report"
-            subPrompt="The Provider Report can be exported from either the **Session Analysis Dashboard (SAD)** or from **TeleTeachers**. Select the option that coorelates with where the data was exported from."
-            button1Text={"Upload SAD Format"}
-            button2Text={"Upload TeleTeachers Format"}
-            enableSecondOption={true}
-            onDataLoaded={(data: string[][]) => {
-              handleUploadData(data, setSessions, createSession)
+          <ProviderReportUploadWidget
+            onSessionsLoaded={(sessions: Session[]) => {
+              setSessions(sessions)
             }}
-            onDataCleared={() => {
+            onSessionsCleared={() => {
               setSessions([])
-              setReadyToDownload(false)
             }}
-            onData2Loaded={(data: string[][]) => {
-              handleUploadData(
-                adaptTeleTeachersDataForInvoices(data),
-                setSessions,
-                createSession
-              )
-            }}
-            onData2Cleared={() => {
-              setSessions([])
-              setReadyToDownload(false)
-            }}
+            sessionFactory={createSession}
+            sessionDataAdapter={adaptTeleTeachersDataForInvoices}
           />
           <HorizontalLine />
         </>

@@ -23,6 +23,7 @@ import {
   PAYROLL_SUMMARY_HEADERS,
   createPayrollSummaryLine,
 } from "../../outputs/PayrollSummary"
+import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -87,6 +88,8 @@ const PayrollPage: React.FC = () => {
   useEffect(() => {
     if (sessions.length > 0 && contractors.length > 0) {
       setReadyToDownload(true)
+    } else {
+      setReadyToDownload(false)
     }
   }, [contractors.length, sessions.length])
 
@@ -113,30 +116,15 @@ const PayrollPage: React.FC = () => {
           <HorizontalLine />
         </>
         <>
-          <UploadDataWidget
-            prompt="Provider Report"
-            subPrompt="The Provider Report can be exported from either the **Session Analysis Dashboard (SAD)** or from **TeleTeachers**. Select the option that coorelates with where the data was exported from."
-            button1Text={"Upload SAD Format"}
-            button2Text={"Upload TeleTeachers Format"}
-            enableSecondOption={true}
-            onDataLoaded={(data: string[][]) => {
-              handleUploadData(data, setSessions, createSession)
+          <ProviderReportUploadWidget
+            onSessionsLoaded={(sessions: Session[]) => {
+              setSessions(sessions)
             }}
-            onDataCleared={() => {
+            onSessionsCleared={() => {
               setSessions([])
-              setReadyToDownload(false)
             }}
-            onData2Loaded={(data: string[][]) => {
-              handleUploadData(
-                adaptTeleTeachersDataForPayroll(data),
-                setSessions,
-                createSession
-              )
-            }}
-            onData2Cleared={() => {
-              setSessions([])
-              setReadyToDownload(false)
-            }}
+            sessionFactory={createSession}
+            sessionDataAdapter={adaptTeleTeachersDataForPayroll}
           />
           <HorizontalLine />
         </>
