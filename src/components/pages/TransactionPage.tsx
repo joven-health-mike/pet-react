@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
-import { Grid, Typography } from "@mui/material"
 import Navbar from "../navbar/Navbar"
 import { downloadCsv } from "../../utils/CsvHelper"
 import {
@@ -12,6 +11,9 @@ import {
 } from "../../outputs/Transactions"
 import TransactionLineList from "../widgets/TransactionLineList"
 import HorizontalLine from "../widgets/HorizontalLine"
+import DefaultHeader from "../widgets/DefaultHeader"
+import DefaultGrid from "../widgets/DefaultGrid"
+import DefaultGridItem from "../widgets/DefaultGridItem"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -55,34 +57,26 @@ const TransactionsPage: React.FC = () => {
       <nav>
         <Navbar />
       </nav>
-      <Typography variant="h4" sx={{ mt: 5 }}>
-        Transactions
-      </Typography>
-      <Grid container direction="column" alignItems="center">
-        <TransactionLineList
-          onDataChanged={(data: string[][]) => {
-            setTransactions(data)
-          }}
-        />
-        <HorizontalLine />
+      <DefaultHeader>Transactions</DefaultHeader>
+      <DefaultGrid direction="column">
+        <>
+          <TransactionLineList
+            onDataChanged={(data: string[][]) => {
+              setTransactions(data)
+            }}
+          />
+          <HorizontalLine />
+        </>
         {readyToDownload && (
-          <Grid container direction={"row"} alignItems={"center"} sx={{ p: 1 }}>
-            <Grid
-              item
-              xs={true}
-              sm={true}
-              md={true}
-              lg={true}
-              xl={true}
-              sx={{ p: 1 }}
-            >
+          <DefaultGrid>
+            <DefaultGridItem>
               <CustomButton onClick={onRunTransactionsClicked}>
                 Run Transactions
               </CustomButton>
-            </Grid>
-          </Grid>
+            </DefaultGridItem>
+          </DefaultGrid>
         )}
-      </Grid>
+      </DefaultGrid>
     </>
   )
 }

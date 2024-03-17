@@ -4,8 +4,11 @@ import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { useCSVReader } from "react-papaparse"
 import { buttonStyles } from "../styles/mixins"
-import { Grid, Typography } from "@mui/material"
 import CheckIcon from "@mui/icons-material/Check"
+import DefaultSubHeader from "./DefaultSubHeader"
+import DefaultText from "./DefaultText"
+import DefaultGrid from "./DefaultGrid"
+import DefaultGridItem from "./DefaultGridItem"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -62,21 +65,11 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
 
   return (
     <>
-      <Typography variant="h5" sx={{ mt: 3 }}>
-        {prompt}
-      </Typography>
+      <DefaultSubHeader>{prompt}</DefaultSubHeader>
       {dataLoaded && <CheckIcon sx={{ color: "green", fontSize: "40px" }} />}
-      <Typography sx={{ mt: 1, mb: 3, mr: 3 }}>{subPrompt}</Typography>
-      <Grid container direction={"row"} alignItems={"center"} sx={{ p: 1 }}>
-        <Grid
-          item
-          xs={true}
-          sm={true}
-          md={true}
-          lg={true}
-          xl={true}
-          sx={{ p: 1 }}
-        >
+      <DefaultText>{subPrompt}</DefaultText>
+      <DefaultGrid direction="row">
+        <DefaultGridItem>
           <CSVReader
             onUploadAccepted={(results: any) => {
               setData(results.data)
@@ -105,9 +98,9 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
               </>
             )}
           </CSVReader>
-        </Grid>
+        </DefaultGridItem>
         {enableSecondOption && (
-          <Grid item xs={12} sm={12} md={12} lg={6} xl={4} sx={{ p: 1 }}>
+          <DefaultGridItem>
             <CSVReader
               onUploadAccepted={(results: any) => {
                 setData2(results.data)
@@ -138,9 +131,9 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
                 </>
               )}
             </CSVReader>
-          </Grid>
+          </DefaultGridItem>
         )}
-      </Grid>
+      </DefaultGrid>
     </>
   )
 }

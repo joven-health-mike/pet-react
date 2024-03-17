@@ -3,7 +3,6 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
-import { Grid, Typography } from "@mui/material"
 import Navbar from "../navbar/Navbar"
 import UploadDataWidget from "../widgets/UploadDataWidget"
 import { handleUploadData } from "../../utils/DataProcessor"
@@ -15,6 +14,9 @@ import {
 } from "../../outputs/SessionAnalysisDashboard"
 import { downloadCsv } from "../../utils/CsvHelper"
 import HorizontalLine from "../widgets/HorizontalLine"
+import DefaultHeader from "../widgets/DefaultHeader"
+import DefaultGrid from "../widgets/DefaultGrid"
+import DefaultGridItem from "../widgets/DefaultGridItem"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -41,44 +43,32 @@ const ToolsPage: React.FC = () => {
 
   return (
     <>
-      <nav>
-        <Navbar />
-      </nav>
-      <Typography variant="h4" sx={{ mt: 5 }}>
-        Tools
-      </Typography>
-      <Grid container direction="column" alignItems="center">
-        <UploadDataWidget
-          prompt="Provider Report (TeleTeachers)"
-          subPrompt="This is a report exported from **TeleTeachers**."
-          onDataLoaded={(data: string[][]) =>
-            handleUploadData(
-              adaptTeleTeachersDataForPayroll(data),
-              setSessions,
-              createSession
-            )
-          }
-          onDataCleared={() => {
-            setSessions([])
-          }}
-        />
-        <HorizontalLine />
-        <Grid container direction={"row"} alignItems={"center"} sx={{ p: 1 }}>
-          <Grid
-            item
-            xs={true}
-            sm={true}
-            md={true}
-            lg={true}
-            xl={true}
-            sx={{ p: 1 }}
-          >
-            <CustomButton onClick={onConvertClicked}>
-              Convert TeleTeachers Data to SAD Format
-            </CustomButton>
-          </Grid>
-        </Grid>
-      </Grid>
+      <Navbar />
+      <DefaultHeader>Tools</DefaultHeader>
+      <DefaultGrid direction="column">
+        <>
+          <UploadDataWidget
+            prompt="Provider Report (TeleTeachers)"
+            subPrompt="This is a report exported from **TeleTeachers**."
+            onDataLoaded={(data: string[][]) =>
+              handleUploadData(
+                adaptTeleTeachersDataForPayroll(data),
+                setSessions,
+                createSession
+              )
+            }
+            onDataCleared={() => {
+              setSessions([])
+            }}
+          />
+          <HorizontalLine />
+        </>
+        <DefaultGridItem>
+          <CustomButton onClick={onConvertClicked}>
+            Convert TeleTeachers Data to SAD Format
+          </CustomButton>
+        </DefaultGridItem>
+      </DefaultGrid>
     </>
   )
 }

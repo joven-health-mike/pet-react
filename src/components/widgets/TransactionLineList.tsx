@@ -1,10 +1,10 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React, { useEffect, useState } from "react"
-import { Grid } from "@mui/material"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
 import TransactionLineWidget from "./TransactionLineWidget"
+import DefaultGrid from "./DefaultGrid"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -21,7 +21,6 @@ const TransactionLineList: React.FC<TransactionLineListProps> = ({
   const [data, setData] = useState<string[][]>([])
 
   useEffect(() => {
-    console.log(`onWidgetsLengthChanged`)
     if (widgets.length > data.length) {
       const newData = [...data, ["", "", ""]]
       setData(newData)
@@ -64,11 +63,11 @@ const TransactionLineList: React.FC<TransactionLineListProps> = ({
 
   return (
     <>
-      <Grid container direction="column" alignItems="center">
+      <DefaultGrid direction="column">
         {widgets}
         <CustomButton onClick={expandWidget}>+</CustomButton>
         <CustomButton onClick={contractWidget}>X</CustomButton>
-      </Grid>
+      </DefaultGrid>
     </>
   )
 }

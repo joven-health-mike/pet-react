@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
-import { Grid, Typography } from "@mui/material"
 import Navbar from "../navbar/Navbar"
 import UploadDataWidget from "../widgets/UploadDataWidget"
 import Contractor, { createContractor } from "../../data/Contractor"
@@ -24,6 +23,10 @@ import {
   createPayrollSummaryLine,
 } from "../../outputs/PayrollSummary"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
+import DefaultHeader from "../widgets/DefaultHeader"
+import DefaultGrid from "../widgets/DefaultGrid"
+import DefaultSubHeader from "../widgets/DefaultSubHeader"
+import DefaultGridItem from "../widgets/DefaultGridItem"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -95,13 +98,9 @@ const PayrollPage: React.FC = () => {
 
   return (
     <>
-      <nav>
-        <Navbar />
-      </nav>
-      <Typography variant="h4" sx={{ mt: 5 }}>
-        Payroll
-      </Typography>
-      <Grid container direction="column" alignItems="center">
+      <Navbar />
+      <DefaultHeader>Payroll</DefaultHeader>
+      <DefaultGrid direction="column">
         <>
           <UploadDataWidget
             prompt="Contractors"
@@ -130,58 +129,27 @@ const PayrollPage: React.FC = () => {
         </>
         {readyToDownload && (
           <>
-            <Typography variant="h5" sx={{ mt: 3 }}>
-              What would you like to do?
-            </Typography>
-            <Grid
-              container
-              direction={"row"}
-              alignItems={"center"}
-              sx={{ p: 1 }}
-            >
-              <Grid
-                item
-                xs={true}
-                sm={true}
-                md={true}
-                lg={true}
-                xl={true}
-                sx={{ p: 1 }}
-              >
+            <DefaultSubHeader>What would you like to do?</DefaultSubHeader>
+            <DefaultGrid direction="row">
+              <DefaultGridItem>
                 <CustomButton onClick={() => processAndDownloadPayroll()}>
                   Download Payroll File
                 </CustomButton>
-              </Grid>
-              <Grid
-                item
-                xs={true}
-                sm={true}
-                md={true}
-                lg={true}
-                xl={true}
-                sx={{ p: 1 }}
-              >
+              </DefaultGridItem>
+              <DefaultGridItem>
                 <CustomButton onClick={() => processAndDownloadTransactions()}>
                   Download Transactions File
                 </CustomButton>
-              </Grid>
-              <Grid
-                item
-                xs={true}
-                sm={true}
-                md={true}
-                lg={true}
-                xl={true}
-                sx={{ p: 1 }}
-              >
+              </DefaultGridItem>
+              <DefaultGridItem>
                 <CustomButton onClick={() => processAndDownloadSummary()}>
                   Download Summary File
                 </CustomButton>
-              </Grid>
-            </Grid>
+              </DefaultGridItem>
+            </DefaultGrid>
           </>
         )}
-      </Grid>
+      </DefaultGrid>
     </>
   )
 }

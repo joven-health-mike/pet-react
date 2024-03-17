@@ -1,7 +1,8 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React, { useState } from "react"
-import { FormControl, Grid, Input, InputLabel } from "@mui/material"
+import { FormControl, Input, InputLabel } from "@mui/material"
+import DefaultGrid from "./DefaultGrid"
 
 type TransactionLineWidgetProps = {
   initialData: string[]
@@ -18,7 +19,7 @@ const TransactionLineWidget: React.FC<TransactionLineWidgetProps> = ({
 
   return (
     <>
-      <Grid container direction="row" alignItems="center">
+      <DefaultGrid direction="row">
         <FormControl required sx={{ mt: 2, mb: 2, mr: 5 }}>
           <InputLabel id="date">Date</InputLabel>
           <Input
@@ -52,7 +53,7 @@ const TransactionLineWidget: React.FC<TransactionLineWidgetProps> = ({
             }}
           />
         </FormControl>
-      </Grid>
+      </DefaultGrid>
     </>
   )
 }
