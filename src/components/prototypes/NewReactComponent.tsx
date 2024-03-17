@@ -2,7 +2,9 @@
 
 import React from "react"
 
-const NewReactComponent: React.FC = () => {
+type NewReactComponentProps = {}
+
+const NewReactComponent: React.FC<NewReactComponentProps> = ({}) => {
   return <></>
 }
 

@@ -1,26 +1,19 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React, { useEffect, useState } from "react"
-import styled from "styled-components"
-import { useCSVReader } from "react-papaparse"
-import { buttonStyles } from "../styles/mixins"
 import CheckIcon from "@mui/icons-material/Check"
 import DefaultSubHeader from "./DefaultSubHeader"
 import DefaultText from "./DefaultText"
 import DefaultGrid from "./DefaultGrid"
 import DefaultGridItem from "./DefaultGridItem"
-
-const CustomButton = styled.button`
-  ${buttonStyles}
-  width:250px;
-`
+import CsvLoader from "./CsvLoader"
 
 type UploadDataWidgetProps = {
-  prompt: String
-  subPrompt: String
+  prompt: string
+  subPrompt: string
   enableSecondOption?: boolean
-  button1Text?: String
-  button2Text?: String
+  button1Text?: string
+  button2Text?: string
   onDataLoaded: (data: string[][]) => void
   onDataCleared: () => void
   onData2Loaded?: (data: string[][]) => void
@@ -38,22 +31,31 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
   onData2Loaded,
   onData2Cleared,
 }) => {
-  const { CSVReader } = useCSVReader()
-  const [data, setData] = useState<string[]>([])
-  const [data2, setData2] = useState<string[]>([])
+  const [data, setData] = useState<string[][]>([])
+  const [data2, setData2] = useState<string[][]>([])
   const [dataLoaded, setDataLoaded] = useState<boolean>(false)
 
-  const onRemoveData = () => {
-    setData([])
-    onDataCleared()
-  }
-
-  const onRemoveData2 = () => {
-    setData2([])
-    if (onData2Cleared !== undefined) {
-      onData2Cleared()
+  useEffect(() => {
+    if (data.length === 0) {
+      onDataCleared()
+    } else {
+      onDataLoaded(data)
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.length])
+
+  useEffect(() => {
+    if (data2.length === 0) {
+      if (onData2Cleared !== undefined) {
+        onData2Cleared()
+      }
+    } else {
+      if (onData2Loaded !== undefined) {
+        onData2Loaded(data2)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data2.length])
 
   useEffect(() => {
     if (data.length > 0 || data2.length > 0) {
@@ -70,67 +72,23 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
       <DefaultText>{subPrompt}</DefaultText>
       <DefaultGrid direction="row">
         <DefaultGridItem>
-          <CSVReader
-            onUploadAccepted={(results: any) => {
-              setData(results.data)
-              onDataLoaded(results.data)
+          <CsvLoader
+            buttonText={button1Text}
+            onDataLoaded={(data: string[][]) => {
+              setData(data)
             }}
-          >
-            {({
-              getRootProps,
-              acceptedFile,
-              ProgressBar,
-              getRemoveFileProps,
-            }: any) => (
-              <>
-                <CustomButton {...getRootProps()}>{button1Text}</CustomButton>
-                {data.length > 0 && (
-                  <>
-                    <CustomButton
-                      {...getRemoveFileProps()}
-                      onClick={onRemoveData}
-                    >
-                      Remove
-                    </CustomButton>
-                  </>
-                )}
-                <ProgressBar />
-              </>
-            )}
-          </CSVReader>
+            onDataCleared={() => setData([])}
+          />
         </DefaultGridItem>
         {enableSecondOption && (
           <DefaultGridItem>
-            <CSVReader
-              onUploadAccepted={(results: any) => {
-                setData2(results.data)
-                if (onData2Loaded !== undefined) {
-                  onData2Loaded(results.data)
-                }
+            <CsvLoader
+              buttonText={button2Text}
+              onDataLoaded={(data: string[][]) => {
+                setData2(data)
               }}
-            >
-              {({
-                getRootProps,
-                acceptedFile,
-                ProgressBar,
-                getRemoveFileProps,
-              }: any) => (
-                <>
-                  <CustomButton {...getRootProps()}>{button2Text}</CustomButton>
-                  {data2.length > 0 && (
-                    <>
-                      <CustomButton
-                        {...getRemoveFileProps()}
-                        onClick={onRemoveData2}
-                      >
-                        Remove
-                      </CustomButton>
-                    </>
-                  )}
-                  <ProgressBar />
-                </>
-              )}
-            </CSVReader>
+              onDataCleared={() => setData2([])}
+            />
           </DefaultGridItem>
         )}
       </DefaultGrid>
