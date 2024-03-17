@@ -5,12 +5,12 @@ import DefaultGrid from "./DefaultGrid"
 import InputText from "./InputText"
 
 type TransactionLineWidgetProps = {
-  initialData: string[]
+  initialData?: string[]
   onDataChanged: (data: string[]) => void
 }
 
 const TransactionLineWidget: React.FC<TransactionLineWidgetProps> = ({
-  initialData,
+  initialData = ["", "", ""],
   onDataChanged,
 }) => {
   const [date, setDate] = useState<string>(initialData[0])

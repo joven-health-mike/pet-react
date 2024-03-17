@@ -1,12 +1,12 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React, { useEffect, useState } from "react"
-import CheckIcon from "@mui/icons-material/Check"
 import DefaultSubHeader from "./DefaultSubHeader"
 import DefaultText from "./DefaultText"
 import DefaultGrid from "./DefaultGrid"
 import DefaultGridItem from "./DefaultGridItem"
 import CsvLoader from "./CsvLoader"
+import GreenCheckMark from "../Icons/GreenCheckMark"
 
 type UploadDataWidgetProps = {
   prompt: string
@@ -68,7 +68,7 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
   return (
     <>
       <DefaultSubHeader>{prompt}</DefaultSubHeader>
-      {dataLoaded && <CheckIcon sx={{ color: "green", fontSize: "40px" }} />}
+      {dataLoaded && <GreenCheckMark />}
       <DefaultText>{subPrompt}</DefaultText>
       <DefaultGrid direction="row">
         <DefaultGridItem>

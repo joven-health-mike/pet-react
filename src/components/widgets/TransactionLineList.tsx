@@ -21,15 +21,18 @@ const TransactionLineList: React.FC<TransactionLineListProps> = ({
   const [data, setData] = useState<string[][]>([])
 
   useEffect(() => {
+    onDataChanged(data)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.length])
+
+  useEffect(() => {
     if (widgets.length > data.length) {
       const newData = [...data, ["", "", ""]]
       setData(newData)
-      onDataChanged(newData)
     } else if (widgets.length < data.length) {
       const newData = [...data]
       newData.splice(data.length - 1)
       setData(newData)
-      onDataChanged(newData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [widgets.length])
@@ -49,7 +52,6 @@ const TransactionLineList: React.FC<TransactionLineListProps> = ({
       ...widgets,
       <TransactionLineWidget
         key={index}
-        initialData={["", "", ""]}
         onDataChanged={(datum) => onWidgetDataChanged(index, datum)}
       />,
     ])
