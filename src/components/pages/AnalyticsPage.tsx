@@ -8,18 +8,32 @@ import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidg
 import Session, { createSession } from "../../data/Session"
 import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 import HorizontalLine from "../widgets/HorizontalLine"
-import NoShowRateCalculator from "../../utils/NoShowRateCalculator"
+import NoShowRateCalculator, {
+  customerFilter,
+  providerFilter,
+} from "../../utils/NoShowRateCalculator"
+
+const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
+const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
 
 const AnalyticsPage: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([])
   const [readyToDisplay, setReadyToDisplay] = useState<boolean>(false)
   const [customerData, setCustomerData] = useState<Map<string, number>>()
+  const [providerData, setProviderData] = useState<Map<string, number>>()
 
   useEffect(() => {
-    const unsortedMap = new NoShowRateCalculator(sessions).calculate()
-    const sortedArray = [...unsortedMap].sort((a, b) => b[1] - a[1])
-    const sortedMap = new Map(sortedArray)
+    let unsortedMap = new NoShowRateCalculator(sessions).calculate(
+      customerFilter
+    )
+    let sortedArray = [...unsortedMap].sort((a, b) => b[1] - a[1])
+    let sortedMap = new Map(sortedArray)
     setCustomerData(sortedMap)
+
+    unsortedMap = new NoShowRateCalculator(sessions).calculate(providerFilter)
+    sortedArray = [...unsortedMap].sort((a, b) => b[1] - a[1])
+    sortedMap = new Map(sortedArray)
+    setProviderData(sortedMap)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readyToDisplay])
 
@@ -48,7 +62,12 @@ const AnalyticsPage: React.FC = () => {
         />
         <HorizontalLine />
       </>
-      {readyToDisplay && <NoShowChart customerData={customerData!} />}
+      {readyToDisplay && (
+        <>
+          <NoShowChart chartTitle={CUSTOMER_CHART_LABEL} data={customerData!} />
+          <NoShowChart chartTitle={PROVIDER_CHART_LABEL} data={providerData!} />
+        </>
+      )}
     </>
   )
 }

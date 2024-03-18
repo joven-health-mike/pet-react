@@ -5,22 +5,21 @@ import { BarChart } from "../widgets/BarChart"
 import { randomColor } from "../../utils/Colors"
 
 type NoShowChartProps = {
-  customerData: Map<string, number>
+  chartTitle: string
+  data: Map<string, number>
 }
 
-const CHART_LABEL = "No-Show Rates by Customer"
-
-const NoShowChart: React.FC<NoShowChartProps> = ({ customerData }) => {
+const NoShowChart: React.FC<NoShowChartProps> = ({ chartTitle, data }) => {
   const randomColors: string[] = []
-  for (let i = 0; i < [...customerData.keys()].length; i++) {
+  for (let i = 0; i < [...data.keys()].length; i++) {
     randomColors.push(randomColor(0.6))
   }
   const noShowChartData = {
-    labels: [...customerData.keys()],
+    labels: [...data.keys()],
     datasets: [
       {
-        label: CHART_LABEL,
-        data: [...customerData.values()],
+        label: chartTitle,
+        data: [...data.values()],
         backgroundColor: randomColors,
         borderWidth: 1,
       },
@@ -28,7 +27,7 @@ const NoShowChart: React.FC<NoShowChartProps> = ({ customerData }) => {
   }
   return (
     <>
-      <BarChart chartTitle={CHART_LABEL} chartData={noShowChartData} />
+      <BarChart chartTitle={chartTitle} chartData={noShowChartData} />
     </>
   )
 }
