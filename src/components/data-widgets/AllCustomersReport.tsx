@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react"
 import CustomerReport from "./CustomerReport"
 import Session from "../../data/Session"
-import { formatDateStr } from "../../utils/DateUtils"
 
 type AllCustomersReportProps = {
   sessions: Session[]
@@ -37,9 +36,7 @@ const AllCustomersReport: React.FC<AllCustomersReportProps> = ({
           dataMap.set(sessionDescription, [])
         }
         const history = dataMap.get(sessionDescription)!
-        const description = `${formatDateStr(
-          session.date
-        )} - ${sessionDescription}: ${session.sessionTime} min`
+        const description = session.generateReportData()
         dataMap.set(sessionDescription, [...history, description])
       }
 

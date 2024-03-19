@@ -1,6 +1,7 @@
 // Copyright 2022 Social Fabric, LLC
 
 import {
+  Box,
   FormControl,
   InputLabel,
   MenuItem,
@@ -39,30 +40,32 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
 
   return (
     <>
-      <FormControl fullWidth sx={{ mr: 10 }}>
-        <InputLabel id={label.toLowerCase()}>{label}</InputLabel>
-        <Select
-          labelId={label.toLowerCase()}
-          id={label.toLowerCase()}
-          defaultValue=""
-          value={`${selectedIndex}`}
-          label={label}
-          onChange={(e: SelectChangeEvent<string>) => {
-            console.log(e.target.value)
-            setSelectedIndex(parseInt(e.target.value))
-          }}
-        >
-          {enableSelectAll && <MenuItem value={"0"}>{"Select All"}</MenuItem>}
-          {items.map((item, index) => {
-            const adjIndex = enableSelectAll ? index + 1 : index
-            return (
-              <MenuItem value={`${adjIndex}`} key={adjIndex}>
-                {item}
-              </MenuItem>
-            )
-          })}
-        </Select>
-      </FormControl>
+      <Box justifyContent="center" display="flex">
+        <FormControl fullWidth sx={{ m: 2 }}>
+          <InputLabel id={label.toLowerCase()}>{label}</InputLabel>
+          <Select
+            labelId={label.toLowerCase()}
+            id={label.toLowerCase()}
+            defaultValue=""
+            value={`${selectedIndex}`}
+            label={label}
+            onChange={(e: SelectChangeEvent<string>) => {
+              console.log(e.target.value)
+              setSelectedIndex(parseInt(e.target.value))
+            }}
+          >
+            {enableSelectAll && <MenuItem value={"0"}>{"Select All"}</MenuItem>}
+            {items.map((item, index) => {
+              const adjIndex = enableSelectAll ? index + 1 : index
+              return (
+                <MenuItem value={`${adjIndex}`} key={adjIndex}>
+                  {item}
+                </MenuItem>
+              )
+            })}
+          </Select>
+        </FormControl>
+      </Box>
     </>
   )
 }

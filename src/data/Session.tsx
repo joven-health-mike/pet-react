@@ -1,3 +1,5 @@
+import { formatDateStr } from "../utils/DateUtils"
+
 export default class Session {
   constructor(
     public providerName: string,
@@ -29,6 +31,12 @@ export default class Session {
         ? " - Absent"
         : ""
     }`
+  }
+
+  generateReportData(): string {
+    return `${formatDateStr(this.date)} - ${this.getDescription()}: ${
+      this.sessionTime
+    } min`
   }
 }
 

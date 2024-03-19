@@ -3,7 +3,7 @@
 import React from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
 import DefaultSubHeader from "../widgets/DefaultSubHeader"
-import { Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 
 type CustomerReportProps = {
   customerName: string
@@ -16,22 +16,30 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
 }) => {
   return (
     <>
-      <DefaultHeader>{customerName}</DefaultHeader>
-      {Array.from(reportEntries.entries()).map((entry, entryIndex) => {
-        const sectionHeader = entry[0]
-        const sectionItems = entry[1]
+      <Box
+        flexDirection={"column"}
+        justifyContent="center"
+        display="flex"
+        sx={{ p: 2 }}
+      >
+        <DefaultHeader props={{ mt: 0 }}>{customerName}</DefaultHeader>
+        {Array.from(reportEntries.entries()).map((entry, entryIndex) => {
+          const sectionHeader = entry[0]
+          const sectionItems = entry[1]
 
-        return (
-          <>
-            <DefaultSubHeader key={entryIndex}>
-              {sectionHeader}
-            </DefaultSubHeader>
-            {sectionItems.map((itemEntry, itemIndex) => {
-              return <Typography key={itemIndex}>{itemEntry}</Typography>
-            })}
-          </>
-        )
-      })}
+          return (
+            <>
+              <DefaultSubHeader props={{ mt: 0 }} key={entryIndex}>
+                {sectionHeader}
+              </DefaultSubHeader>
+              {sectionItems.map((itemEntry, itemIndex) => {
+                return <Typography key={itemIndex}>{itemEntry}</Typography>
+              })}
+              <Box sx={{ mb: 2 }}></Box>
+            </>
+          )
+        })}
+      </Box>
     </>
   )
 }

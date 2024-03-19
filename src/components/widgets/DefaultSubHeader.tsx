@@ -1,16 +1,20 @@
 // Copyright 2022 Social Fabric, LLC
 
-import { Typography } from "@mui/material"
+import { SxProps, Theme, Typography } from "@mui/material"
 import React, { ReactNode } from "react"
 
 type DefaultSubHeaderProps = {
   children: ReactNode
+  props?: SxProps<Theme>
 }
 
-const DefaultSubHeader: React.FC<DefaultSubHeaderProps> = ({ children }) => {
+const DefaultSubHeader: React.FC<DefaultSubHeaderProps> = ({
+  children,
+  props = { mt: 3 },
+}) => {
   return (
     <>
-      <Typography variant="h5" sx={{ mt: 3 }}>
+      <Typography variant="h5" sx={props}>
         {children}
       </Typography>
     </>
