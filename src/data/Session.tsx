@@ -15,6 +15,21 @@ export default class Session {
     public sessionTime: string,
     public totalTime: string
   ) {}
+
+  getDescription(): string {
+    return `${this.serviceName}${
+      this.directIndirect === "Direct Service"
+        ? this.schoolName.includes("Teacher")
+          ? " - Teacher"
+          : " - Student"
+        : ""
+    }${
+      this.directIndirect === "Direct Service" &&
+      this.presentAbsent === "Absent - No Notice"
+        ? " - Absent"
+        : ""
+    }`
+  }
 }
 
 export const createSession = (dataArray: string[]) => {

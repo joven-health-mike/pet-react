@@ -1,10 +1,16 @@
 export const todaysDate = () => {
-  const today = new Date()
+  return formatDate(new Date())
+}
 
+export const formatDateStr = (dateStr: string) => {
+  return formatDate(new Date(dateStr))
+}
+
+export const formatDate = (date: Date) => {
   // Get the current year, month, and day
-  const year = today.getFullYear()
-  const month = today.getMonth() + 1 // Months are zero-indexed, so we add 1
-  const day = today.getDate()
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1 // Months are zero-indexed, so we add 1
+  const day = date.getDate()
 
   // Format the date as MM/DD/YYYY
   return (

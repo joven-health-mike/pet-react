@@ -12,6 +12,7 @@ import NoShowRateCalculator, {
   customerFilter,
   providerFilter,
 } from "../../utils/NoShowRateCalculator"
+import AllCustomersReport from "../data-widgets/AllCustomersReport"
 
 const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
 const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
@@ -66,6 +67,8 @@ const AnalyticsPage: React.FC = () => {
         <>
           <NoShowChart chartTitle={CUSTOMER_CHART_LABEL} data={customerData!} />
           <NoShowChart chartTitle={PROVIDER_CHART_LABEL} data={providerData!} />
+          <HorizontalLine />
+          <AllCustomersReport sessions={sessions} />
         </>
       )}
     </>
