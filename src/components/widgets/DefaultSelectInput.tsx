@@ -50,7 +50,6 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
             value={`${selectedIndex}`}
             label={label}
             onChange={(e: SelectChangeEvent<string>) => {
-              console.log(e.target.value)
               setSelectedIndex(parseInt(e.target.value))
             }}
           >

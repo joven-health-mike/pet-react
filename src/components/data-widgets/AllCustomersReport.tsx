@@ -6,10 +6,12 @@ import Session from "../../data/Session"
 
 type AllCustomersReportProps = {
   sessions: Session[]
+  absentRates: Map<string, number>
 }
 
 const AllCustomersReport: React.FC<AllCustomersReportProps> = ({
   sessions,
+  absentRates,
 }) => {
   const [customerNames, setCustomerNames] = useState<string[]>([])
   const [reportData, setReportData] = useState<
@@ -22,7 +24,6 @@ const AllCustomersReport: React.FC<AllCustomersReportProps> = ({
       const customerNameSet = new Set<string>()
 
       for (const session of sessions) {
-        if (session.schoolName === "Joven Health") continue
         customerNameSet.add(session.schoolName)
 
         if (!newReportData.has(session.schoolName)) {
@@ -58,6 +59,7 @@ const AllCustomersReport: React.FC<AllCustomersReportProps> = ({
               key={index}
               customerName={customerName}
               reportEntries={reportData.get(customerName)!}
+              absentRate={absentRates.get(customerName)!}
             />
           </>
         )

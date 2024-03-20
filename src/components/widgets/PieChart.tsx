@@ -1,33 +1,27 @@
 import React from "react"
-import {
-  Chart,
-  ChartData,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-} from "chart.js"
-import { Bar } from "react-chartjs-2"
+import { Chart, ChartData, Legend, Tooltip, ArcElement } from "chart.js"
+import { Pie } from "react-chartjs-2"
 import styled from "styled-components"
 import { chartStyles } from "../styles/mixins"
-Chart.register(CategoryScale, LinearScale, BarElement)
+Chart.register(ArcElement, Tooltip, Legend)
 
 const ChartDiv = styled.div`
   ${chartStyles}
 `
 
-type BarChartProps = {
+type PieChartProps = {
   chartTitle: string
-  chartData: ChartData<"bar", (number | [number, number] | null)[], unknown>
+  chartData: ChartData<"pie", (number | [number, number] | null)[], unknown>
 }
 
-export const BarChart: React.FC<BarChartProps> = ({
+export const PieChart: React.FC<PieChartProps> = ({
   chartTitle,
   chartData,
 }) => {
   return (
     <ChartDiv>
       <h2 style={{ textAlign: "center" }}>{chartTitle}</h2>
-      <Bar
+      <Pie
         data={chartData}
         options={{
           plugins: {

@@ -28,19 +28,22 @@ const AnalyticsPage: React.FC = () => {
   const [customerReportData, setCustomerReportData] = useState<
     Map<string, string[]>
   >(new Map())
+  const [absentRates, setAbsentRates] = useState<Map<string, number>>(new Map())
 
   useEffect(() => {
-    let unsortedMap = new NoShowRateCalculator(sessions).calculate(
-      customerFilter
-    )
+    const noShowRateCalculator = new NoShowRateCalculator(sessions)
+    let unsortedMap = noShowRateCalculator.calculate(customerFilter)
     let sortedArray = [...unsortedMap].sort((a, b) => b[1] - a[1])
     let sortedMap = new Map(sortedArray)
     setCustomerData(sortedMap)
 
-    unsortedMap = new NoShowRateCalculator(sessions).calculate(providerFilter)
+    unsortedMap = noShowRateCalculator.calculate(providerFilter)
     sortedArray = [...unsortedMap].sort((a, b) => b[1] - a[1])
     sortedMap = new Map(sortedArray)
     setProviderData(sortedMap)
+
+    setAbsentRates(noShowRateCalculator.calculateNoShowRates())
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readyToDisplay])
 
@@ -109,13 +112,16 @@ const AnalyticsPage: React.FC = () => {
             }}
           />
           {selectedCustomer !== "" && (
-            <CustomerReport
-              customerName={selectedCustomer}
-              reportEntries={customerReportData}
-            />
+            <>
+              <CustomerReport
+                customerName={selectedCustomer}
+                reportEntries={customerReportData}
+                absentRate={absentRates.get(selectedCustomer)!}
+              />
+            </>
           )}
           {selectedCustomer === "" && (
-            <AllCustomersReport sessions={sessions} />
+            <AllCustomersReport sessions={sessions} absentRates={absentRates} />
           )}
         </>
       )}
