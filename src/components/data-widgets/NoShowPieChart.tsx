@@ -8,26 +8,26 @@ const GRAPH_TRANSPARENCY = 0.6
 
 type NoShowPieChartProps = {
   chartTitle: string
-  absentRate: number
+  presences: number
+  absences: number
 }
 
 const NoShowPieChart: React.FC<NoShowPieChartProps> = ({
   chartTitle,
-  absentRate,
+  presences,
+  absences,
 }) => {
   const randomColors: string[] = [
     randomColor(GRAPH_TRANSPARENCY),
     randomColor(GRAPH_TRANSPARENCY),
   ]
   const labels: string[] = ["Present", "Absent"]
-  const data: number[] = [1 - absentRate, absentRate]
 
   const noShowChartData = {
     labels: labels,
     datasets: [
       {
-        label: chartTitle,
-        data: [...data.values()],
+        data: [presences, absences],
         backgroundColor: randomColors,
         borderWidth: 5,
       },

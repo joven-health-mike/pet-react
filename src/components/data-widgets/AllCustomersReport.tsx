@@ -6,12 +6,14 @@ import Session from "../../data/Session"
 
 type AllCustomersReportProps = {
   sessions: Session[]
-  absentRates: Map<string, number>
+  presences: Map<string, number>
+  absences: Map<string, number>
 }
 
 const AllCustomersReport: React.FC<AllCustomersReportProps> = ({
   sessions,
-  absentRates,
+  presences,
+  absences,
 }) => {
   const [customerNames, setCustomerNames] = useState<string[]>([])
   const [reportData, setReportData] = useState<
@@ -59,7 +61,8 @@ const AllCustomersReport: React.FC<AllCustomersReportProps> = ({
               key={index}
               customerName={customerName}
               reportEntries={reportData.get(customerName)!}
-              absentRate={absentRates.get(customerName)!}
+              presences={presences.get(customerName)!}
+              absences={absences.get(customerName)!}
             />
           </>
         )

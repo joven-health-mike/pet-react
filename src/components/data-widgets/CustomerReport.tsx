@@ -12,13 +12,15 @@ import { formatPercent } from "../../utils/MathUtils"
 type CustomerReportProps = {
   customerName: string
   reportEntries: Map<string, string[]>
-  absentRate: number
+  presences: number
+  absences: number
 }
 
 const CustomerReport: React.FC<CustomerReportProps> = ({
   customerName,
   reportEntries,
-  absentRate,
+  presences,
+  absences,
 }) => {
   return (
     <>
@@ -50,12 +52,18 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
           <DefaultGridItem>
             <NoShowPieChart
               chartTitle="Present/Absent Ratio"
-              absentRate={absentRate}
+              presences={presences}
+              absences={absences}
             />
           </DefaultGridItem>
           <DefaultGridItem>
             <DefaultHeader>
-              Absent Rate: {formatPercent(absentRate)}
+              Absent Rate:{" "}
+              {formatPercent(
+                presences + absences === 0
+                  ? 0
+                  : absences / (presences + absences)
+              )}
             </DefaultHeader>
           </DefaultGridItem>
         </DefaultGrid>

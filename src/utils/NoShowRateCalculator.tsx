@@ -41,10 +41,10 @@ export default class NoShowRateCalculator {
     return result
   }
 
-  calculateNoShowRates(): Map<string, number> {
+  calculateNoShowRates(): Map<string, number[]> {
     const presents = new Map<string, number>()
     const absents = new Map<string, number>()
-    const result = new Map<string, number>()
+    const result = new Map<string, number[]>()
 
     for (const session of this.sessions) {
       const customerName = session.schoolName
@@ -70,14 +70,8 @@ export default class NoShowRateCalculator {
     for (const customerName of customerNames) {
       const presentCount = presents.get(customerName)!
       const absentCount = absents.get(customerName)!
-      const value =
-        presentCount + absentCount === 0
-          ? 0
-          : absentCount / (presentCount + absentCount)
-      result.set(customerName, value)
+      result.set(customerName, [presentCount, absentCount])
     }
-
-    console.log(result)
 
     return result
   }
