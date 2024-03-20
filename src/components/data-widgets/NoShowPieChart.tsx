@@ -7,13 +7,13 @@ import { PieChart } from "../widgets/PieChart"
 const GRAPH_TRANSPARENCY = 0.6
 
 type NoShowPieChartProps = {
-  chartTitle: string
+  chartTitle?: string
   presences: number
   absences: number
 }
 
 const NoShowPieChart: React.FC<NoShowPieChartProps> = ({
-  chartTitle,
+  chartTitle = "",
   presences,
   absences,
 }) => {

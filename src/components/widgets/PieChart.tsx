@@ -1,12 +1,12 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Chart, ChartData, Legend, Tooltip, ArcElement } from "chart.js"
 import { Pie } from "react-chartjs-2"
 import styled from "styled-components"
-import { chartStyles } from "../styles/mixins"
-Chart.register(ArcElement, Tooltip, Legend)
+import ChartDataLabels from "chartjs-plugin-datalabels"
+Chart.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 
 const ChartDiv = styled.div`
-  ${chartStyles}
+  padding: 0px;
 `
 
 type PieChartProps = {
@@ -18,19 +18,30 @@ export const PieChart: React.FC<PieChartProps> = ({
   chartTitle,
   chartData,
 }) => {
+  const [displayTitle, setDisplayTitle] = useState<boolean>(false)
+
+  useEffect(() => {
+    setDisplayTitle(chartTitle === "" ? false : true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <ChartDiv>
-      <h2 style={{ textAlign: "center" }}>{chartTitle}</h2>
+      {displayTitle && <h2 style={{ textAlign: "center" }}>{chartTitle}</h2>}
       <Pie
         data={chartData}
         options={{
           plugins: {
             title: {
-              display: true,
+              display: displayTitle,
               text: chartTitle,
             },
             legend: {
-              display: false,
+              display: true,
+            },
+            datalabels: {
+              color: "#000",
+              display: true,
             },
           },
         }}

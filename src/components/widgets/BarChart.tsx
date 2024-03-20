@@ -9,7 +9,8 @@ import {
 import { Bar } from "react-chartjs-2"
 import styled from "styled-components"
 import { chartStyles } from "../styles/mixins"
-Chart.register(CategoryScale, LinearScale, BarElement)
+import ChartDataLabels from "chartjs-plugin-datalabels"
+Chart.register(CategoryScale, LinearScale, BarElement, ChartDataLabels)
 
 const ChartDiv = styled.div`
   ${chartStyles}
@@ -29,6 +30,7 @@ export const BarChart: React.FC<BarChartProps> = ({
       <h2 style={{ textAlign: "center" }}>{chartTitle}</h2>
       <Bar
         data={chartData}
+        plugins={[ChartDataLabels]}
         options={{
           plugins: {
             title: {
@@ -37,6 +39,10 @@ export const BarChart: React.FC<BarChartProps> = ({
             },
             legend: {
               display: false,
+            },
+            datalabels: {
+              color: "#000",
+              display: true,
             },
           },
         }}
