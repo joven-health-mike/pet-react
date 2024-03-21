@@ -1,21 +1,13 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
 import DefaultSelectInput from "../widgets/DefaultSelectInput"
 import CustomerReport from "./CustomerReport"
-import Session from "../../data/Session"
-import SessionGroups from "../../data/SessionGroups"
+import { SessionsContext } from "../../data/providers/SessionProvider"
 
-type CustomerReportsSectionProps = {
-  sessions: Session[]
-  customerSessionGroups: SessionGroups
-}
-
-const CustomerReportsSection: React.FC<CustomerReportsSectionProps> = ({
-  sessions,
-  customerSessionGroups,
-}) => {
+const CustomerReportsSection: React.FC = () => {
+  const { data: sessions, customerSessionGroups } = useContext(SessionsContext)
   const [customerReportData, setCustomerReportData] = useState<
     Map<string, string[]>
   >(new Map())
@@ -27,8 +19,9 @@ const CustomerReportsSection: React.FC<CustomerReportsSectionProps> = ({
     } else {
       const reportData = new Map<string, string[]>()
 
-      for (const session of sessions) {
-        if (session.schoolName !== selectedCustomer) continue
+      for (const session of customerSessionGroups!.getSessionGroupForName(
+        selectedCustomer
+      )!.sessions) {
         const header = session.enhancedServiceName()
         if (!reportData.has(header)) {
           reportData.set(header, [])
@@ -55,7 +48,7 @@ const CustomerReportsSection: React.FC<CustomerReportsSectionProps> = ({
           setSelectedCustomer(item)
         }}
       />
-      {selectedCustomer !== "" && (
+      {selectedCustomer !== "" && customerSessionGroups !== undefined && (
         <>
           <CustomerReport
             customerName={selectedCustomer}
