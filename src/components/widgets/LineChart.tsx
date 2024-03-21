@@ -1,41 +1,53 @@
 import React from "react"
 import {
   Chart,
-  ChartData,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ChartData,
 } from "chart.js"
-import { Bar } from "react-chartjs-2"
 import styled from "styled-components"
 import ChartDataLabels from "chartjs-plugin-datalabels"
-Chart.register(CategoryScale, LinearScale, BarElement, ChartDataLabels)
+import { Line } from "react-chartjs-2"
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
 const ChartDiv = styled.div`
-  padding: 50;
+  padding: 50px;
 `
 
-type BarChartProps = {
+type LineChartProps = {
   chartTitle: string
-  chartData: ChartData<"bar", (number | [number, number] | null)[], unknown>
+  chartData: ChartData<"line", (number | [number, number] | null)[], unknown>
 }
 
-export const BarChart: React.FC<BarChartProps> = ({
+export const LineChart: React.FC<LineChartProps> = ({
   chartTitle,
   chartData,
 }) => {
   return (
     <ChartDiv>
       <h2 style={{ textAlign: "center" }}>{chartTitle}</h2>
-      <Bar
+      <Line
         data={chartData}
         plugins={[ChartDataLabels]}
         options={{
           plugins: {
-            title: {
+            legend: {
               display: false,
             },
-            legend: {
+            title: {
               display: false,
             },
             datalabels: {

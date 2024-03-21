@@ -52,20 +52,13 @@ const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
   useEffect(() => {
     if (customerSessionGroups !== undefined) {
       const customerAbsentRates = new Map<string, number>()
-      const customerPresences = new Map<string, number>()
-      const customerAbsences = new Map<string, number>()
       const customerNames = customerSessionGroups.getNames()
       customerNames.forEach((customerName) => {
         const sessionGroup =
           customerSessionGroups.getSessionGroupForName(customerName)!
         if (sessionGroup.absentRate() > 0) {
-          customerAbsentRates.set(
-            customerName,
-            parseFloat((sessionGroup.absentRate() * 100).toFixed(3))
-          )
+          customerAbsentRates.set(customerName, sessionGroup.absentRate())
         }
-        customerPresences.set(customerName, sessionGroup.presences())
-        customerAbsences.set(customerName, sessionGroup.absences())
       })
       setCustomerNoShowData(sortMapByValue(customerAbsentRates))
     }
@@ -79,10 +72,7 @@ const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
         const sessionGroup =
           providerSessionGroups.getSessionGroupForName(providerName)!
         if (sessionGroup.absentRate() > 0) {
-          providerAbsentRates.set(
-            providerName,
-            parseFloat((sessionGroup.absentRate() * 100).toFixed(3))
-          )
+          providerAbsentRates.set(providerName, sessionGroup.absentRate())
         }
       })
       setProviderNoShowData(sortMapByValue(providerAbsentRates))
@@ -92,41 +82,42 @@ const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
   return (
     <>
       <DefaultHeader>No-Show Rates</DefaultHeader>
-      <Box sx={{ mb: 2 }} />
-      {customerNoShowData !== undefined && (
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            id="panel-header"
-            aria-controls="panel-content"
-          >
-            {CUSTOMER_CHART_LABEL}
-          </AccordionSummary>
-          <AccordionDetails>
-            <NoShowChart
-              chartTitle={CUSTOMER_CHART_LABEL}
-              data={customerNoShowData!}
-            />
-          </AccordionDetails>
-        </Accordion>
-      )}
-      {providerNoShowData !== undefined && (
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            id="panel-header"
-            aria-controls="panel-content"
-          >
-            {PROVIDER_CHART_LABEL}
-          </AccordionSummary>
-          <AccordionDetails>
-            <NoShowChart
-              chartTitle={PROVIDER_CHART_LABEL}
-              data={providerNoShowData!}
-            />
-          </AccordionDetails>
-        </Accordion>
-      )}
+      <Box sx={{ m: 2 }}>
+        {customerNoShowData !== undefined && (
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ArrowDropDownIcon />}
+              id="panel-header"
+              aria-controls="panel-content"
+            >
+              {CUSTOMER_CHART_LABEL}
+            </AccordionSummary>
+            <AccordionDetails>
+              <NoShowChart
+                chartTitle={CUSTOMER_CHART_LABEL}
+                data={customerNoShowData!}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {providerNoShowData !== undefined && (
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ArrowDropDownIcon />}
+              id="panel-header"
+              aria-controls="panel-content"
+            >
+              {PROVIDER_CHART_LABEL}
+            </AccordionSummary>
+            <AccordionDetails>
+              <NoShowChart
+                chartTitle={PROVIDER_CHART_LABEL}
+                data={providerNoShowData!}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
+      </Box>
     </>
   )
 }

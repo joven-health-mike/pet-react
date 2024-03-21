@@ -70,6 +70,11 @@ const CustomerReportsSection: React.FC<CustomerReportsSectionProps> = ({
                 .getSessionGroupForName(selectedCustomer)!
                 .absences()!
             }
+            noShowsByMonth={
+              customerSessionGroups
+                .getSessionGroupForName(selectedCustomer)!
+                .noShowRatesByMonth()!
+            }
           />
         </>
       )}

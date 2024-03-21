@@ -52,12 +52,12 @@ export const createSession = (dataArray: string[]) => {
     dataArray[4].trim(),
     dataArray[5].trim(),
     dataArray[6].trim(),
+    dataArray[7].trim(),
+    dataArray[8].trim(),
+    dataArray[9].trim(),
+    dataArray[10].trim(),
     dataArray[11].trim(),
-    dataArray[13].trim(),
-    dataArray[15].trim(),
-    dataArray[16].trim(),
-    dataArray[17].trim(),
-    dataArray[18].trim(),
-    dataArray[19].trim()
+    dataArray[12].trim(),
+    dataArray[13].trim()
   )
 }

@@ -51,14 +51,6 @@ const parseData = (data: string[][]) => {
 
     // add provider name to the beginning of the array
     datum.unshift(providerName)
-    // insert stupid blanks due to merged columns in the excel version
-    datum.splice(9, 0, "")
-    datum.splice(8, 0, "")
-    datum.splice(7, 0, "")
-    datum.splice(7, 0, "")
-    datum.splice(7, 0, "")
-    datum.splice(7, 0, "")
-
     newData.push(datum)
   }
 

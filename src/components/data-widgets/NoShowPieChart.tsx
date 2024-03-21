@@ -27,9 +27,10 @@ const NoShowPieChart: React.FC<NoShowPieChartProps> = ({
     labels: labels,
     datasets: [
       {
+        label: chartTitle,
         data: [presences, absences],
         backgroundColor: randomColors,
-        borderWidth: 5,
+        borderWidth: 1,
       },
     ],
   }

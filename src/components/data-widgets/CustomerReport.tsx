@@ -15,12 +15,14 @@ import DefaultGridItem from "../widgets/DefaultGridItem"
 import NoShowPieChart from "./NoShowPieChart"
 import { formatPercent } from "../../utils/MathUtils"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import NoShowByMonthLineChart from "./NoShowByMonthLineChart"
 
 type CustomerReportProps = {
   customerName: string
   reportEntries: Map<string, string[]>
   presences: number
   absences: number
+  noShowsByMonth: Map<string, number>
 }
 
 const CustomerReport: React.FC<CustomerReportProps> = ({
@@ -28,6 +30,7 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
   reportEntries,
   presences,
   absences,
+  noShowsByMonth,
 }) => {
   return (
     <>
@@ -79,11 +82,15 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
           <AccordionDetails>
             <DefaultGrid direction="row">
               <DefaultGridItem>
-                <NoShowPieChart presences={presences} absences={absences} />
+                <NoShowPieChart
+                  chartTitle={"Overall No-Show Rate"}
+                  presences={presences}
+                  absences={absences}
+                />
               </DefaultGridItem>
               <DefaultGridItem>
                 <DefaultHeader>
-                  Absent Rate:{" "}
+                  Total No-Show Rate:{" "}
                   {formatPercent(
                     presences + absences === 0
                       ? 0
@@ -94,6 +101,26 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
             </DefaultGrid>
           </AccordionDetails>
         </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ArrowDropDownIcon />}
+            id="panel-header"
+            aria-controls="panel-content"
+          >
+            No-Show Rates by Month
+          </AccordionSummary>
+          <AccordionDetails>
+            <DefaultGrid direction="row">
+              <DefaultGridItem>
+                <NoShowByMonthLineChart
+                  chartTitle="No-Show Rate by Month"
+                  data={noShowsByMonth!}
+                />
+              </DefaultGridItem>
+            </DefaultGrid>
+          </AccordionDetails>
+        </Accordion>
+
         <Box sx={{ mb: 2 }}></Box>
       </Box>
     </>
