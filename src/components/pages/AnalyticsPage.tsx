@@ -3,19 +3,14 @@
 import React, { useEffect, useState } from "react"
 import Navbar from "../navbar/Navbar"
 import DefaultHeader from "../widgets/DefaultHeader"
-import NoShowChart from "../data-widgets/NoShowChart"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
 import Session, { createSession } from "../../data/Session"
 import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 import HorizontalLine from "../widgets/HorizontalLine"
-import DefaultSelectInput from "../widgets/DefaultSelectInput"
-import CustomerReport from "../data-widgets/CustomerReport"
-import AllCustomersReport from "../data-widgets/AllCustomersReport"
 import SessionGroups, { createSessionGroups } from "../../data/SessionGroups"
 import { sortMapByValue } from "../../utils/SortUtils"
-
-const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
-const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
+import NoShowDataSection from "../data-widgets/NoShowDataSection"
+import CustomerReportsSection from "../data-widgets/CustomerReportsSection"
 
 const AnalyticsPage: React.FC = () => {
   const [sessions, setSessions] = useState<Session[]>([])
@@ -26,12 +21,6 @@ const AnalyticsPage: React.FC = () => {
   const [readyToDisplay, setReadyToDisplay] = useState<boolean>(false)
   const [customerData, setCustomerData] = useState<Map<string, number>>()
   const [providerData, setProviderData] = useState<Map<string, number>>()
-  const [selectedCustomer, setSelectedCustomer] = useState<string>("")
-  const [customerReportData, setCustomerReportData] = useState<
-    Map<string, string[]>
-  >(new Map())
-  const [presences, setPresences] = useState<Map<string, number>>(new Map())
-  const [absences, setAbsences] = useState<Map<string, number>>(new Map())
 
   useEffect(() => {
     if (customerSessionGroups !== undefined) {
@@ -52,8 +41,6 @@ const AnalyticsPage: React.FC = () => {
         customerAbsences.set(customerName, sessionGroup.absences())
       })
       setCustomerData(sortMapByValue(customerAbsentRates))
-      setPresences(customerPresences)
-      setAbsences(customerAbsences)
     }
   }, [customerSessionGroups])
 
@@ -91,33 +78,11 @@ const AnalyticsPage: React.FC = () => {
       setReadyToDisplay(false)
       setCustomerData(new Map())
       setProviderData(new Map())
-      setSelectedCustomer("")
       setCustomerSessionGroups(undefined)
       setProviderSessionGroups(undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessions.length])
-
-  useEffect(() => {
-    if (selectedCustomer.length === 0) {
-      setCustomerReportData(new Map())
-    } else {
-      const reportData = new Map<string, string[]>()
-
-      for (const session of sessions) {
-        if (session.schoolName !== selectedCustomer) continue
-        const header = session.enhancedServiceName()
-        if (!reportData.has(header)) {
-          reportData.set(header, [])
-        }
-        const dataArray = reportData.get(header)!
-        dataArray.push(session.toString())
-      }
-
-      setCustomerReportData(reportData)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCustomer])
 
   return (
     <>
@@ -138,47 +103,16 @@ const AnalyticsPage: React.FC = () => {
       </>
       {readyToDisplay && (
         <>
-          <NoShowChart chartTitle={CUSTOMER_CHART_LABEL} data={customerData!} />
-          <NoShowChart chartTitle={PROVIDER_CHART_LABEL} data={providerData!} />
-          <HorizontalLine />
-          <DefaultHeader>Customer Reports</DefaultHeader>
-          <DefaultSelectInput
-            label="Select a Customer"
-            items={[
-              ...new Set(sessions.map((session) => session.schoolName).sort()),
-            ]}
-            onAllSelected={() => {
-              setSelectedCustomer("")
-            }}
-            onItemSelected={(item) => {
-              setSelectedCustomer(item)
-            }}
+          <NoShowDataSection
+            customerData={customerData!}
+            providerData={providerData!}
           />
-          {selectedCustomer !== "" && (
-            <>
-              <CustomerReport
-                customerName={selectedCustomer}
-                reportEntries={customerReportData}
-                presences={
-                  customerSessionGroups!
-                    .getSessionGroupForName(selectedCustomer)!
-                    .presences()!
-                }
-                absences={
-                  customerSessionGroups!
-                    .getSessionGroupForName(selectedCustomer)!
-                    .absences()!
-                }
-              />
-            </>
-          )}
-          {selectedCustomer === "" && (
-            <AllCustomersReport
-              sessions={sessions}
-              presences={presences}
-              absences={absences}
-            />
-          )}
+          <HorizontalLine />
+          <CustomerReportsSection
+            sessions={sessions}
+            customerSessionGroups={customerSessionGroups!}
+          />
+          <HorizontalLine />
         </>
       )}
     </>
