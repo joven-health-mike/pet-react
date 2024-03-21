@@ -1,31 +1,18 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext } from "react"
 import UploadDataWidget from "../widgets/UploadDataWidget"
-import { handleUploadData } from "../../utils/DataProcessor"
-import Session from "../../data/Session"
+import { handleUploadDataNew } from "../../utils/DataProcessor"
+import { SessionsContext } from "../../data/providers/SessionProvider"
+import { createSession } from "../../data/Session"
 
 type ProviderReportUploadWidgetProps = {
-  onSessionsLoaded: (sessions: Session[]) => void
-  onSessionsCleared: () => void
-  sessionFactory: (input: string[]) => Session
   sessionDataAdapter?: (input: string[][]) => string[][]
 }
 
 const ProviderReportUploadWidget: React.FC<ProviderReportUploadWidgetProps> = ({
-  onSessionsLoaded,
-  onSessionsCleared,
-  sessionFactory,
   sessionDataAdapter,
 }) => {
-  const [sessions, setSessions] = useState<Session[]>([])
+  const { setData: setSessions } = useContext(SessionsContext)
 
-  useEffect(() => {
-    if (sessions.length === 0) {
-      onSessionsCleared()
-    } else {
-      onSessionsLoaded(sessions)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessions.length])
   return (
     <>
       <UploadDataWidget
@@ -35,7 +22,7 @@ const ProviderReportUploadWidget: React.FC<ProviderReportUploadWidgetProps> = ({
         button2Text={"Upload TeleTeachers Format"}
         enableSecondOption={true}
         onDataLoaded={(data: string[][]) => {
-          handleUploadData(data, setSessions, sessionFactory)
+          handleUploadDataNew(data, setSessions, createSession)
         }}
         onDataCleared={() => {
           setSessions([])
@@ -44,7 +31,7 @@ const ProviderReportUploadWidget: React.FC<ProviderReportUploadWidgetProps> = ({
           if (sessionDataAdapter !== undefined) {
             data = sessionDataAdapter(data)
           }
-          handleUploadData(data, setSessions, sessionFactory)
+          handleUploadDataNew(data, setSessions, createSession)
         }}
         onData2Cleared={() => {
           setSessions([])

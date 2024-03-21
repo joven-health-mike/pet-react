@@ -1,12 +1,11 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
 import Navbar from "../navbar/Navbar"
 import UploadDataWidget from "../widgets/UploadDataWidget"
 import Contractor, { createContractor } from "../../data/Contractor"
-import Session, { createSession } from "../../data/Session"
 import PayrollCalculator from "../../utils/PayrollCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
@@ -27,6 +26,7 @@ import DefaultHeader from "../widgets/DefaultHeader"
 import DefaultGrid from "../widgets/DefaultGrid"
 import DefaultSubHeader from "../widgets/DefaultSubHeader"
 import DefaultGridItem from "../widgets/DefaultGridItem"
+import { SessionsContext } from "../../data/providers/SessionProvider"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -35,7 +35,7 @@ const CustomButton = styled.button`
 
 const PayrollPage: React.FC = () => {
   const [contractors, setContractors] = useState<Contractor[]>([])
-  const [sessions, setSessions] = useState<Session[]>([])
+  const { data: sessions } = useContext(SessionsContext)
   const [readyToDownload, setReadyToDownload] = useState<boolean>(false)
 
   const processAndDownloadTransactions = () => {
@@ -116,13 +116,6 @@ const PayrollPage: React.FC = () => {
         </>
         <>
           <ProviderReportUploadWidget
-            onSessionsLoaded={(sessions: Session[]) => {
-              setSessions(sessions)
-            }}
-            onSessionsCleared={() => {
-              setSessions([])
-            }}
-            sessionFactory={createSession}
             sessionDataAdapter={adaptTeleTeachersDataForPayroll}
           />
           <HorizontalLine />

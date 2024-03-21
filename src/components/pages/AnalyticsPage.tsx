@@ -1,18 +1,19 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import Navbar from "../navbar/Navbar"
 import DefaultHeader from "../widgets/DefaultHeader"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
-import Session, { createSession } from "../../data/Session"
+import Session from "../../data/Session"
 import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 import HorizontalLine from "../widgets/HorizontalLine"
 import SessionGroups, { createSessionGroups } from "../../data/SessionGroups"
 import NoShowDataSection from "../data-widgets/NoShowDataSection"
 import CustomerReportsSection from "../data-widgets/CustomerReportsSection"
+import { SessionsContext } from "../../data/providers/SessionProvider"
 
 const AnalyticsPage: React.FC = () => {
-  const [sessions, setSessions] = useState<Session[]>([])
+  const { data: sessions } = useContext(SessionsContext)
   const [customerSessionGroups, setCustomerSessionGroups] =
     useState<SessionGroups>()
   const [readyToDisplay, setReadyToDisplay] = useState<boolean>(false)
@@ -36,13 +37,6 @@ const AnalyticsPage: React.FC = () => {
       <DefaultHeader>Analytics</DefaultHeader>
       <>
         <ProviderReportUploadWidget
-          onSessionsLoaded={(sessions: Session[]) => {
-            setSessions(sessions)
-          }}
-          onSessionsCleared={() => {
-            setSessions([])
-          }}
-          sessionFactory={createSession}
           sessionDataAdapter={adaptTeleTeachersDataForInvoices}
         />
         <HorizontalLine />

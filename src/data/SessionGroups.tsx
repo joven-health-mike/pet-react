@@ -3,7 +3,7 @@ import SessionGroup, { createSessionGroup } from "./SessionGroup"
 
 export default class SessionGroups {
   constructor(public sessions: Map<string, SessionGroup>) {}
-  groupNames: string[] = []
+  private groupNames: string[] = []
 
   getNames(): string[] {
     if (this.groupNames.length === 0) {
