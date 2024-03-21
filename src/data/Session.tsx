@@ -18,23 +18,26 @@ export default class Session {
     public totalTime: string
   ) {}
 
-  getDescription(): string {
-    return `${this.serviceName}${
-      this.directIndirect === "Direct Service"
-        ? this.schoolName.includes("Teacher")
-          ? " - Teacher"
-          : " - Student"
-        : ""
-    }${
-      this.directIndirect === "Direct Service" &&
-      this.presentAbsent === "Absent - No Notice"
-        ? " - Absent"
-        : ""
-    }`
+  isPresent(): boolean {
+    return this.presentAbsent !== "Absent - No Notice"
   }
 
-  generateReportData(): string {
-    return `${formatDateStr(this.date)} - ${this.getDescription()}: ${
+  isDirect(): boolean {
+    return this.directIndirect === "Direct Service"
+  }
+
+  isTeacher(): boolean {
+    return this.schoolName.includes("Teacher")
+  }
+
+  enhancedServiceName(): string {
+    return `${this.serviceName}${
+      this.isDirect() ? (this.isTeacher() ? " - Teacher" : " - Student") : ""
+    }${this.isDirect() ? (this.isPresent() ? "" : " - Absent") : ""}`
+  }
+
+  toString(): string {
+    return `${formatDateStr(this.date)} - ${this.enhancedServiceName()}: ${
       this.sessionTime
     } min`
   }

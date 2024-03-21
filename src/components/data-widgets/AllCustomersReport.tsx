@@ -33,13 +33,13 @@ const AllCustomersReport: React.FC<AllCustomersReportProps> = ({
         }
 
         const dataMap = newReportData.get(session.schoolName)!
-        const sessionDescription = session.getDescription()
+        const sessionDescription = session.enhancedServiceName()
 
         if (!dataMap.has(sessionDescription)) {
           dataMap.set(sessionDescription, [])
         }
         const history = dataMap.get(sessionDescription)!
-        const description = session.generateReportData()
+        const description = session.toString()
         dataMap.set(sessionDescription, [...history, description])
       }
 

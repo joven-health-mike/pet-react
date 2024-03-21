@@ -29,28 +29,12 @@ export default class InvoiceCalculator {
       }
 
       const sessionInfo = new SessionInfo("", "", "", "", "", invoiceParams!)
-      let description = session.serviceName
-      if (session.presentAbsent === "Absent - No Notice") {
-        description += " - Absent"
-      }
       sessionInfo.lineAccountCode = getAccountingCodeForName(
         this.accountingCodes,
-        description
+        session.enhancedServiceName()
       )!.accountCode
 
-      description = session.serviceName
-      if (session.presentAbsent === "Absent - No Notice") {
-        description += " - Absent"
-      }
-      if (
-        session.directIndirect === "Direct Service" &&
-        session.schoolName.includes("Teacher")
-      ) {
-        description += " - Teacher"
-      } else {
-        description += " - Student"
-      }
-      sessionInfo.lineDescription = description
+      sessionInfo.lineDescription = session.toString()
       sessionInfo.lineQuantity = `${parseFloat(
         minutesToHours(parseFloat(session.totalTime)).toFixed(3)
       )}`
