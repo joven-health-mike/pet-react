@@ -93,36 +93,40 @@ const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
     <>
       <DefaultHeader>No-Show Rates</DefaultHeader>
       <Box sx={{ mb: 2 }} />
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ArrowDropDownIcon />}
-          id="panel-header"
-          aria-controls="panel-content"
-        >
-          {CUSTOMER_CHART_LABEL}
-        </AccordionSummary>
-        <AccordionDetails>
-          <NoShowChart
-            chartTitle={CUSTOMER_CHART_LABEL}
-            data={customerNoShowData!}
-          />
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ArrowDropDownIcon />}
-          id="panel-header"
-          aria-controls="panel-content"
-        >
-          {PROVIDER_CHART_LABEL}
-        </AccordionSummary>
-        <AccordionDetails>
-          <NoShowChart
-            chartTitle={PROVIDER_CHART_LABEL}
-            data={providerNoShowData!}
-          />
-        </AccordionDetails>
-      </Accordion>
+      {customerNoShowData !== undefined && (
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ArrowDropDownIcon />}
+            id="panel-header"
+            aria-controls="panel-content"
+          >
+            {CUSTOMER_CHART_LABEL}
+          </AccordionSummary>
+          <AccordionDetails>
+            <NoShowChart
+              chartTitle={CUSTOMER_CHART_LABEL}
+              data={customerNoShowData!}
+            />
+          </AccordionDetails>
+        </Accordion>
+      )}
+      {providerNoShowData !== undefined && (
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ArrowDropDownIcon />}
+            id="panel-header"
+            aria-controls="panel-content"
+          >
+            {PROVIDER_CHART_LABEL}
+          </AccordionSummary>
+          <AccordionDetails>
+            <NoShowChart
+              chartTitle={PROVIDER_CHART_LABEL}
+              data={providerNoShowData!}
+            />
+          </AccordionDetails>
+        </Accordion>
+      )}
     </>
   )
 }
