@@ -76,7 +76,8 @@ const AnalyticsPage: React.FC = () => {
   }, [providerSessionGroups])
 
   useEffect(() => {
-    if (readyToDisplay) {
+    if (sessions.length > 0) {
+      setReadyToDisplay(true)
       setCustomerSessionGroups(
         createSessionGroups(sessions, (session: Session) => session.schoolName)
       )
@@ -86,13 +87,6 @@ const AnalyticsPage: React.FC = () => {
           (session: Session) => session.providerName
         )
       )
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [readyToDisplay])
-
-  useEffect(() => {
-    if (sessions.length > 0) {
-      setReadyToDisplay(true)
     } else {
       setReadyToDisplay(false)
       setCustomerData(new Map())
@@ -101,6 +95,7 @@ const AnalyticsPage: React.FC = () => {
       setCustomerSessionGroups(undefined)
       setProviderSessionGroups(undefined)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessions.length])
 
   useEffect(() => {
