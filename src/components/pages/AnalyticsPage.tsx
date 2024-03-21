@@ -4,29 +4,21 @@ import React, { useContext, useEffect, useState } from "react"
 import Navbar from "../navbar/Navbar"
 import DefaultHeader from "../widgets/DefaultHeader"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
-import Session from "../../data/Session"
 import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 import HorizontalLine from "../widgets/HorizontalLine"
-import SessionGroups, { createSessionGroups } from "../../data/SessionGroups"
 import NoShowDataSection from "../data-widgets/NoShowDataSection"
 import CustomerReportsSection from "../data-widgets/CustomerReportsSection"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 
 const AnalyticsPage: React.FC = () => {
-  const { data: sessions } = useContext(SessionsContext)
-  const [customerSessionGroups, setCustomerSessionGroups] =
-    useState<SessionGroups>()
+  const { data: sessions, customerSessionGroups } = useContext(SessionsContext)
   const [readyToDisplay, setReadyToDisplay] = useState<boolean>(false)
 
   useEffect(() => {
     if (sessions.length > 0) {
       setReadyToDisplay(true)
-      setCustomerSessionGroups(
-        createSessionGroups(sessions, (session: Session) => session.schoolName)
-      )
     } else {
       setReadyToDisplay(false)
-      setCustomerSessionGroups(undefined)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessions.length])
