@@ -13,6 +13,8 @@ export const MONTH_NAMES = [
   "December",
 ]
 
+export const WEEK_DATES = [[]]
+
 export const todaysDate = () => {
   return formatDate(new Date())
 }
@@ -49,4 +51,25 @@ export const sortMapByMonth = (map: Map<string, number>) => {
     return MONTH_NAMES.indexOf(a[0]) - MONTH_NAMES.indexOf(b[0])
   })
   return new Map(entries)
+}
+
+export const compareDates = (date1: Date, date2: Date) => {
+  const time1 = date1.getTime()
+  const time2 = date2.getTime()
+
+  if (time1 < time2) {
+    return -1 // date1 is before date2
+  } else if (time1 > time2) {
+    return 1 // date1 is after date2
+  } else {
+    return 0 // dates are equal
+  }
+}
+
+export const getWeekOfYear = (date: Date) => {
+  const firstDayOfYear = new Date(date.getFullYear(), 0, 1) // January 1st of the given year
+  const pastDaysOfYear = (date.getTime() - firstDayOfYear.getTime()) / 86400000 // Milliseconds in a day
+
+  // Calculate the week number
+  return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
 }

@@ -8,14 +8,14 @@ import { SessionsContext } from "../../data/providers/SessionProvider"
 
 const CustomerReportsSection: React.FC = () => {
   const { data: sessions, customerSessionGroups } = useContext(SessionsContext)
-  const [customerReportData, setCustomerReportData] = useState<
+  const [monthlyReportData, setMonthlyReportData] = useState<
     Map<string, string[]>
   >(new Map())
   const [selectedCustomer, setSelectedCustomer] = useState<string>("")
 
   useEffect(() => {
     if (selectedCustomer.length === 0) {
-      setCustomerReportData(new Map())
+      setMonthlyReportData(new Map())
     } else {
       const reportData = new Map<string, string[]>()
 
@@ -30,7 +30,7 @@ const CustomerReportsSection: React.FC = () => {
         dataArray.push(session.toString())
       }
 
-      setCustomerReportData(reportData)
+      setMonthlyReportData(reportData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCustomer])
@@ -52,7 +52,7 @@ const CustomerReportsSection: React.FC = () => {
         <>
           <CustomerReport
             customerName={selectedCustomer}
-            reportEntries={customerReportData}
+            reportEntries={monthlyReportData}
             presences={
               customerSessionGroups
                 .getSessionGroupForName(selectedCustomer)!
@@ -67,6 +67,11 @@ const CustomerReportsSection: React.FC = () => {
               customerSessionGroups
                 .getSessionGroupForName(selectedCustomer)!
                 .noShowRatesByMonth()!
+            }
+            noShowsByWeek={
+              customerSessionGroups
+                .getSessionGroupForName(selectedCustomer)!
+                .noShowRatesByWeek()!
             }
           />
         </>

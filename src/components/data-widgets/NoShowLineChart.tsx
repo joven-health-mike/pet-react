@@ -4,12 +4,12 @@ import React from "react"
 import { LineChart } from "../widgets/LineChart"
 import { randomColor } from "../../utils/Colors"
 
-type NoShowByMonthLineChartProps = {
+type NoShowLineChartProps = {
   chartTitle?: string
   data: Map<string, number>
 }
 
-const NoShowByMonthLineChart: React.FC<NoShowByMonthLineChartProps> = ({
+const NoShowLineChart: React.FC<NoShowLineChartProps> = ({
   chartTitle = "",
   data,
 }) => {
@@ -31,4 +31,4 @@ const NoShowByMonthLineChart: React.FC<NoShowByMonthLineChartProps> = ({
   )
 }
 
-export default NoShowByMonthLineChart
+export default NoShowLineChart

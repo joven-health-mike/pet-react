@@ -15,7 +15,7 @@ import DefaultGridItem from "../widgets/DefaultGridItem"
 import NoShowPieChart from "./NoShowPieChart"
 import { formatPercent } from "../../utils/MathUtils"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
-import NoShowByMonthLineChart from "./NoShowByMonthLineChart"
+import NoShowLineChart from "./NoShowLineChart"
 
 type CustomerReportProps = {
   customerName: string
@@ -23,6 +23,7 @@ type CustomerReportProps = {
   presences: number
   absences: number
   noShowsByMonth: Map<string, number>
+  noShowsByWeek: Map<string, number>
 }
 
 const CustomerReport: React.FC<CustomerReportProps> = ({
@@ -31,6 +32,7 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
   presences,
   absences,
   noShowsByMonth,
+  noShowsByWeek,
 }) => {
   return (
     <>
@@ -112,9 +114,28 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
           <AccordionDetails>
             <DefaultGrid direction="row">
               <DefaultGridItem>
-                <NoShowByMonthLineChart
+                <NoShowLineChart
                   chartTitle="No-Show Rate by Month"
                   data={noShowsByMonth!}
+                />
+              </DefaultGridItem>
+            </DefaultGrid>
+          </AccordionDetails>
+        </Accordion>
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ArrowDropDownIcon />}
+            id="panel-header"
+            aria-controls="panel-content"
+          >
+            No-Show Rates by Week
+          </AccordionSummary>
+          <AccordionDetails>
+            <DefaultGrid direction="row">
+              <DefaultGridItem>
+                <NoShowLineChart
+                  chartTitle="No-Show Rate by Week"
+                  data={noShowsByWeek!}
                 />
               </DefaultGridItem>
             </DefaultGrid>
