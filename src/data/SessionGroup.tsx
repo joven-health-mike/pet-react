@@ -61,13 +61,14 @@ export default class SessionGroup {
   }
 
   private calculateMetrics(): void {
-    // TODO: Handle spans across multiple years
     this.absencesByMonth = new Map<string, number>()
     this.presencesByMonth = new Map<string, number>()
     this.absencesByWeek = new Map<string, number>()
     this.presencesByWeek = new Map<string, number>()
     let earliestDate: Date = new Date("01/01/2990")
     let latestDate: Date = new Date("01/01/1990")
+
+    // assumes sessions are sorted by date
     for (const session of this.sessions) {
       const sessionDate = new Date(session.date)
       if (compareDates(sessionDate, earliestDate) === -1) {
@@ -78,7 +79,13 @@ export default class SessionGroup {
       }
 
       const month = getMonthName(sessionDate)
-      const weekNumber = `${getWeekOfYear(sessionDate)}`
+      let weekNum = getWeekOfYear(sessionDate)
+      if (getWeekOfYear(earliestDate) > weekNum) {
+        weekNum += 52
+      }
+      // TODO: Make this say the first date of the week instead of just a week number...
+      // TODO: Handle more than 1 year. Basically, add 52 * (latestYear - earliestYear)
+      const weekNumber = `${weekNum}`
 
       if (session.isDirect() && session.isPresent()) {
         this.numPresences++
@@ -110,8 +117,9 @@ export default class SessionGroup {
     }
 
     this.absenceRatesByMonth = new Map<string, number>()
-    for (let i = earliestDate.getMonth(); i <= latestDate.getMonth(); i++) {
-      const monthName = MONTH_NAMES[i]
+    for (let i = 0; i <= MONTH_NAMES.length; i++) {
+      const monthIndex = (i + 6) % MONTH_NAMES.length
+      const monthName = MONTH_NAMES[monthIndex]
       let presencesForMonth = 0
       let absencesForMonth = 0
       if (this.presencesByMonth!.get(monthName)) {
@@ -126,12 +134,14 @@ export default class SessionGroup {
       )
     }
 
+    const earliestWeek = getWeekOfYear(earliestDate)
+    let latestWeek = getWeekOfYear(latestDate)
+    if (earliestWeek > latestWeek) {
+      latestWeek += 52
+    }
+
     this.absenceRatesByWeek = new Map<string, number>()
-    for (
-      let i = getWeekOfYear(earliestDate);
-      i <= getWeekOfYear(latestDate);
-      i++
-    ) {
+    for (let i = earliestWeek; i <= latestWeek; i++) {
       let weekName = `${i}`
       let presencesForWeek = 0
       let absencesForWeek = 0
