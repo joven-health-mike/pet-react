@@ -1,4 +1,9 @@
-import { MONTH_NAMES, getMonthName, getWeekOfYear } from "../utils/DateUtils"
+import {
+  MONTH_NAMES,
+  compareDates,
+  getMonthName,
+  getWeekOfYear,
+} from "../utils/DateUtils"
 import Session from "./Session"
 
 export default class SessionGroup {
@@ -56,12 +61,22 @@ export default class SessionGroup {
   }
 
   private calculateMetrics(): void {
+    // TODO: Handle spans across multiple years
     this.absencesByMonth = new Map<string, number>()
     this.presencesByMonth = new Map<string, number>()
     this.absencesByWeek = new Map<string, number>()
     this.presencesByWeek = new Map<string, number>()
+    let earliestDate: Date = new Date("01/01/2990")
+    let latestDate: Date = new Date("01/01/1990")
     for (const session of this.sessions) {
       const sessionDate = new Date(session.date)
+      if (compareDates(sessionDate, earliestDate) === -1) {
+        earliestDate = sessionDate
+      }
+      if (compareDates(sessionDate, latestDate) === 1) {
+        latestDate = sessionDate
+      }
+
       const month = getMonthName(sessionDate)
       const weekNumber = `${getWeekOfYear(sessionDate)}`
 
@@ -95,7 +110,8 @@ export default class SessionGroup {
     }
 
     this.absenceRatesByMonth = new Map<string, number>()
-    for (const monthName of MONTH_NAMES) {
+    for (let i = earliestDate.getMonth(); i <= latestDate.getMonth(); i++) {
+      const monthName = MONTH_NAMES[i]
       let presencesForMonth = 0
       let absencesForMonth = 0
       if (this.presencesByMonth!.get(monthName)) {
@@ -111,7 +127,11 @@ export default class SessionGroup {
     }
 
     this.absenceRatesByWeek = new Map<string, number>()
-    for (let i = 0; i < 52; i++) {
+    for (
+      let i = getWeekOfYear(earliestDate);
+      i <= getWeekOfYear(latestDate);
+      i++
+    ) {
       let weekName = `${i}`
       let presencesForWeek = 0
       let absencesForWeek = 0
