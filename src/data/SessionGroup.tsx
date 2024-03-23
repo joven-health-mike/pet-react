@@ -1,3 +1,4 @@
+import { compareDates } from "../utils/DateUtils"
 import Session from "./Session"
 import SessionGroupData from "./SessionGroupData"
 
@@ -33,7 +34,11 @@ export default class SessionGroup {
 
   private loadMetrics(): void {
     if (this.loaded === false) {
-      for (const session of this.sessions) {
+      const sortedSessions = [...this.sessions]
+      sortedSessions.sort((a: Session, b: Session) => {
+        return compareDates(new Date(a.date), new Date(b.date))
+      })
+      for (const session of sortedSessions) {
         this.sessionGroupData.processNewSession(session)
       }
       this.sessionGroupData.finalize()
