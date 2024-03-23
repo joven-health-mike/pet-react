@@ -1,6 +1,10 @@
 import {
   MONTH_NAMES,
+  addOneWeek,
   compareDates,
+  formatDateShort,
+  getDateFromWeekNumber,
+  getFullWeeksBetweenDates,
   getMonthName,
   getWeekOfYear,
 } from "../utils/DateUtils"
@@ -80,12 +84,8 @@ export default class SessionGroup {
 
       const month = getMonthName(sessionDate)
       let weekNum = getWeekOfYear(sessionDate)
-      if (getWeekOfYear(earliestDate) > weekNum) {
-        weekNum += 52
-      }
-      // TODO: Make this say the first date of the week instead of just a week number...
-      // TODO: Handle more than 1 year. Basically, add 52 * (latestYear - earliestYear)
-      const weekNumber = `${weekNum}`
+      const weekDate = getDateFromWeekNumber(weekNum, sessionDate.getFullYear())
+      const weekNumber = formatDateShort(weekDate)
 
       if (session.isDirect() && session.isPresent()) {
         this.numPresences++
@@ -134,15 +134,18 @@ export default class SessionGroup {
       )
     }
 
-    const earliestWeek = getWeekOfYear(earliestDate)
-    let latestWeek = getWeekOfYear(latestDate)
-    if (earliestWeek > latestWeek) {
-      latestWeek += 52
-    }
+    const numberOfWeeks = getFullWeeksBetweenDates(earliestDate, latestDate)
+    let previousWeek = earliestDate
 
     this.absenceRatesByWeek = new Map<string, number>()
-    for (let i = earliestWeek; i <= latestWeek; i++) {
-      let weekName = `${i}`
+
+    for (let i = 0; i <= numberOfWeeks; i++) {
+      let weekName = formatDateShort(
+        getDateFromWeekNumber(
+          getWeekOfYear(previousWeek),
+          previousWeek.getFullYear()
+        )
+      )
       let presencesForWeek = 0
       let absencesForWeek = 0
       if (this.presencesByWeek!.get(weekName)) {
@@ -155,6 +158,8 @@ export default class SessionGroup {
         weekName,
         this.calculateAbsentRate(presencesForWeek, absencesForWeek)
       )
+
+      previousWeek = addOneWeek(previousWeek)
     }
   }
 }

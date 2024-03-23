@@ -24,7 +24,6 @@ export const formatDateStr = (dateStr: string) => {
 }
 
 export const formatDate = (date: Date) => {
-  // Get the current year, month, and day
   const year = date.getFullYear()
   const month = date.getMonth() + 1 // Months are zero-indexed, so we add 1
   const day = date.getDate()
@@ -39,6 +38,63 @@ export const formatDate = (date: Date) => {
     "/" +
     year
   )
+}
+
+export const formatDateShort = (date: Date) => {
+  const day = date.getDate()
+  const year = date.getFullYear()
+  return `${MONTH_NAMES[date.getMonth()].substring(
+    0,
+    3
+  )} ${day} ${`${year}`.substring(2, 4)}`
+}
+
+export const getFullWeeksBetweenDates = (date1: Date, date2: Date) => {
+  var timeDiff = Math.abs(date2.getTime() - date1.getTime())
+
+  // Convert milliseconds to days
+  var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
+
+  // Calculate number of full weeks
+  var fullWeeks = Math.floor(diffDays / 7)
+
+  return fullWeeks
+}
+
+export const addOneWeek = (date: Date): Date => {
+  const newDate = new Date(date.getTime())
+  newDate.setDate(newDate.getDate() + 7)
+  return newDate
+}
+
+export const getDateFromWeekNumber = (weekNumber: number, year: number) => {
+  // Create a new date object for January 1st of the given year
+  var date = new Date(year, 0, 1)
+
+  // Calculate the day of the week for January 1st
+  var dayOfWeek = date.getDay()
+
+  // Calculate the number of days to adjust the date to the start of the week
+  var daysToAdjust = 1 - dayOfWeek
+
+  // If January 1st is not already a Monday (0), adjust the date accordingly
+  if (dayOfWeek !== 1) {
+    date.setDate(date.getDate() + daysToAdjust)
+  }
+
+  // Calculate the number of days to add to the date based on the week number
+  var daysToAdd = (weekNumber - 1) * 7
+
+  // Add the calculated number of days to the date
+  date.setDate(date.getDate() + daysToAdd)
+
+  // Check if the resulting date is in the previous year
+  if (date.getFullYear() !== year) {
+    // Adjust the date to the last day of the previous year
+    date = new Date(year - 1, 11, 31)
+  }
+
+  return date
 }
 
 export const getMonthName = (date: Date) => {
