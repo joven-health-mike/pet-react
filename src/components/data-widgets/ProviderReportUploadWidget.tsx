@@ -11,7 +11,7 @@ type ProviderReportUploadWidgetProps = {
 const ProviderReportUploadWidget: React.FC<ProviderReportUploadWidgetProps> = ({
   sessionDataAdapter,
 }) => {
-  const { setData: setSessions } = useContext(SessionsContext)
+  const { data: sessions, setData: setSessions } = useContext(SessionsContext)
 
   return (
     <>
@@ -21,6 +21,7 @@ const ProviderReportUploadWidget: React.FC<ProviderReportUploadWidgetProps> = ({
         button1Text={"Upload SAD Format"}
         button2Text={"Upload TeleTeachers Format"}
         enableSecondOption={true}
+        hasData={sessions.length > 0}
         onDataLoaded={(data: string[][]) => {
           handleUploadDataNew(data, setSessions, createSession)
         }}

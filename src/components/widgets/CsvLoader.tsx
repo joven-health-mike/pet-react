@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { useCSVReader } from "react-papaparse"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
@@ -12,32 +12,22 @@ const CustomButton = styled.button`
 
 type CsvLoaderProps = {
   buttonText: string
-  onDataLoaded: (csvData: string[][]) => void
-  onDataCleared: () => void
+  csvData: string[][]
+  setCsvData: (data: string[][]) => void
 }
 
 const CsvLoader: React.FC<CsvLoaderProps> = ({
   buttonText,
-  onDataLoaded,
-  onDataCleared,
+  csvData,
+  setCsvData,
 }) => {
   const { CSVReader } = useCSVReader()
-  const [data, setData] = useState<string[][]>([])
-
-  useEffect(() => {
-    if (data.length === 0) {
-      onDataCleared()
-    } else {
-      onDataLoaded(data)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.length])
 
   return (
     <>
       <CSVReader
         onUploadAccepted={(results: any) => {
-          setData(results.data)
+          setCsvData(results.data)
         }}
       >
         {({
@@ -45,22 +35,24 @@ const CsvLoader: React.FC<CsvLoaderProps> = ({
           acceptedFile,
           ProgressBar,
           getRemoveFileProps,
-        }: any) => (
-          <>
-            <CustomButton {...getRootProps()}>{buttonText}</CustomButton>
-            {data.length > 0 && (
-              <>
-                <CustomButton
-                  {...getRemoveFileProps()}
-                  onClick={() => setData([])}
-                >
-                  Remove
-                </CustomButton>
-              </>
-            )}
-            <ProgressBar />
-          </>
-        )}
+        }: any) => {
+          return (
+            <>
+              <CustomButton {...getRootProps()}>{buttonText}</CustomButton>
+              {csvData !== undefined && csvData.length > 0 && (
+                <>
+                  <CustomButton
+                    {...getRemoveFileProps()}
+                    onClick={() => setCsvData([])}
+                  >
+                    Remove
+                  </CustomButton>
+                </>
+              )}
+              <ProgressBar />
+            </>
+          )
+        }}
       </CSVReader>
     </>
   )

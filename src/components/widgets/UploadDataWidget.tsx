@@ -1,12 +1,19 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import DefaultSubHeader from "./DefaultSubHeader"
 import DefaultText from "./DefaultText"
 import DefaultGrid from "./DefaultGrid"
 import DefaultGridItem from "./DefaultGridItem"
 import CsvLoader from "./CsvLoader"
 import GreenCheckMark from "../icons/GreenCheckMark"
+import { buttonStyles } from "../styles/mixins"
+import styled from "styled-components"
+
+const CustomButton = styled.button`
+  ${buttonStyles}
+  width: 300px;
+`
 
 type UploadDataWidgetProps = {
   prompt: string
@@ -14,6 +21,7 @@ type UploadDataWidgetProps = {
   enableSecondOption?: boolean
   button1Text?: string
   button2Text?: string
+  hasData?: boolean
   onDataLoaded: (data: string[][]) => void
   onDataCleared: () => void
   onData2Loaded?: (data: string[][]) => void
@@ -26,6 +34,7 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
   enableSecondOption,
   button1Text = "Upload",
   button2Text = "Upload",
+  hasData = false,
   onDataLoaded,
   onDataCleared,
   onData2Loaded,
@@ -35,63 +44,61 @@ const UploadDataWidget: React.FC<UploadDataWidgetProps> = ({
   const [data2, setData2] = useState<string[][]>([])
   const [dataLoaded, setDataLoaded] = useState<boolean>(false)
 
-  useEffect(() => {
-    if (data.length === 0) {
-      onDataCleared()
-    } else {
+  const setAndSendData = (data: string[][]) => {
+    setData(data)
+    if (data.length > 0) {
       onDataLoaded(data)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data.length])
-
-  useEffect(() => {
-    if (data2.length === 0) {
-      if (onData2Cleared !== undefined) {
-        onData2Cleared()
-      }
-    } else {
-      if (onData2Loaded !== undefined) {
-        onData2Loaded(data2)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data2.length])
-
-  useEffect(() => {
-    if (data.length > 0 || data2.length > 0) {
       setDataLoaded(true)
     } else {
+      onDataCleared()
       setDataLoaded(false)
     }
-  }, [data.length, data2.length])
+  }
+
+  const setAndSendData2 = (data: string[][]) => {
+    setData2(data)
+    if (data.length > 0) {
+      onData2Loaded && onData2Loaded(data)
+      setDataLoaded(true)
+    } else {
+      onData2Cleared && onData2Cleared()
+      setDataLoaded(false)
+    }
+  }
 
   return (
     <>
       <DefaultSubHeader>{prompt}</DefaultSubHeader>
-      {dataLoaded && <GreenCheckMark />}
+      {(hasData || dataLoaded) && <GreenCheckMark />}
       <DefaultText>{subPrompt}</DefaultText>
       <DefaultGrid direction="row">
         <DefaultGridItem>
           <CsvLoader
             buttonText={button1Text}
-            onDataLoaded={(data: string[][]) => {
-              setData(data)
-            }}
-            onDataCleared={() => setData([])}
+            csvData={data}
+            setCsvData={setAndSendData}
           />
         </DefaultGridItem>
         {enableSecondOption && (
           <DefaultGridItem>
             <CsvLoader
               buttonText={button2Text}
-              onDataLoaded={(data: string[][]) => {
-                setData2(data)
-              }}
-              onDataCleared={() => setData2([])}
+              csvData={data2}
+              setCsvData={setAndSendData2}
             />
           </DefaultGridItem>
         )}
       </DefaultGrid>
+      {(hasData || dataLoaded) && (
+        <CustomButton
+          onClick={() => {
+            setAndSendData([])
+            setAndSendData2([])
+          }}
+        >
+          Clear All Data
+        </CustomButton>
+      )}
     </>
   )
 }
