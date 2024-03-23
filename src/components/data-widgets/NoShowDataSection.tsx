@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
 import {
   Accordion,
@@ -12,16 +12,14 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import NoShowChart from "./NoShowChart"
 import Session from "../../data/Session"
 import SessionGroups, { createSessionGroups } from "../../data/SessionGroups"
+import { SessionsContext } from "../../data/providers/SessionProvider"
 import { sortMapByValue } from "../../utils/SortUtils"
 
 const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
 const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
 
-type NoShowDataSectionProps = {
-  sessions: Session[]
-}
-
-const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
+const NoShowDataSection: React.FC = () => {
+  const { data: sessions } = useContext(SessionsContext)
   const [customerNoShowData, setCustomerNoShowData] =
     useState<Map<string, number>>()
   const [providerNoShowData, setProviderNoShowData] =
@@ -56,6 +54,7 @@ const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
       customerNames.forEach((customerName) => {
         const sessionGroup =
           customerSessionGroups.getSessionGroupForName(customerName)!
+        // filter out customers with 0 absent rate
         if (sessionGroup.absentRate() > 0) {
           customerAbsentRates.set(customerName, sessionGroup.absentRate())
         }
@@ -71,6 +70,7 @@ const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
       providerNames.forEach((providerName) => {
         const sessionGroup =
           providerSessionGroups.getSessionGroupForName(providerName)!
+        // filter out customers with 0 absent rate
         if (sessionGroup.absentRate() > 0) {
           providerAbsentRates.set(providerName, sessionGroup.absentRate())
         }
@@ -95,7 +95,7 @@ const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
             <AccordionDetails>
               <NoShowChart
                 chartTitle={CUSTOMER_CHART_LABEL}
-                data={customerNoShowData!}
+                data={customerNoShowData}
               />
             </AccordionDetails>
           </Accordion>
@@ -112,7 +112,7 @@ const NoShowDataSection: React.FC<NoShowDataSectionProps> = ({ sessions }) => {
             <AccordionDetails>
               <NoShowChart
                 chartTitle={PROVIDER_CHART_LABEL}
-                data={providerNoShowData!}
+                data={providerNoShowData}
               />
             </AccordionDetails>
           </Accordion>

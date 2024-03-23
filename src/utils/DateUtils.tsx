@@ -97,6 +97,12 @@ export const getDateFromWeekNumber = (weekNumber: number, year: number) => {
   return date
 }
 
+export const getFirstDayOfWeekName = (date: Date) => {
+  const weekNum = getWeekOfYear(date)
+  const weekDate = getDateFromWeekNumber(weekNum, date.getFullYear())
+  return formatDateShort(weekDate)
+}
+
 export const getMonthName = (date: Date) => {
   return MONTH_NAMES[date.getMonth()]
 }
@@ -107,6 +113,14 @@ export const sortMapByMonth = (map: Map<string, number>) => {
     return MONTH_NAMES.indexOf(a[0]) - MONTH_NAMES.indexOf(b[0])
   })
   return new Map(entries)
+}
+
+export const getEarlierDate = (date1: Date, date2: Date) => {
+  return compareDates(date1, date2) < 1 ? date1 : date2
+}
+
+export const getLaterDate = (date1: Date, date2: Date) => {
+  return compareDates(date1, date2) > 1 ? date1 : date2
 }
 
 export const compareDates = (date1: Date, date2: Date) => {

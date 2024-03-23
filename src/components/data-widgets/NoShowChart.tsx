@@ -18,13 +18,14 @@ const NoShowChart: React.FC<NoShowChartProps> = ({ chartTitle, data }) => {
     labels: [...data.keys()],
     datasets: [
       {
-        label: chartTitle,
+        label: "No-Show Rate",
         data: [...data.values()],
         backgroundColor: randomColors,
         borderWidth: 1,
       },
     ],
   }
+
   return (
     <>
       <BarChart chartTitle={chartTitle} chartData={noShowChartData} />

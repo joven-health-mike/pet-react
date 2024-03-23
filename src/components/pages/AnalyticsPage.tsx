@@ -25,7 +25,7 @@ const AnalyticsPage: React.FC = () => {
       </>
       {sessions.length > 0 && (
         <>
-          <NoShowDataSection sessions={sessions} />
+          <NoShowDataSection />
           <HorizontalLine />
           <CustomerReportsSection />
           <HorizontalLine />
