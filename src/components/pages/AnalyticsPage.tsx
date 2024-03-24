@@ -4,7 +4,6 @@ import React, { useContext } from "react"
 import Navbar from "../navbar/Navbar"
 import DefaultHeader from "../widgets/DefaultHeader"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
-import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 import HorizontalLine from "../widgets/HorizontalLine"
 import NoShowDataSection from "../data-widgets/NoShowDataSection"
 import CustomerReportsSection from "../data-widgets/CustomerReportsSection"
@@ -18,9 +17,7 @@ const AnalyticsPage: React.FC = () => {
       <Navbar />
       <DefaultHeader>Analytics</DefaultHeader>
       <>
-        <ProviderReportUploadWidget
-          sessionDataAdapter={adaptTeleTeachersDataForInvoices}
-        />
+        <ProviderReportUploadWidget />
         <HorizontalLine />
       </>
       {sessions.length > 0 && (
