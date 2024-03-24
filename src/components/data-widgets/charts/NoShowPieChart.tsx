@@ -1,8 +1,8 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React from "react"
-import { randomColor } from "../../utils/Colors"
-import { PieChart } from "../widgets/PieChart"
+import { randomColor } from "../../../utils/Colors"
+import { PieChart } from "../../widgets/PieChart"
 
 const GRAPH_TRANSPARENCY = 0.6
 

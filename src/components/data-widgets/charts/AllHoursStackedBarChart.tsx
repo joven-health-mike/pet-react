@@ -1,8 +1,8 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React from "react"
-import { BarChart } from "../widgets/BarChart"
-import { randomColor } from "../../utils/Colors"
+import { BarChart } from "../../widgets/BarChart"
+import { randomColor } from "../../../utils/Colors"
 
 type AllHoursStackedBarChartProps = {
   chartTitle: string
@@ -15,7 +15,6 @@ const AllHoursStackedBarChart: React.FC<AllHoursStackedBarChartProps> = ({
 }) => {
   const dataSets = []
   const dataLabels = new Set<string>()
-  // TODO: Figure out how to sort by schoolyear instead of calendar year...
   for (const serviceName of data.keys()) {
     const color = randomColor(0.6)
     for (const month of (data.get(serviceName) || new Map()).keys()) {

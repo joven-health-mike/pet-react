@@ -12,10 +12,10 @@ import {
 } from "@mui/material"
 import DefaultGrid from "../widgets/DefaultGrid"
 import DefaultGridItem from "../widgets/DefaultGridItem"
-import NoShowPieChart from "./NoShowPieChart"
+import NoShowPieChart from "./charts/NoShowPieChart"
 import { formatPercent } from "../../utils/MathUtils"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
-import NoShowLineChart from "./NoShowLineChart"
+import NoShowLineChart from "./charts/NoShowLineChart"
 
 type CustomerReportProps = {
   customerName: string

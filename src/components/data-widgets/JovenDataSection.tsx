@@ -9,15 +9,17 @@ import {
   Box,
 } from "@mui/material"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
-import NoShowChart from "./NoShowChart"
+import NoShowChart from "./charts/NoShowChart"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 import { sortMapByValue } from "../../utils/SortUtils"
-import AllHoursStackedBarChart from "./AllHoursStackedBarChart"
+import AllHoursStackedBarChart from "./charts/AllHoursStackedBarChart"
 import { MONTH_NAMES } from "../../utils/DateUtils"
+import AllHoursLineChart from "./charts/AllHoursLineChart"
 
 const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
 const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
-const HOURS_CHART_LABEL = "Hours Delivered by Month"
+const SERVICES_CHART_LABEL = "Service Hours Delivered by Month"
+const TOTAL_HOURS_CHART_LABEL = "Total Hours Delivered by Month"
 
 const JovenDataSection: React.FC = () => {
   const { customerSessionGroups, providerSessionGroups, typeSessionGroups } =
@@ -26,9 +28,36 @@ const JovenDataSection: React.FC = () => {
     useState<Map<string, number>>()
   const [providerNoShowData, setProviderNoShowData] =
     useState<Map<string, number>>()
-  const [hoursData, setHoursData] = useState<Map<string, Map<string, number>>>(
+  const [hoursByServiceData, setHoursByServiceData] = useState<
+    Map<string, Map<string, number>>
+  >(new Map())
+  const [hoursByMonthData, setHoursByMonthData] = useState<Map<string, number>>(
     new Map()
   )
+
+  useEffect(() => {
+    if (typeSessionGroups !== undefined) {
+      const newData: Map<string, number> = new Map()
+
+      for (const sessionGroup of typeSessionGroups) {
+        for (const month of MONTH_NAMES) {
+          const shiftedMonth =
+            MONTH_NAMES[(MONTH_NAMES.indexOf(month) + 6) % 12]
+          const hoursForMonth = sessionGroup.totalHours(shiftedMonth)
+          const newHoursValue = (newData.get(shiftedMonth) || 0) + hoursForMonth
+          newData.set(shiftedMonth, newHoursValue)
+        }
+      }
+
+      // round all values after adding them up. reduces error
+      for (const [key, value] of newData.entries()) {
+        const roundedValue = parseFloat(value.toFixed(1))
+        newData.set(key, roundedValue)
+      }
+
+      setHoursByMonthData(newData)
+    }
+  }, [typeSessionGroups])
 
   useEffect(() => {
     if (typeSessionGroups !== undefined) {
@@ -49,7 +78,7 @@ const JovenDataSection: React.FC = () => {
         }
       }
 
-      setHoursData(newData)
+      setHoursByServiceData(newData)
     }
   }, [typeSessionGroups])
 
@@ -87,21 +116,38 @@ const JovenDataSection: React.FC = () => {
 
   return (
     <>
-      <DefaultHeader>No-Show Rates</DefaultHeader>
+      <DefaultHeader>Joven Health Analytics</DefaultHeader>
       <Box sx={{ m: 2 }}>
-        {hoursData !== undefined && (
+        {hoursByMonthData !== undefined && (
           <Accordion>
             <AccordionSummary
               expandIcon={<ArrowDropDownIcon />}
               id="panel-header"
               aria-controls="panel-content"
             >
-              {HOURS_CHART_LABEL}
+              {TOTAL_HOURS_CHART_LABEL}
+            </AccordionSummary>
+            <AccordionDetails>
+              <AllHoursLineChart
+                chartTitle={TOTAL_HOURS_CHART_LABEL}
+                data={hoursByMonthData}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {hoursByServiceData !== undefined && (
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ArrowDropDownIcon />}
+              id="panel-header"
+              aria-controls="panel-content"
+            >
+              {SERVICES_CHART_LABEL}
             </AccordionSummary>
             <AccordionDetails>
               <AllHoursStackedBarChart
-                chartTitle={HOURS_CHART_LABEL}
-                data={hoursData}
+                chartTitle={SERVICES_CHART_LABEL}
+                data={hoursByServiceData}
               />
             </AccordionDetails>
           </Accordion>

@@ -15,6 +15,12 @@ export default class SessionGroups {
   getSessionGroupForName(name: string): SessionGroup | undefined {
     return this.sessions.get(name)
   }
+
+  *[Symbol.iterator](): IterableIterator<SessionGroup> {
+    for (const sessionGroup of this.sessions.values()) {
+      yield sessionGroup
+    }
+  }
 }
 
 export const createSessionGroups = (
