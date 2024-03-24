@@ -10,42 +10,45 @@ import {
 } from "@mui/material"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import NoShowChart from "./NoShowChart"
-import Session from "../../data/Session"
-import SessionGroups, { createSessionGroups } from "../../data/SessionGroups"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 import { sortMapByValue } from "../../utils/SortUtils"
+import AllHoursStackedBarChart from "./AllHoursStackedBarChart"
+import { MONTH_NAMES } from "../../utils/DateUtils"
 
 const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
 const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
+const HOURS_CHART_LABEL = "Hours Delivered by Month"
 
 const NoShowDataSection: React.FC = () => {
-  const { data: sessions } = useContext(SessionsContext)
+  const { customerSessionGroups, providerSessionGroups, typeSessionGroups } =
+    useContext(SessionsContext)
   const [customerNoShowData, setCustomerNoShowData] =
     useState<Map<string, number>>()
   const [providerNoShowData, setProviderNoShowData] =
     useState<Map<string, number>>()
-  const [customerSessionGroups, setCustomerSessionGroups] =
-    useState<SessionGroups>()
-  const [providerSessionGroups, setProviderSessionGroups] =
-    useState<SessionGroups>()
+  const [hoursData, setHoursData] = useState<Map<string, Map<string, number>>>(
+    new Map()
+  )
 
   useEffect(() => {
-    if (sessions.length > 0) {
-      setCustomerSessionGroups(
-        createSessionGroups(sessions, (session: Session) => session.schoolName)
-      )
-      setProviderSessionGroups(
-        createSessionGroups(
-          sessions,
-          (session: Session) => session.providerName
-        )
-      )
-    } else {
-      setCustomerSessionGroups(undefined)
-      setProviderSessionGroups(undefined)
+    if (typeSessionGroups !== undefined) {
+      const newData: Map<string, Map<string, number>> = new Map()
+
+      for (const serviceName of typeSessionGroups.getNames()) {
+        const sessionGroup =
+          typeSessionGroups.getSessionGroupForName(serviceName)!
+        for (const month of MONTH_NAMES) {
+          const hoursForMonth = sessionGroup.totalHours(month)
+          const monthlyMap = newData.get(serviceName) ?? new Map()
+          const newHoursValue = (monthlyMap.get(month) ?? 0) + hoursForMonth
+          monthlyMap.set(month, newHoursValue)
+          newData.set(serviceName, monthlyMap)
+        }
+      }
+
+      setHoursData(newData)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessions.length])
+  }, [typeSessionGroups])
 
   useEffect(() => {
     if (customerSessionGroups !== undefined) {
@@ -113,6 +116,23 @@ const NoShowDataSection: React.FC = () => {
               <NoShowChart
                 chartTitle={PROVIDER_CHART_LABEL}
                 data={providerNoShowData}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {true && (
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ArrowDropDownIcon />}
+              id="panel-header"
+              aria-controls="panel-content"
+            >
+              {HOURS_CHART_LABEL}
+            </AccordionSummary>
+            <AccordionDetails>
+              <AllHoursStackedBarChart
+                chartTitle={HOURS_CHART_LABEL}
+                data={hoursData}
               />
             </AccordionDetails>
           </Accordion>

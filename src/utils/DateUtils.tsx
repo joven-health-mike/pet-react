@@ -109,10 +109,18 @@ export const getMonthName = (date: Date) => {
 
 export const sortMapByMonth = (map: Map<string, number>) => {
   const entries = Array.from(map)
-  entries.sort((a, b) => {
-    return MONTH_NAMES.indexOf(a[0]) - MONTH_NAMES.indexOf(b[0])
-  })
+  entries.sort((a, b) => monthComparator(a[0], b[0]))
   return new Map(entries)
+}
+
+export const monthComparator = (a: string, b: string): number => {
+  return MONTH_NAMES.indexOf(a[0]) - MONTH_NAMES.indexOf(b[0])
+}
+
+export const schoolYearComparator = (a: string, b: string): number => {
+  const shiftA = (MONTH_NAMES.indexOf(a[0]) + 6) % MONTH_NAMES.length
+  const shiftB = (MONTH_NAMES.indexOf(b[0]) + 6) % MONTH_NAMES.length
+  return shiftA - shiftB
 }
 
 export const getEarlierDate = (date1: Date, date2: Date) => {

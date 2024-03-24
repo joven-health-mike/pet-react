@@ -18,11 +18,13 @@ const ChartDiv = styled.div`
 type BarChartProps = {
   chartTitle: string
   chartData: ChartData<"bar", (number | [number, number] | null)[], unknown>
+  enableLegend?: boolean
 }
 
 export const BarChart: React.FC<BarChartProps> = ({
   chartTitle,
   chartData,
+  enableLegend = false,
 }) => {
   return (
     <ChartDiv>
@@ -36,11 +38,19 @@ export const BarChart: React.FC<BarChartProps> = ({
               display: false,
             },
             legend: {
-              display: false,
+              display: enableLegend,
             },
             datalabels: {
               color: "#000",
               display: true,
+            },
+          },
+          scales: {
+            x: {
+              stacked: true,
+            },
+            y: {
+              stacked: true,
             },
           },
         }}

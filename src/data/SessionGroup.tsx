@@ -7,6 +7,16 @@ export default class SessionGroup {
   private loaded = false
   private sessionGroupData = new SessionGroupData()
 
+  totalHours(month?: string): number {
+    this.loadMetrics()
+    if (month !== undefined) {
+      const hours = this.sessionGroupData.hoursByMonth.get(month) || 0
+      return hours
+    } else {
+      return parseFloat((this.sessionGroupData.numMinutes / 60).toFixed(3))
+    }
+  }
+
   presences(): number {
     this.loadMetrics()
     return this.sessionGroupData.numPresences

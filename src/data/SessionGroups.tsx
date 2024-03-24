@@ -19,7 +19,8 @@ export default class SessionGroups {
 
 export const createSessionGroups = (
   allSessions: Session[],
-  nameFilter: (session: Session) => string
+  nameFilter: (session: Session) => string,
+  shouldSkip: (session: Session) => boolean = () => false
 ) => {
   if (allSessions.length === 0) return undefined
 
@@ -27,6 +28,7 @@ export const createSessionGroups = (
   const newNames: Set<string> = new Set()
 
   for (const session of allSessions) {
+    if (shouldSkip(session)) continue
     const name = nameFilter(session)
     newNames.add(name)
     if (!newSessions.has(name)) {

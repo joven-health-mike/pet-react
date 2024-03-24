@@ -10,6 +10,10 @@ import {
 import Session from "./Session"
 
 export default class SessionGroupData {
+  numMinutes = 0
+  minutesByMonth: Map<string, number> = new Map()
+  hoursByMonth: Map<string, number> = new Map()
+
   numPresences = 0
   numAbsences = 0
   absentRate = 0
@@ -24,6 +28,27 @@ export default class SessionGroupData {
 
   earliestDate: Date = new Date("01/01/2990")
   latestDate: Date = new Date("01/01/1990")
+
+  private calculateMinutesByMonth(session: Session): void {
+    const sessionDate = new Date(session.date)
+    const monthName = getMonthName(sessionDate)
+    const newHoursCount = this.minutesByMonth.get(monthName) ?? 0
+    const sessionTime = parseInt(session.totalTime)
+    this.minutesByMonth.set(monthName, newHoursCount + sessionTime)
+    this.numMinutes += sessionTime
+  }
+
+  private calculateHoursByMonth(): void {
+    // calculate absent rates for each month
+    for (let i = 0; i <= MONTH_NAMES.length; i++) {
+      const monthIndex = (i + 6) % MONTH_NAMES.length
+      const monthName = MONTH_NAMES[monthIndex]
+      this.hoursByMonth.set(
+        monthName,
+        parseFloat(((this.minutesByMonth!.get(monthName) ?? 0) / 60).toFixed(3))
+      )
+    }
+  }
 
   private calculateOverallAttendance(session: Session): void {
     if (session.isDirect() && session.isPresent()) {
@@ -105,12 +130,14 @@ export default class SessionGroupData {
     this.calculateOverallAttendance(session)
     this.calculateMonthlyAttendance(session)
     this.calculateWeeklyAttendance(session)
+    this.calculateMinutesByMonth(session)
   }
 
   finalize(): void {
     this.calculateOverallAbsentRates()
     this.calculateMonthlyAbsentRates()
     this.calculateWeeklyAbsentRates()
+    this.calculateHoursByMonth()
   }
 }
 
