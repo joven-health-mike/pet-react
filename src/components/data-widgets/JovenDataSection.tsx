@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
 import {
   Accordion,
@@ -15,6 +15,14 @@ import { sortMapByValue } from "../../utils/SortUtils"
 import AllHoursStackedBarChart from "./charts/AllHoursStackedBarChart"
 import { MONTH_NAMES } from "../../utils/DateUtils"
 import AllHoursLineChart from "./charts/AllHoursLineChart"
+import styled from "styled-components"
+import { buttonStyles } from "../styles/mixins"
+import { useReactToPrint } from "react-to-print"
+
+const CustomButton = styled.button`
+  ${buttonStyles}
+  width: 300px;
+`
 
 const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
 const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
@@ -22,6 +30,12 @@ const SERVICES_CHART_LABEL = "Service Hours Delivered by Month"
 const TOTAL_HOURS_CHART_LABEL = "Total Hours Delivered by Month"
 
 const JovenDataSection: React.FC = () => {
+  const componentRef = useRef(null)
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current!,
+    documentTitle: "Joven Health Report.pdf",
+    onAfterPrint: () => console.log("Printed PDF successfully!"),
+  })
   const { customerSessionGroups, providerSessionGroups, typeSessionGroups } =
     useContext(SessionsContext)
   const [customerNoShowData, setCustomerNoShowData] =
@@ -118,74 +132,77 @@ const JovenDataSection: React.FC = () => {
     <>
       <DefaultHeader>Joven Health Analytics</DefaultHeader>
       <Box sx={{ m: 2 }}>
-        {hoursByMonthData !== undefined && (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ArrowDropDownIcon />}
-              id="panel-header"
-              aria-controls="panel-content"
-            >
-              {TOTAL_HOURS_CHART_LABEL}
-            </AccordionSummary>
-            <AccordionDetails>
-              <AllHoursLineChart
-                chartTitle={TOTAL_HOURS_CHART_LABEL}
-                data={hoursByMonthData}
-              />
-            </AccordionDetails>
-          </Accordion>
-        )}
-        {hoursByServiceData !== undefined && (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ArrowDropDownIcon />}
-              id="panel-header"
-              aria-controls="panel-content"
-            >
-              {SERVICES_CHART_LABEL}
-            </AccordionSummary>
-            <AccordionDetails>
-              <AllHoursStackedBarChart
-                chartTitle={SERVICES_CHART_LABEL}
-                data={hoursByServiceData}
-              />
-            </AccordionDetails>
-          </Accordion>
-        )}
-        {customerNoShowData !== undefined && (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ArrowDropDownIcon />}
-              id="panel-header"
-              aria-controls="panel-content"
-            >
-              {CUSTOMER_CHART_LABEL}
-            </AccordionSummary>
-            <AccordionDetails>
-              <NoShowChart
-                chartTitle={CUSTOMER_CHART_LABEL}
-                data={customerNoShowData}
-              />
-            </AccordionDetails>
-          </Accordion>
-        )}
-        {providerNoShowData !== undefined && (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ArrowDropDownIcon />}
-              id="panel-header"
-              aria-controls="panel-content"
-            >
-              {PROVIDER_CHART_LABEL}
-            </AccordionSummary>
-            <AccordionDetails>
-              <NoShowChart
-                chartTitle={PROVIDER_CHART_LABEL}
-                data={providerNoShowData}
-              />
-            </AccordionDetails>
-          </Accordion>
-        )}
+        <CustomButton onClick={handlePrint}>Download PDF</CustomButton>
+        <div ref={componentRef}>
+          {hoursByMonthData !== undefined && (
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ArrowDropDownIcon />}
+                id="panel-header"
+                aria-controls="panel-content"
+              >
+                {TOTAL_HOURS_CHART_LABEL}
+              </AccordionSummary>
+              <AccordionDetails>
+                <AllHoursLineChart
+                  chartTitle={TOTAL_HOURS_CHART_LABEL}
+                  data={hoursByMonthData}
+                />
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {hoursByServiceData !== undefined && (
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ArrowDropDownIcon />}
+                id="panel-header"
+                aria-controls="panel-content"
+              >
+                {SERVICES_CHART_LABEL}
+              </AccordionSummary>
+              <AccordionDetails>
+                <AllHoursStackedBarChart
+                  chartTitle={SERVICES_CHART_LABEL}
+                  data={hoursByServiceData}
+                />
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {customerNoShowData !== undefined && (
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ArrowDropDownIcon />}
+                id="panel-header"
+                aria-controls="panel-content"
+              >
+                {CUSTOMER_CHART_LABEL}
+              </AccordionSummary>
+              <AccordionDetails>
+                <NoShowChart
+                  chartTitle={CUSTOMER_CHART_LABEL}
+                  data={customerNoShowData}
+                />
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {providerNoShowData !== undefined && (
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ArrowDropDownIcon />}
+                id="panel-header"
+                aria-controls="panel-content"
+              >
+                {PROVIDER_CHART_LABEL}
+              </AccordionSummary>
+              <AccordionDetails>
+                <NoShowChart
+                  chartTitle={PROVIDER_CHART_LABEL}
+                  data={providerNoShowData}
+                />
+              </AccordionDetails>
+            </Accordion>
+          )}
+        </div>
       </Box>
     </>
   )

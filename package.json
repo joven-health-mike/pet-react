@@ -29,6 +29,7 @@
     "react-papaparse": "^4.4.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-to-print": "^2.15.1",
     "styled-components": "^5.3.8",
     "web-vitals": "^2.1.4"
   },

@@ -73,7 +73,7 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
               })}
           </AccordionDetails>
         </Accordion>
-        <Accordion>
+        <Accordion defaultExpanded={true}>
           <AccordionSummary
             expandIcon={<ArrowDropDownIcon />}
             id="panel-header"
@@ -103,7 +103,7 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
             </DefaultGrid>
           </AccordionDetails>
         </Accordion>
-        <Accordion>
+        <Accordion defaultExpanded={true}>
           <AccordionSummary
             expandIcon={<ArrowDropDownIcon />}
             id="panel-header"
@@ -122,7 +122,7 @@ const CustomerReport: React.FC<CustomerReportProps> = ({
             </DefaultGrid>
           </AccordionDetails>
         </Accordion>
-        <Accordion>
+        <Accordion defaultExpanded={true}>
           <AccordionSummary
             expandIcon={<ArrowDropDownIcon />}
             id="panel-header"
