@@ -38,10 +38,13 @@ const NoShowDataSection: React.FC = () => {
         const sessionGroup =
           typeSessionGroups.getSessionGroupForName(serviceName)!
         for (const month of MONTH_NAMES) {
-          const hoursForMonth = sessionGroup.totalHours(month)
+          const shiftedMonth =
+            MONTH_NAMES[(MONTH_NAMES.indexOf(month) + 6) % 12]
+          const hoursForMonth = sessionGroup.totalHours(shiftedMonth)
           const monthlyMap = newData.get(serviceName) ?? new Map()
-          const newHoursValue = (monthlyMap.get(month) ?? 0) + hoursForMonth
-          monthlyMap.set(month, newHoursValue)
+          const newHoursValue =
+            (monthlyMap.get(shiftedMonth) ?? 0) + hoursForMonth
+          monthlyMap.set(shiftedMonth, newHoursValue)
           newData.set(serviceName, monthlyMap)
         }
       }
