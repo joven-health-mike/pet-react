@@ -3,13 +3,14 @@ import UploadDataWidget from "../widgets/UploadDataWidget"
 import { handleUploadDataNew } from "../../utils/DataProcessor"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 import { createSession } from "../../data/Session"
+import { adaptTeleTeachersData } from "../../utils/TeleTeachersAdapter"
 
 type ProviderReportUploadWidgetProps = {
   sessionDataAdapter?: (input: string[][]) => string[][]
 }
 
 const ProviderReportUploadWidget: React.FC<ProviderReportUploadWidgetProps> = ({
-  sessionDataAdapter,
+  sessionDataAdapter = adaptTeleTeachersData,
 }) => {
   const { data: sessions, setData: setSessions } = useContext(SessionsContext)
 

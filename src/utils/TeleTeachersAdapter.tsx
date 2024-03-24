@@ -1,33 +1,35 @@
 const EMPTY_LINE = ["", "", "", "", "", "", "", "", "", "", "", "", ""]
 
-export const adaptTeleTeachersDataForInvoices = (data: string[][]) => {
+export const adaptTeleTeachersData = (
+  data: string[][],
+  shouldSkip: (dataArray: string[]) => boolean = () => false
+) => {
   const parsedData: string[][] = parseData(data)
   const filteredData: string[][] = []
   for (const datum of parsedData) {
-    if (datum[0] === "Jacek McGuinness") {
-      continue
-    }
-    if (datum[1] === "JovenHealth" || datum[1] === "Joven Test District") {
-      continue
-    }
+    if (shouldSkip(datum)) continue
     filteredData.push(datum)
   }
   return filteredData
 }
 
+export const adaptTeleTeachersDataForInvoices = (data: string[][]) => {
+  return adaptTeleTeachersData(
+    data,
+    (dataArray) =>
+      dataArray[0] === "Jacek McGuinness" ||
+      dataArray[1] === "Joven Health" ||
+      dataArray[1] === "Joven Health Test District"
+  )
+}
+
 export const adaptTeleTeachersDataForPayroll = (data: string[][]) => {
-  const parsedData: string[][] = parseData(data)
-  const filteredData: string[][] = []
-  for (const datum of parsedData) {
-    if (datum[0] === "Jacek McGuinness") {
-      continue
-    }
-    if (datum[1] === "Joven Test District") {
-      continue
-    }
-    filteredData.push(datum)
-  }
-  return filteredData
+  return adaptTeleTeachersData(
+    data,
+    (dataArray) =>
+      dataArray[0] === "Jacek McGuinness" ||
+      dataArray[1] === "Joven Health Test District"
+  )
 }
 
 const parseData = (data: string[][]) => {
