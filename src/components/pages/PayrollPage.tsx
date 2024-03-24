@@ -9,18 +9,18 @@ import Contractor, { createContractor } from "../../data/Contractor"
 import PayrollCalculator from "../../utils/PayrollCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
-import { PAYROLL_HEADERS, createPayrollLine } from "../../outputs/Payroll"
+import { PAYROLL_HEADERS, createPayrollLine } from "../../export/Payroll"
 import { adaptTeleTeachersDataForPayroll } from "../../utils/TeleTeachersAdapter"
 import {
   TRANSACTION_HEADERS,
   createTransactionLine,
-} from "../../outputs/Transactions"
+} from "../../export/Transactions"
 import { todaysDate } from "../../utils/DateUtils"
 import HorizontalLine from "../widgets/HorizontalLine"
 import {
   PAYROLL_SUMMARY_HEADERS,
   createPayrollSummaryLine,
-} from "../../outputs/PayrollSummary"
+} from "../../export/PayrollSummary"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
 import DefaultHeader from "../widgets/DefaultHeader"
 import DefaultGrid from "../widgets/DefaultGrid"

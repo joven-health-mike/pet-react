@@ -12,13 +12,13 @@ import AccountingCode, { createAccountingCode } from "../../data/AccountingCode"
 import InvoiceCalculator from "../../utils/InvoiceCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
-import { INVOICE_HEADERS, createInvoiceLine } from "../../outputs/Invoices"
+import { INVOICE_HEADERS, createInvoiceLine } from "../../export/Invoices"
 import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 import HorizontalLine from "../widgets/HorizontalLine"
 import {
   INVOICE_SUMMARY_HEADERS,
   createInvoiceSummaryLine,
-} from "../../outputs/InvoiceSummary"
+} from "../../export/InvoiceSummary"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
 import DefaultHeader from "../widgets/DefaultHeader"
 import DefaultGrid from "../widgets/DefaultGrid"

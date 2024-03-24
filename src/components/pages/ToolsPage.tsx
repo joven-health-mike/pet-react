@@ -11,7 +11,7 @@ import Session, { createSession } from "../../data/Session"
 import {
   SAD_HEADERS,
   createSadLine,
-} from "../../outputs/SessionAnalysisDashboard"
+} from "../../export/SessionAnalysisDashboard"
 import { downloadCsv } from "../../utils/CsvHelper"
 import HorizontalLine from "../widgets/HorizontalLine"
 import DefaultHeader from "../widgets/DefaultHeader"

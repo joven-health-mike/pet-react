@@ -8,7 +8,7 @@ import { downloadCsv } from "../../utils/CsvHelper"
 import {
   TRANSACTION_HEADERS,
   createTransactionLine,
-} from "../../outputs/Transactions"
+} from "../../export/Transactions"
 import TransactionLineList from "../widgets/TransactionLineList"
 import HorizontalLine from "../widgets/HorizontalLine"
 import DefaultHeader from "../widgets/DefaultHeader"
