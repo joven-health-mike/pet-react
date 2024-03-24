@@ -5,7 +5,7 @@ import Navbar from "../navbar/Navbar"
 import DefaultHeader from "../widgets/DefaultHeader"
 import ProviderReportUploadWidget from "../data-widgets/ProviderReportUploadWidget"
 import HorizontalLine from "../widgets/HorizontalLine"
-import NoShowDataSection from "../data-widgets/NoShowDataSection"
+import JovenDataSection from "../data-widgets/JovenDataSection"
 import CustomerReportsSection from "../data-widgets/CustomerReportsSection"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 
@@ -22,7 +22,7 @@ const AnalyticsPage: React.FC = () => {
       </>
       {sessions.length > 0 && (
         <>
-          <NoShowDataSection />
+          <JovenDataSection />
           <HorizontalLine />
           <CustomerReportsSection />
           <HorizontalLine />

@@ -19,7 +19,7 @@ const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
 const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
 const HOURS_CHART_LABEL = "Hours Delivered by Month"
 
-const NoShowDataSection: React.FC = () => {
+const JovenDataSection: React.FC = () => {
   const { customerSessionGroups, providerSessionGroups, typeSessionGroups } =
     useContext(SessionsContext)
   const [customerNoShowData, setCustomerNoShowData] =
@@ -89,6 +89,23 @@ const NoShowDataSection: React.FC = () => {
     <>
       <DefaultHeader>No-Show Rates</DefaultHeader>
       <Box sx={{ m: 2 }}>
+        {hoursData !== undefined && (
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ArrowDropDownIcon />}
+              id="panel-header"
+              aria-controls="panel-content"
+            >
+              {HOURS_CHART_LABEL}
+            </AccordionSummary>
+            <AccordionDetails>
+              <AllHoursStackedBarChart
+                chartTitle={HOURS_CHART_LABEL}
+                data={hoursData}
+              />
+            </AccordionDetails>
+          </Accordion>
+        )}
         {customerNoShowData !== undefined && (
           <Accordion>
             <AccordionSummary
@@ -123,26 +140,9 @@ const NoShowDataSection: React.FC = () => {
             </AccordionDetails>
           </Accordion>
         )}
-        {true && (
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ArrowDropDownIcon />}
-              id="panel-header"
-              aria-controls="panel-content"
-            >
-              {HOURS_CHART_LABEL}
-            </AccordionSummary>
-            <AccordionDetails>
-              <AllHoursStackedBarChart
-                chartTitle={HOURS_CHART_LABEL}
-                data={hoursData}
-              />
-            </AccordionDetails>
-          </Accordion>
-        )}
       </Box>
     </>
   )
 }
 
-export default NoShowDataSection
+export default JovenDataSection
