@@ -18,6 +18,7 @@ import AllHoursLineChart from "./charts/AllHoursLineChart"
 import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
 import { useReactToPrint } from "react-to-print"
+import AllProvidersStackedBarChart from "./charts/AllProvidersStackedBarChart"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -28,6 +29,7 @@ const CUSTOMER_CHART_LABEL = "No-Show Rates by Customer"
 const PROVIDER_CHART_LABEL = "No-Show Rates by Provider"
 const SERVICES_CHART_LABEL = "Service Hours Delivered by Month"
 const TOTAL_HOURS_CHART_LABEL = "Total Hours Delivered by Month"
+const PROVIDER_HOURS_CHART_LABEL = "Provider Hours Delivered by Month"
 
 const JovenDataSection: React.FC = () => {
   const componentRef = useRef(null)
@@ -43,6 +45,9 @@ const JovenDataSection: React.FC = () => {
   const [providerNoShowData, setProviderNoShowData] =
     useState<Map<string, number>>()
   const [hoursByServiceData, setHoursByServiceData] = useState<
+    Map<string, Map<string, number>>
+  >(new Map())
+  const [hoursByProviderData, setHoursByProviderData] = useState<
     Map<string, Map<string, number>>
   >(new Map())
   const [hoursByMonthData, setHoursByMonthData] = useState<Map<string, number>>(
@@ -95,6 +100,30 @@ const JovenDataSection: React.FC = () => {
       setHoursByServiceData(newData)
     }
   }, [typeSessionGroups])
+
+  useEffect(() => {
+    if (providerSessionGroups !== undefined) {
+      // TODO: For any provider who has less than 10 hours/month, bundle them into an "Other" category
+      const newData: Map<string, Map<string, number>> = new Map()
+
+      for (const providerName of providerSessionGroups.getNames()) {
+        const sessionGroup =
+          providerSessionGroups.getSessionGroupForName(providerName)!
+        for (const month of MONTH_NAMES) {
+          const shiftedMonth =
+            MONTH_NAMES[(MONTH_NAMES.indexOf(month) + 6) % 12]
+          const hoursForMonth = sessionGroup.totalHours(shiftedMonth)
+          const monthlyMap = newData.get(providerName) ?? new Map()
+          const newHoursValue =
+            (monthlyMap.get(shiftedMonth) ?? 0) + hoursForMonth
+          monthlyMap.set(shiftedMonth, newHoursValue)
+          newData.set(providerName, monthlyMap)
+        }
+      }
+
+      setHoursByProviderData(newData)
+    }
+  }, [providerSessionGroups])
 
   useEffect(() => {
     if (customerSessionGroups !== undefined) {
@@ -164,6 +193,23 @@ const JovenDataSection: React.FC = () => {
                 <AllHoursStackedBarChart
                   chartTitle={SERVICES_CHART_LABEL}
                   data={hoursByServiceData}
+                />
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {hoursByProviderData !== undefined && (
+            <Accordion defaultExpanded={true}>
+              <AccordionSummary
+                expandIcon={<ArrowDropDownIcon />}
+                id="panel-header"
+                aria-controls="panel-content"
+              >
+                {PROVIDER_HOURS_CHART_LABEL}
+              </AccordionSummary>
+              <AccordionDetails>
+                <AllProvidersStackedBarChart
+                  chartTitle={PROVIDER_HOURS_CHART_LABEL}
+                  data={hoursByProviderData}
                 />
               </AccordionDetails>
             </Accordion>
