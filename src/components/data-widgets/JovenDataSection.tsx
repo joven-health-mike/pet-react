@@ -55,7 +55,7 @@ const JovenDataSection: React.FC = () => {
   )
 
   useEffect(() => {
-    if (typeSessionGroups !== undefined) {
+    if (typeSessionGroups) {
       const newData: Map<string, number> = new Map()
 
       for (const sessionGroup of typeSessionGroups) {
@@ -63,7 +63,7 @@ const JovenDataSection: React.FC = () => {
           const shiftedMonth =
             MONTH_NAMES[(MONTH_NAMES.indexOf(month) + 6) % 12]
           const hoursForMonth = sessionGroup.totalHours(shiftedMonth)
-          const newHoursValue = (newData.get(shiftedMonth) || 0) + hoursForMonth
+          const newHoursValue = (newData.get(shiftedMonth) ?? 0) + hoursForMonth
           newData.set(shiftedMonth, newHoursValue)
         }
       }
@@ -79,7 +79,7 @@ const JovenDataSection: React.FC = () => {
   }, [typeSessionGroups])
 
   useEffect(() => {
-    if (typeSessionGroups !== undefined) {
+    if (typeSessionGroups) {
       const newData: Map<string, Map<string, number>> = new Map()
 
       for (const serviceName of typeSessionGroups.getNames()) {
@@ -102,7 +102,7 @@ const JovenDataSection: React.FC = () => {
   }, [typeSessionGroups])
 
   useEffect(() => {
-    if (providerSessionGroups !== undefined) {
+    if (providerSessionGroups) {
       // TODO: For any provider who has less than 10 hours/month, bundle them into an "Other" category
       const newData: Map<string, Map<string, number>> = new Map()
 
@@ -126,7 +126,7 @@ const JovenDataSection: React.FC = () => {
   }, [providerSessionGroups])
 
   useEffect(() => {
-    if (customerSessionGroups !== undefined) {
+    if (customerSessionGroups) {
       const customerAbsentRates = new Map<string, number>()
       const customerNames = customerSessionGroups.getNames()
       customerNames.forEach((customerName) => {
@@ -142,7 +142,7 @@ const JovenDataSection: React.FC = () => {
   }, [customerSessionGroups])
 
   useEffect(() => {
-    if (providerSessionGroups !== undefined) {
+    if (providerSessionGroups) {
       const providerAbsentRates = new Map<string, number>()
       const providerNames = providerSessionGroups.getNames()
       providerNames.forEach((providerName) => {
@@ -163,7 +163,7 @@ const JovenDataSection: React.FC = () => {
       <Box sx={{ m: 2 }}>
         <CustomButton onClick={handlePrint}>Download PDF</CustomButton>
         <div ref={componentRef}>
-          {hoursByMonthData !== undefined && (
+          {hoursByMonthData && (
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ArrowDropDownIcon />}
@@ -180,7 +180,7 @@ const JovenDataSection: React.FC = () => {
               </AccordionDetails>
             </Accordion>
           )}
-          {hoursByServiceData !== undefined && (
+          {hoursByServiceData && (
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ArrowDropDownIcon />}
@@ -197,7 +197,7 @@ const JovenDataSection: React.FC = () => {
               </AccordionDetails>
             </Accordion>
           )}
-          {hoursByProviderData !== undefined && (
+          {hoursByProviderData && (
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ArrowDropDownIcon />}
@@ -214,7 +214,7 @@ const JovenDataSection: React.FC = () => {
               </AccordionDetails>
             </Accordion>
           )}
-          {customerNoShowData !== undefined && (
+          {customerNoShowData && (
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ArrowDropDownIcon />}
@@ -231,7 +231,7 @@ const JovenDataSection: React.FC = () => {
               </AccordionDetails>
             </Accordion>
           )}
-          {providerNoShowData !== undefined && (
+          {providerNoShowData && (
             <Accordion defaultExpanded={true}>
               <AccordionSummary
                 expandIcon={<ArrowDropDownIcon />}

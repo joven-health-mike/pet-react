@@ -39,7 +39,7 @@ const CsvLoader: React.FC<CsvLoaderProps> = ({
           return (
             <>
               <CustomButton {...getRootProps()}>{buttonText}</CustomButton>
-              {csvData !== undefined && csvData.length > 0 && (
+              {csvData && csvData.length > 0 && (
                 <>
                   <CustomButton
                     {...getRemoveFileProps()}

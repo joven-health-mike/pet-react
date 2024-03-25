@@ -30,9 +30,7 @@ const ProviderReportUploadWidget: React.FC<ProviderReportUploadWidgetProps> = ({
           setSessions([])
         }}
         onData2Loaded={(data: string[][]) => {
-          if (sessionDataAdapter !== undefined) {
-            data = sessionDataAdapter(data)
-          }
+          data = sessionDataAdapter ? sessionDataAdapter(data) : data
           handleUploadDataNew(data, setSessions, createSession)
         }}
         onData2Cleared={() => {

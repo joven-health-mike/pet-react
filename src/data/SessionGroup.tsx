@@ -9,8 +9,8 @@ export default class SessionGroup {
 
   totalHours(month?: string): number {
     this.loadMetrics()
-    if (month !== undefined) {
-      const hours = this.sessionGroupData.hoursByMonth.get(month) || 0
+    if (month) {
+      const hours = this.sessionGroupData.hoursByMonth.get(month) ?? 0
       return hours
     } else {
       return parseFloat((this.sessionGroupData.numMinutes / 60).toFixed(3))

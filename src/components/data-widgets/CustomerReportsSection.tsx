@@ -48,7 +48,7 @@ const CustomerReportsSection: React.FC = () => {
           setSelectedCustomer(item)
         }}
       />
-      {selectedCustomer !== "" && customerSessionGroups !== undefined && (
+      {selectedCustomer !== "" && customerSessionGroups && (
         <>
           <CustomerReport
             customerName={selectedCustomer}

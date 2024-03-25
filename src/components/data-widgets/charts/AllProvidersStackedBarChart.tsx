@@ -16,7 +16,7 @@ const AllProvidersStackedBarChart: React.FC<
   const dataLabels = new Set<string>()
   for (const providerName of data.keys()) {
     const color = randomColor(0.6)
-    for (const month of (data.get(providerName) || new Map()).keys()) {
+    for (const month of (data.get(providerName) ?? new Map()).keys()) {
       dataLabels.add(month)
     }
     const dataSet = [...data.get(providerName)!.values()]
