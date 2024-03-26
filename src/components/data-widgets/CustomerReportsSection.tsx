@@ -7,7 +7,7 @@ import CustomerReport from "./CustomerReport"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 
 const CustomerReportsSection: React.FC = () => {
-  const { data: sessions, customerSessionGroups } = useContext(SessionsContext)
+  const { customerSessionGroups } = useContext(SessionsContext)
   const [monthlyReportData, setMonthlyReportData] = useState<
     Map<string, string[]>
   >(new Map())
@@ -37,43 +37,45 @@ const CustomerReportsSection: React.FC = () => {
 
   return (
     <>
-      <DefaultHeader>Customer Reports</DefaultHeader>
-      <DefaultSelectInput
-        label="Select a Customer"
-        items={[
-          ...new Set(sessions.map((session) => session.schoolName).sort()),
-        ]}
-        enableSelectAll={false}
-        onItemSelected={(item) => {
-          setSelectedCustomer(item)
-        }}
-      />
-      {selectedCustomer !== "" && customerSessionGroups && (
+      {customerSessionGroups && (
         <>
-          <CustomerReport
-            customerName={selectedCustomer}
-            reportEntries={monthlyReportData}
-            presences={
-              customerSessionGroups
-                .getSessionGroupForName(selectedCustomer)!
-                .presences()!
-            }
-            absences={
-              customerSessionGroups
-                .getSessionGroupForName(selectedCustomer)!
-                .absences()!
-            }
-            noShowsByMonth={
-              customerSessionGroups
-                .getSessionGroupForName(selectedCustomer)!
-                .noShowRatesByMonth()!
-            }
-            noShowsByWeek={
-              customerSessionGroups
-                .getSessionGroupForName(selectedCustomer)!
-                .noShowRatesByWeek()!
-            }
+          <DefaultHeader>Customer Reports</DefaultHeader>
+          <DefaultSelectInput
+            label="Select a Customer"
+            items={[...customerSessionGroups.getNames()]}
+            enableSelectAll={false}
+            onItemSelected={(item) => {
+              setSelectedCustomer(item)
+            }}
           />
+          {selectedCustomer !== "" && (
+            <>
+              <CustomerReport
+                customerName={selectedCustomer}
+                reportEntries={monthlyReportData}
+                presences={
+                  customerSessionGroups
+                    .getSessionGroupForName(selectedCustomer)!
+                    .presences()!
+                }
+                absences={
+                  customerSessionGroups
+                    .getSessionGroupForName(selectedCustomer)!
+                    .absences()!
+                }
+                noShowsByMonth={
+                  customerSessionGroups
+                    .getSessionGroupForName(selectedCustomer)!
+                    .noShowRatesByMonth()!
+                }
+                noShowsByWeek={
+                  customerSessionGroups
+                    .getSessionGroupForName(selectedCustomer)!
+                    .noShowRatesByWeek()!
+                }
+              />
+            </>
+          )}
         </>
       )}
     </>

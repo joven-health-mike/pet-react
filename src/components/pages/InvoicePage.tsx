@@ -13,7 +13,6 @@ import InvoiceCalculator from "../../utils/InvoiceCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
 import { INVOICE_HEADERS, createInvoiceLine } from "../../export/Invoices"
-import { adaptTeleTeachersDataForInvoices } from "../../utils/TeleTeachersAdapter"
 import HorizontalLine from "../widgets/HorizontalLine"
 import {
   INVOICE_SUMMARY_HEADERS,
@@ -198,9 +197,7 @@ const InvoicePage: React.FC = () => {
         <HorizontalLine />
         <DefaultGrid direction="row">
           <DefaultGridItem>
-            <ProviderReportUploadWidget
-              sessionDataAdapter={adaptTeleTeachersDataForInvoices}
-            />
+            <ProviderReportUploadWidget />
           </DefaultGridItem>
         </DefaultGrid>
         <HorizontalLine />

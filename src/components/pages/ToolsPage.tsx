@@ -6,7 +6,6 @@ import { buttonStyles } from "../styles/mixins"
 import Navbar from "../navbar/Navbar"
 import UploadDataWidget from "../widgets/UploadDataWidget"
 import { handleUploadData } from "../../utils/DataProcessor"
-import { adaptTeleTeachersDataForPayroll } from "../../utils/TeleTeachersAdapter"
 import Session, { createSession } from "../../data/Session"
 import {
   SAD_HEADERS,
@@ -17,6 +16,7 @@ import HorizontalLine from "../widgets/HorizontalLine"
 import DefaultHeader from "../widgets/DefaultHeader"
 import DefaultGrid from "../widgets/DefaultGrid"
 import DefaultGridItem from "../widgets/DefaultGridItem"
+import { adaptTeleTeachersData } from "../../utils/TeleTeachersAdapter"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -52,7 +52,7 @@ const ToolsPage: React.FC = () => {
             subPrompt="This is a report exported from **TeleTeachers**."
             onDataLoaded={(data: string[][]) =>
               handleUploadData(
-                adaptTeleTeachersDataForPayroll(data),
+                adaptTeleTeachersData(data),
                 setSessions,
                 createSession
               )

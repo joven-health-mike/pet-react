@@ -1,35 +1,5 @@
-const EMPTY_LINE = ["", "", "", "", "", "", "", "", "", "", "", "", ""]
-
-export const adaptTeleTeachersData = (
-  data: string[][],
-  shouldSkip: (dataArray: string[]) => boolean = () => false
-) => {
-  const parsedData: string[][] = parseData(data)
-  const filteredData: string[][] = []
-  for (const datum of parsedData) {
-    if (shouldSkip(datum)) continue
-    filteredData.push(datum)
-  }
-  return filteredData
-}
-
-export const adaptTeleTeachersDataForInvoices = (data: string[][]) => {
-  return adaptTeleTeachersData(
-    data,
-    (dataArray) =>
-      dataArray[0] === "Jacek McGuinness" ||
-      dataArray[1] === "Joven Health" ||
-      dataArray[1] === "Joven Health Test District"
-  )
-}
-
-export const adaptTeleTeachersDataForPayroll = (data: string[][]) => {
-  return adaptTeleTeachersData(
-    data,
-    (dataArray) =>
-      dataArray[0] === "Jacek McGuinness" ||
-      dataArray[1] === "Joven Health Test District"
-  )
+export const adaptTeleTeachersData = (data: string[][]): string[][] => {
+  return parseData(data)
 }
 
 const parseData = (data: string[][]) => {
@@ -63,7 +33,7 @@ const lineIsHeaders = (datum: string[]) => datum[0] === "District Name"
 
 const lineIsEmpty = (datum: string[]) => {
   for (let i = 0; i < datum.length; i++) {
-    if (datum[i] !== EMPTY_LINE[i]) {
+    if (datum[i] !== "") {
       return false
     }
   }

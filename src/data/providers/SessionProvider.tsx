@@ -1,5 +1,9 @@
 import React, { ReactNode, useEffect, useState } from "react"
-import Session from "../Session"
+import Session, {
+  sessionFilterGenerator as sessionSkipper,
+  skipAllJovenData,
+  skipTestData,
+} from "../Session"
 import SessionGroups, { createSessionGroups } from "../SessionGroups"
 
 export type SessionsDataProviderProps = {
@@ -62,15 +66,28 @@ export const SessionsProvider: React.FC<SessionsDataProviderProps> = ({
     return "Indirect Time"
   }
 
-  const skipJovenSessions = (session: Session) =>
-    session.schoolName === "Joven Health"
-
   useEffect(() => {
     if (sessions.length > 0) {
-      setCustomerSessionGroups(createSessionGroups(sessions, customerFilter))
-      setProviderSessionGroups(createSessionGroups(sessions, providerFilter))
+      setCustomerSessionGroups(
+        createSessionGroups(
+          sessions,
+          customerFilter,
+          sessionSkipper(sessions, skipAllJovenData)
+        )
+      )
+      setProviderSessionGroups(
+        createSessionGroups(
+          sessions,
+          providerFilter,
+          sessionSkipper(sessions, skipTestData)
+        )
+      )
       setTypeSessionGroups(
-        createSessionGroups(sessions, typeFilter, skipJovenSessions)
+        createSessionGroups(
+          sessions,
+          typeFilter,
+          sessionSkipper(sessions, skipAllJovenData)
+        )
       )
     } else {
       setCustomerSessionGroups(undefined)

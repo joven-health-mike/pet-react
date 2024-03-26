@@ -1,4 +1,4 @@
-import Session from "./Session"
+import Session, { sessionFilterGenerator } from "./Session"
 import SessionGroup, { createSessionGroup } from "./SessionGroup"
 
 export default class SessionGroups {
@@ -26,22 +26,21 @@ export default class SessionGroups {
 export const createSessionGroups = (
   allSessions: Session[],
   nameFilter: (session: Session) => string,
-  shouldSkip: (session: Session) => boolean = () => false
+  sessionSkipper: Generator<Session, void, unknown> = sessionFilterGenerator(
+    allSessions
+  )
 ) => {
   if (allSessions.length === 0) return undefined
 
   const newSessions: Map<string, Session[]> = new Map()
   const newNames: Set<string> = new Set()
 
-  for (const session of allSessions) {
-    if (shouldSkip(session)) continue
-    const name = nameFilter(session)
+  for (const nextSession of sessionSkipper) {
+    const name = nameFilter(nextSession)
     newNames.add(name)
-    if (!newSessions.has(name)) {
-      newSessions.set(name, [])
-    }
-
-    newSessions.get(name)!.push(session)
+    const newSessionsValue = newSessions.get(name) ?? []
+    newSessionsValue.push(nextSession)
+    newSessions.set(name, newSessionsValue)
   }
   const result: Map<string, SessionGroup> = new Map()
   for (const name of newNames) {

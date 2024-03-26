@@ -10,7 +10,6 @@ import PayrollCalculator from "../../utils/PayrollCalculator"
 import { handleUploadData } from "../../utils/DataProcessor"
 import { downloadCsv } from "../../utils/CsvHelper"
 import { PAYROLL_HEADERS, createPayrollLine } from "../../export/Payroll"
-import { adaptTeleTeachersDataForPayroll } from "../../utils/TeleTeachersAdapter"
 import {
   TRANSACTION_HEADERS,
   createTransactionLine,
@@ -115,9 +114,7 @@ const PayrollPage: React.FC = () => {
           <HorizontalLine />
         </>
         <>
-          <ProviderReportUploadWidget
-            sessionDataAdapter={adaptTeleTeachersDataForPayroll}
-          />
+          <ProviderReportUploadWidget />
           <HorizontalLine />
         </>
         {readyToDownload && (

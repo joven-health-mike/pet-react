@@ -38,14 +38,14 @@ describe("Invoice Calculator", () => {
   it("should determine line description - present", () => {
     const invoiceCalculator = createInvoiceCalculator()
     const invoiceMap = invoiceCalculator.calculate()
-    expect(MOCK_SESSIONS[0].serviceName).toEqual(
+    expect(MOCK_SESSIONS[0].toString()).toEqual(
       invoiceMap.get(MOCK_CUSTOMERS[0])![0].lineDescription
     )
   })
   it("should determine line description - absent", () => {
     const invoiceCalculator = createInvoiceCalculator()
     const invoiceMap = invoiceCalculator.calculate()
-    expect(MOCK_SESSIONS[3].serviceName + " - Absent").toEqual(
+    expect(MOCK_SESSIONS[3].toString()).toEqual(
       invoiceMap.get(MOCK_CUSTOMERS[0])![3].lineDescription
     )
   })

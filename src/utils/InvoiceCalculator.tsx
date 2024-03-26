@@ -17,8 +17,6 @@ export default class InvoiceCalculator {
     const customerMap = new Map()
 
     for (const session of this.sessions) {
-      if (session.schoolName === "Joven Health") continue
-
       const invoiceParams = getInvoiceParamsForName(
         this.invoiceParams,
         session.schoolName
