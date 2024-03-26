@@ -42,6 +42,11 @@ export default class SessionGroup {
     return this.sessionGroupData.absenceRatesByWeek
   }
 
+  sessionTypeTimes(): Map<string, number> {
+    this.loadMetrics()
+    return this.sessionGroupData.sessionTypeTimes
+  }
+
   private loadMetrics(): void {
     if (this.loaded === false) {
       const sortedSessions = [...this.sessions]

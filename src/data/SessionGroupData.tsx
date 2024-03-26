@@ -25,8 +25,10 @@ export default class SessionGroupData {
   absencesByWeek: Map<string, number> = new Map()
   absenceRatesByWeek: Map<string, number> = new Map()
 
-  earliestDate: Date = new Date("01/01/2990")
-  latestDate: Date = new Date("01/01/1990")
+  sessionTypeTimes: Map<string, number> = new Map()
+
+  private earliestDate: Date = new Date("01/01/2990")
+  private latestDate: Date = new Date("01/01/1990")
 
   private calculateMinutesByMonth(session: Session): void {
     const sessionDate = new Date(session.date)
@@ -107,6 +109,14 @@ export default class SessionGroupData {
     }
   }
 
+  private calculateSessionTypeTimes = (session: Session) => {
+    const newValue =
+      (this.sessionTypeTimes.get(session.enhancedServiceName()) ?? 0) +
+      parseInt(session.totalTime)
+
+    this.sessionTypeTimes.set(session.enhancedServiceName(), newValue)
+  }
+
   processNewSession(session: Session): void {
     const sessionDate = new Date(session.date)
     this.earliestDate = getEarlierDate(this.earliestDate, sessionDate)
@@ -115,6 +125,7 @@ export default class SessionGroupData {
     this.calculateMonthlyAttendance(session)
     this.calculateWeeklyAttendance(session)
     this.calculateMinutesByMonth(session)
+    this.calculateSessionTypeTimes(session)
   }
 
   finalize(): void {

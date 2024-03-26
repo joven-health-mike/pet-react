@@ -67,7 +67,6 @@ const AllHoursLineSection: React.FC<AllHoursLineSectionProps> = ({ label }) => {
     for (const sessionGroup of typeSessionGroups) {
       const monthGenerator = shiftedMonths(CHART_MONTH_OFFSET)
       for (const month of monthGenerator) {
-        console.log(`month: ${month}`)
         const hoursForMonth = sessionGroup.totalHours(month)
         const newHoursValue = (newData.get(month) ?? 0) + hoursForMonth
         newData.set(month, newHoursValue)

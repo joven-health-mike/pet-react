@@ -20,6 +20,7 @@ const DefaultAccordionGroup: React.FC<DefaultAccordionGroupProps> = ({
         (node, index) =>
           node && (
             <DefaultAccordion
+              key={index}
               label={labels[index]}
               defaultExpanded={defaultExpanded ? defaultExpanded[index] : false}
             >
