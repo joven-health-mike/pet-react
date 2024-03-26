@@ -1,11 +1,10 @@
 import {
-  addOneWeek,
   getEarlierDate,
   getFirstDayOfWeekName,
-  getFullWeeksBetweenDates,
   getLaterDate,
   getMonthName,
   shiftedMonths,
+  weekIterator,
 } from "../utils/DateUtils"
 import Session from "./Session"
 
@@ -97,15 +96,7 @@ export default class SessionGroupData {
   }
 
   private calculateWeeklyAbsentRates = () => {
-    // calculate absent rates for each week
-    const numberOfWeeks = getFullWeeksBetweenDates(
-      this.earliestDate,
-      this.latestDate
-    )
-    let previousWeek = this.earliestDate
-
-    for (let i = 0; i <= numberOfWeeks; i++) {
-      let weekName = getFirstDayOfWeekName(previousWeek)
+    for (const weekName of weekIterator(this.earliestDate, this.latestDate)) {
       this.absenceRatesByWeek.set(
         weekName,
         calculateAbsentRate(
@@ -113,8 +104,6 @@ export default class SessionGroupData {
           this.absencesByWeek!.get(weekName) ?? 0
         )
       )
-
-      previousWeek = addOneWeek(previousWeek)
     }
   }
 

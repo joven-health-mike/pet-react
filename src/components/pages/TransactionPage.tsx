@@ -32,10 +32,8 @@ const TransactionsPage: React.FC = () => {
 
     transactions.forEach((inputs) => {
       let hasFullData = true
-      for (let i = 0; i < inputs.length; i++) {
-        if (inputs[i] === "") {
-          hasFullData = false
-        }
+      for (const input of inputs) {
+        hasFullData = input !== ""
       }
       if (hasFullData) {
         csvOutput += createTransactionLine(inputs)

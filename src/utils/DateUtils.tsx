@@ -155,3 +155,14 @@ export const getWeekOfYear = (date: Date) => {
   // Calculate the week number
   return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
 }
+
+export function* weekIterator(first: Date, second: Date) {
+  const numberOfWeeks = getFullWeeksBetweenDates(first, second)
+  let previousWeek = first
+
+  for (let i = 0; i <= numberOfWeeks; i++) {
+    yield getFirstDayOfWeekName(previousWeek)
+
+    previousWeek = addOneWeek(previousWeek)
+  }
+}

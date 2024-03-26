@@ -5,15 +5,14 @@ export default class SessionGroups {
   constructor(public sessions: Map<string, SessionGroup>) {}
   private groupNames: string[] = []
 
-  getNames(): string[] {
-    if (this.groupNames.length === 0) {
-      this.groupNames = [...this.sessions.keys()].sort()
-    }
-    return this.groupNames
-  }
-
   getSessionGroupForName(name: string): SessionGroup | undefined {
     return this.sessions.get(name)
+  }
+
+  *names(): IterableIterator<string> {
+    for (const name of [...this.sessions.keys()].sort()) {
+      yield name
+    }
   }
 
   *[Symbol.iterator](): IterableIterator<SessionGroup> {

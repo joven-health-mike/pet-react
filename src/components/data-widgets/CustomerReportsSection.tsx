@@ -42,7 +42,7 @@ const CustomerReportsSection: React.FC = () => {
           <DefaultHeader>Customer Reports</DefaultHeader>
           <DefaultSelectInput
             label="Select a Customer"
-            items={[...customerSessionGroups.getNames()]}
+            items={[...customerSessionGroups.names()]}
             enableSelectAll={false}
             onItemSelected={(item) => {
               setSelectedCustomer(item)

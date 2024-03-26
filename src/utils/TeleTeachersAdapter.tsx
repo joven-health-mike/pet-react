@@ -32,10 +32,9 @@ const parseData = (data: string[][]) => {
 const lineIsHeaders = (datum: string[]) => datum[0] === "District Name"
 
 const lineIsEmpty = (datum: string[]) => {
-  for (let i = 0; i < datum.length; i++) {
-    if (datum[i] !== "") {
-      return false
-    }
+  for (const data of datum) {
+    if (data !== "") return false
   }
+
   return true
 }

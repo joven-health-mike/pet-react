@@ -11,9 +11,9 @@ type NoShowChartProps = {
 
 const NoShowChart: React.FC<NoShowChartProps> = ({ chartTitle, data }) => {
   const randomColors: string[] = []
-  for (let i = 0; i < [...data.keys()].length; i++) {
+  Array.from({ length: data.size }).forEach(() => {
     randomColors.push(randomColor(0.6))
-  }
+  })
   const noShowChartData = {
     labels: [...data.keys()],
     datasets: [
