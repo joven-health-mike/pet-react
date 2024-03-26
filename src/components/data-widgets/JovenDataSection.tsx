@@ -13,7 +13,7 @@ import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
 import { useReactToPrint } from "react-to-print"
 import AllProvidersStackedBarChart from "./charts/AllProvidersStackedBarChart"
-import DefaultAccordion from "../widgets/DefaultAccordion"
+import DefaultAccordionGroup from "../widgets/DefaultAccordionGroup"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -36,19 +36,38 @@ const JovenDataSection: React.FC = () => {
       <Box sx={{ m: 2 }}>
         <CustomButton onClick={handlePrint}>Download PDF</CustomButton>
         <div ref={componentRef}>
-          <AllHoursLineSection />
-          <AllHoursStackedSection />
-          <HoursByProviderSection />
-          <CustomerNoShowSection />
-          <ProviderNoShowSection />
+          <DefaultAccordionGroup
+            labels={[
+              "Total Hours Delivered by Month",
+              "Service Hours Delivered by Month",
+              "Provider Hours Delivered by Month",
+              "No-Show Rates by Customer",
+              "No-Show Rates by Provider",
+            ]}
+            nodes={[
+              <AllHoursLineSection label={"Total Hours Delivered by Month"} />,
+              <AllHoursStackedSection
+                label={"Service Hours Delivered by Month"}
+              />,
+              <HoursByProviderSection
+                label={"Provider Hours Delivered by Month"}
+              />,
+              <CustomerNoShowSection label={"No-Show Rates by Customer"} />,
+              <ProviderNoShowSection label={"No-Show Rates by Provider"} />,
+            ]}
+            defaultExpanded={[true, true, true, true, true]}
+          />
         </div>
       </Box>
     </>
   )
 }
 
-const AllHoursLineSection: React.FC = () => {
-  const CHART_LABEL = "Total Hours Delivered by Month"
+type AllHoursLineSectionProps = {
+  label: string
+}
+
+const AllHoursLineSection: React.FC<AllHoursLineSectionProps> = ({ label }) => {
   const { typeSessionGroups } = useContext(SessionsContext)
   const [hoursByMonthData, setHoursByMonthData] = useState<Map<string, number>>(
     new Map()
@@ -80,16 +99,19 @@ const AllHoursLineSection: React.FC = () => {
   return (
     <>
       {hoursByMonthData && (
-        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
-          <AllHoursLineChart chartTitle={CHART_LABEL} data={hoursByMonthData} />
-        </DefaultAccordion>
+        <AllHoursLineChart chartTitle={label} data={hoursByMonthData} />
       )}
     </>
   )
 }
 
-const AllHoursStackedSection: React.FC = () => {
-  const CHART_LABEL = "Service Hours Delivered by Month"
+type AllHoursStackedSectionProps = {
+  label: string
+}
+
+const AllHoursStackedSection: React.FC<AllHoursStackedSectionProps> = ({
+  label,
+}) => {
   const { typeSessionGroups } = useContext(SessionsContext)
   const [hoursByServiceData, setHoursByServiceData] = useState<
     Map<string, Map<string, number>>
@@ -117,19 +139,19 @@ const AllHoursStackedSection: React.FC = () => {
   return (
     <>
       {hoursByServiceData && (
-        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
-          <AllHoursStackedBarChart
-            chartTitle={CHART_LABEL}
-            data={hoursByServiceData}
-          />
-        </DefaultAccordion>
+        <AllHoursStackedBarChart chartTitle={label} data={hoursByServiceData} />
       )}
     </>
   )
 }
 
-const HoursByProviderSection: React.FC = () => {
-  const CHART_LABEL = "Provider Hours Delivered by Month"
+type HoursByProviderSectionProps = {
+  label: string
+}
+
+const HoursByProviderSection: React.FC<HoursByProviderSectionProps> = ({
+  label,
+}) => {
   const [hoursByProviderData, setHoursByProviderData] = useState<
     Map<string, Map<string, number>>
   >(new Map())
@@ -158,20 +180,23 @@ const HoursByProviderSection: React.FC = () => {
     <>
       (
       {hoursByProviderData && (
-        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
-          <AllProvidersStackedBarChart
-            chartTitle={CHART_LABEL}
-            data={hoursByProviderData}
-          />
-        </DefaultAccordion>
+        <AllProvidersStackedBarChart
+          chartTitle={label}
+          data={hoursByProviderData}
+        />
       )}
       )
     </>
   )
 }
 
-const CustomerNoShowSection: React.FC = () => {
-  const CHART_LABEL = "No-Show Rates by Customer"
+type CustomerNoShowSectionProps = {
+  label: string
+}
+
+const CustomerNoShowSection: React.FC<CustomerNoShowSectionProps> = ({
+  label,
+}) => {
   const { customerSessionGroups } = useContext(SessionsContext)
   const [customerNoShowData, setCustomerNoShowData] =
     useState<Map<string, number>>()
@@ -194,16 +219,19 @@ const CustomerNoShowSection: React.FC = () => {
   return (
     <>
       {customerNoShowData && (
-        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
-          <NoShowChart chartTitle={CHART_LABEL} data={customerNoShowData} />
-        </DefaultAccordion>
+        <NoShowChart chartTitle={label} data={customerNoShowData} />
       )}
     </>
   )
 }
 
-const ProviderNoShowSection: React.FC = () => {
-  const CHART_LABEL = "No-Show Rates by Provider"
+type ProviderNoShowSectionProps = {
+  label: string
+}
+
+const ProviderNoShowSection: React.FC<ProviderNoShowSectionProps> = ({
+  label,
+}) => {
   const { providerSessionGroups } = useContext(SessionsContext)
   const [providerNoShowData, setProviderNoShowData] =
     useState<Map<string, number>>()
@@ -224,9 +252,7 @@ const ProviderNoShowSection: React.FC = () => {
   return (
     <>
       {providerNoShowData && (
-        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
-          <NoShowChart chartTitle={CHART_LABEL} data={providerNoShowData} />
-        </DefaultAccordion>
+        <NoShowChart chartTitle={label} data={providerNoShowData} />
       )}
     </>
   )

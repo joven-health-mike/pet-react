@@ -9,9 +9,9 @@ import DefaultGridItem from "../widgets/DefaultGridItem"
 import NoShowPieChart from "./charts/NoShowPieChart"
 import { formatPercent } from "../../utils/MathUtils"
 import NoShowLineChart from "./charts/NoShowLineChart"
-import DefaultAccordion from "../widgets/DefaultAccordion"
 import DefaultText from "../widgets/DefaultText"
 import { SessionsContext } from "../../data/providers/SessionProvider"
+import DefaultAccordionGroup from "../widgets/DefaultAccordionGroup"
 
 type CustomerReportProps = {
   customerName: string
@@ -27,18 +27,21 @@ const CustomerReport: React.FC<CustomerReportProps> = ({ customerName }) => {
         sx={{ p: 2 }}
       >
         <DefaultHeader props={{ mt: 0 }}>{customerName}</DefaultHeader>
-        <DefaultAccordion label="Session List">
-          <SessionListSection customerName={customerName} />
-        </DefaultAccordion>
-        <DefaultAccordion label="Absence Metrics" defaultExpanded={true}>
-          <AbsencesMetricsSection customerName={customerName} />
-        </DefaultAccordion>
-        <DefaultAccordion label="No-Show Rates by Month" defaultExpanded={true}>
-          <NoShowRatesByMonthSection customerName={customerName} />
-        </DefaultAccordion>
-        <DefaultAccordion label="No-Show Rates by Week" defaultExpanded={true}>
-          <NoShowRatesByWeekSection customerName={customerName} />
-        </DefaultAccordion>
+        <DefaultAccordionGroup
+          labels={[
+            "Session List",
+            "Absence Metrics",
+            "No-Show Rates by Month",
+            "No-Show Rates by Week",
+          ]}
+          nodes={[
+            <SessionListSection customerName={customerName} />,
+            <AbsencesMetricsSection customerName={customerName} />,
+            <NoShowRatesByMonthSection customerName={customerName} />,
+            <NoShowRatesByWeekSection customerName={customerName} />,
+          ]}
+          defaultExpanded={[false, true, true, true]}
+        />
 
         <Box sx={{ mb: 2 }}></Box>
       </Box>
