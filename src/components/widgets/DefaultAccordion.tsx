@@ -7,7 +7,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 type DefaultAccordionProps = {
   children: ReactNode
   label: string
-  defaultExpanded: boolean
+  defaultExpanded?: boolean
 }
 
 const DefaultAccordion: React.FC<DefaultAccordionProps> = ({
