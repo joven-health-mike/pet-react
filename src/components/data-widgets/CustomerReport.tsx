@@ -112,44 +112,33 @@ const AbsencesMetricsSection: React.FC<AbsencesMetricsSectionProps> = ({
   customerName,
 }) => {
   const { customerSessionGroups } = useContext(SessionsContext)
+  const [presences, setPresences] = useState<number>(0)
+  const [absences, setAbsences] = useState<number>(0)
+
+  useEffect(() => {
+    if (!customerSessionGroups) return
+    setPresences(
+      customerSessionGroups!.getSessionGroupForName(customerName)!.presences()!
+    )
+    setAbsences(
+      customerSessionGroups!.getSessionGroupForName(customerName)!.absences()!
+    )
+  }, [customerSessionGroups, customerName])
+
   return (
     <DefaultGrid direction="row">
       <DefaultGridItem>
         <NoShowPieChart
           chartTitle={"Overall No-Show Rate"}
-          presences={
-            customerSessionGroups!
-              .getSessionGroupForName(customerName)!
-              .presences()!
-          }
-          absences={
-            customerSessionGroups!
-              .getSessionGroupForName(customerName)!
-              .absences()!
-          }
+          presences={presences}
+          absences={absences}
         />
       </DefaultGridItem>
       <DefaultGridItem>
         <DefaultHeader>
           Total No-Show Rate:{" "}
           {formatPercent(
-            customerSessionGroups!
-              .getSessionGroupForName(customerName)!
-              .presences()! +
-              customerSessionGroups!
-                .getSessionGroupForName(customerName)!
-                .absences()! ===
-              0
-              ? 0
-              : customerSessionGroups!
-                  .getSessionGroupForName(customerName)!
-                  .absences()! /
-                  (customerSessionGroups!
-                    .getSessionGroupForName(customerName)!
-                    .presences()! +
-                    customerSessionGroups!
-                      .getSessionGroupForName(customerName)!
-                      .absences()!)
+            presences + absences === 0 ? 0 : absences / (presences + absences)
           )}
         </DefaultHeader>
       </DefaultGridItem>
