@@ -4,6 +4,8 @@ import React from "react"
 import { BarChart } from "../../widgets/BarChart"
 import { randomColor } from "../../../utils/Colors"
 
+const GRAPH_TRANSPARENCY = 0.6
+
 type NoShowChartProps = {
   chartTitle: string
   data: Map<string, number>
@@ -12,7 +14,7 @@ type NoShowChartProps = {
 const NoShowChart: React.FC<NoShowChartProps> = ({ chartTitle, data }) => {
   const randomColors: string[] = []
   Array.from({ length: data.size }).forEach(() => {
-    randomColors.push(randomColor(0.6))
+    randomColors.push(randomColor(GRAPH_TRANSPARENCY))
   })
   const noShowChartData = {
     labels: [...data.keys()],

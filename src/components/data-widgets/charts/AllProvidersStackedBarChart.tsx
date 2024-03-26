@@ -4,6 +4,8 @@ import React from "react"
 import { BarChart } from "../../widgets/BarChart"
 import { randomColor } from "../../../utils/Colors"
 
+const GRAPH_TRANSPARENCY = 0.6
+
 type AllProvidersStackedBarChartProps = {
   chartTitle: string
   data: Map<string, Map<string, number>>
@@ -15,7 +17,7 @@ const AllProvidersStackedBarChart: React.FC<
   const dataSets = []
   const dataLabels = new Set<string>()
   for (const providerName of data.keys()) {
-    const color = randomColor(0.6)
+    const color = randomColor(GRAPH_TRANSPARENCY)
     for (const month of (data.get(providerName) ?? new Map()).keys()) {
       dataLabels.add(month)
     }
