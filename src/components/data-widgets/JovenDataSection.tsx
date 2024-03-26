@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
 import { Box } from "@mui/material"
 import NoShowChart from "./charts/NoShowChart"
@@ -9,33 +9,19 @@ import { sortMapByValue } from "../../utils/SortUtils"
 import AllHoursStackedBarChart from "./charts/AllHoursStackedBarChart"
 import { shiftedMonths } from "../../utils/DateUtils"
 import AllHoursLineChart from "./charts/AllHoursLineChart"
-import styled from "styled-components"
-import { buttonStyles } from "../styles/mixins"
-import { useReactToPrint } from "react-to-print"
 import AllProvidersStackedBarChart from "./charts/AllProvidersStackedBarChart"
 import DefaultAccordionGroup from "../widgets/DefaultAccordionGroup"
-
-const CustomButton = styled.button`
-  ${buttonStyles}
-  width: 300px;
-`
+import Printable from "../widgets/Printable"
 
 const CHART_MONTH_OFFSET = 6
+const TITLE = "Joven Health Analytics"
 
 const JovenDataSection: React.FC = () => {
-  const componentRef = useRef(null)
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current!,
-    documentTitle: "Joven Health Report.pdf",
-    onAfterPrint: () => console.log("Printed PDF successfully!"),
-  })
-
   return (
     <>
-      <DefaultHeader>Joven Health Analytics</DefaultHeader>
+      <DefaultHeader>{TITLE}</DefaultHeader>
       <Box sx={{ m: 2 }}>
-        <CustomButton onClick={handlePrint}>Download PDF</CustomButton>
-        <div ref={componentRef}>
+        <Printable docTitle={`${TITLE}.pdf`}>
           <DefaultAccordionGroup
             labels={[
               "Total Hours Delivered by Month",
@@ -57,7 +43,7 @@ const JovenDataSection: React.FC = () => {
             ]}
             defaultExpanded={[true, true, true, true, true]}
           />
-        </div>
+        </Printable>
       </Box>
     </>
   )
