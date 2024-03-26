@@ -26,7 +26,9 @@ const CustomerReportsSection: React.FC = () => {
             />
             {selectedCustomer !== "" && (
               <>
-                <CustomerReport customerName={selectedCustomer} />
+                <CustomerNameContext.Provider value={selectedCustomer}>
+                  <CustomerReport />
+                </CustomerNameContext.Provider>
               </>
             )}
           </>
@@ -35,5 +37,7 @@ const CustomerReportsSection: React.FC = () => {
     </>
   )
 }
+
+export const CustomerNameContext = React.createContext<string>("")
 
 export default CustomerReportsSection
