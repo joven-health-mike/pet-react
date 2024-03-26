@@ -7,10 +7,10 @@ import {
 } from "./data/providers/SessionProvider"
 
 function App() {
-  const { data: sessions } = useContext(SessionsContext)
+  const { allSessions } = useContext(SessionsContext)
 
   return (
-    <SessionsProvider data={sessions}>
+    <SessionsProvider allSessions={allSessions}>
       <div className="App">
         <AppRouter />
       </div>

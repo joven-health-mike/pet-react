@@ -34,7 +34,7 @@ const CustomButton = styled.button`
 
 const PayrollPage: React.FC = () => {
   const [contractors, setContractors] = useState<Contractor[]>([])
-  const { data: sessions } = useContext(SessionsContext)
+  const { allSessions: sessions } = useContext(SessionsContext)
   const [readyToDownload, setReadyToDownload] = useState<boolean>(false)
 
   const processAndDownloadTransactions = () => {

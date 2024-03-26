@@ -10,7 +10,7 @@ import CustomerReportsSection from "../data-widgets/CustomerReportsSection"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 
 const AnalyticsPage: React.FC = () => {
-  const { data: sessions } = useContext(SessionsContext)
+  const { allSessions: sessions } = useContext(SessionsContext)
 
   return (
     <>

@@ -12,15 +12,24 @@ import AllHoursLineChart from "./charts/AllHoursLineChart"
 import AllProvidersStackedBarChart from "./charts/AllProvidersStackedBarChart"
 import DefaultAccordionGroup from "../widgets/DefaultAccordionGroup"
 import Printable from "../widgets/Printable"
+import CustomerFilter from "./CustomerFilter"
 
 const CHART_MONTH_OFFSET = 6
 const TITLE = "Joven Health Analytics"
+
+// TODO: Add new component which allows filtering customers/providers that are included in the graph data
 
 const JovenDataSection: React.FC = () => {
   return (
     <>
       <DefaultHeader>{TITLE}</DefaultHeader>
-      <Box sx={{ m: 2 }}>
+      <Box
+        sx={{ m: 2 }}
+        flexDirection={"column"}
+        justifyContent="center"
+        display="flex"
+      >
+        <CustomerFilter />
         <Printable docTitle={`${TITLE}.pdf`}>
           <DefaultAccordionGroup
             labels={[
@@ -60,7 +69,10 @@ const AllHoursLineSection: React.FC<AllHoursLineSectionProps> = ({ label }) => {
   )
 
   useEffect(() => {
-    if (!typeSessionGroups) return
+    if (!typeSessionGroups) {
+      setHoursByMonthData(new Map())
+      return
+    }
 
     const newData: Map<string, number> = new Map()
 
@@ -103,7 +115,10 @@ const AllHoursStackedSection: React.FC<AllHoursStackedSectionProps> = ({
   >(new Map())
 
   useEffect(() => {
-    if (!typeSessionGroups) return
+    if (!typeSessionGroups) {
+      setHoursByServiceData(new Map())
+      return
+    }
 
     const newData: Map<string, Map<string, number>> = new Map()
 
@@ -143,7 +158,10 @@ const HoursByProviderSection: React.FC<HoursByProviderSectionProps> = ({
   const { providerSessionGroups } = useContext(SessionsContext)
 
   useEffect(() => {
-    if (!providerSessionGroups) return
+    if (!providerSessionGroups) {
+      setHoursByProviderData(new Map())
+      return
+    }
     // TODO: For any provider who has less than 10 hours/month, bundle them into an "Other" category
     const newData: Map<string, Map<string, number>> = new Map()
 
@@ -163,14 +181,12 @@ const HoursByProviderSection: React.FC<HoursByProviderSectionProps> = ({
 
   return (
     <>
-      (
       {hoursByProviderData && (
         <AllProvidersStackedBarChart
           chartTitle={label}
           data={hoursByProviderData}
         />
       )}
-      )
     </>
   )
 }
@@ -187,7 +203,10 @@ const CustomerNoShowSection: React.FC<CustomerNoShowSectionProps> = ({
     useState<Map<string, number>>()
 
   useEffect(() => {
-    if (!customerSessionGroups) return
+    if (!customerSessionGroups) {
+      setCustomerNoShowData(new Map())
+      return
+    }
 
     const customerAbsentRates = new Map<string, number>()
 
@@ -222,7 +241,10 @@ const ProviderNoShowSection: React.FC<ProviderNoShowSectionProps> = ({
     useState<Map<string, number>>()
 
   useEffect(() => {
-    if (!providerSessionGroups) return
+    if (!providerSessionGroups) {
+      setProviderNoShowData(new Map())
+      return
+    }
 
     const providerAbsentRates = new Map<string, number>()
 
