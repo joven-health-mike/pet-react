@@ -44,7 +44,7 @@ export const createSessionGroups = (
   }
   const result: Map<string, SessionGroup> = new Map()
   for (const name of newNames) {
-    result.set(name, createSessionGroup(newSessions.get(name)!)!)
+    result.set(name, createSessionGroup(name, newSessions.get(name)!)!)
   }
 
   return new SessionGroups(result)

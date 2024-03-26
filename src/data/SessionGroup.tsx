@@ -3,7 +3,7 @@ import Session from "./Session"
 import SessionGroupData from "./SessionGroupData"
 
 export default class SessionGroup {
-  constructor(public sessions: Session[]) {}
+  constructor(public name: string, public sessions: Session[]) {}
   private loaded = false
   private sessionGroupData = new SessionGroupData()
 
@@ -57,9 +57,6 @@ export default class SessionGroup {
   }
 }
 
-export const createSessionGroup = (sessions: Session[]) => {
-  if (sessions.length === 0) {
-    return undefined
-  }
-  return new SessionGroup(sessions)
+export const createSessionGroup = (name: string, sessions: Session[]) => {
+  return new SessionGroup(name, sessions)
 }

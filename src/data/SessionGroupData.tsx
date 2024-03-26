@@ -1,11 +1,11 @@
 import {
-  MONTH_NAMES,
   addOneWeek,
   getEarlierDate,
   getFirstDayOfWeekName,
   getFullWeeksBetweenDates,
   getLaterDate,
   getMonthName,
+  shiftedMonths,
 } from "../utils/DateUtils"
 import Session from "./Session"
 
@@ -40,12 +40,11 @@ export default class SessionGroupData {
 
   private calculateHoursByMonth(): void {
     // calculate absent rates for each month
-    for (let i = 0; i <= MONTH_NAMES.length; i++) {
-      const monthIndex = (i + 6) % MONTH_NAMES.length
-      const monthName = MONTH_NAMES[monthIndex]
+    for (const monthName of shiftedMonths(6)) {
+      const minutesForMonth = this.minutesByMonth!.get(monthName) ?? 0
       this.hoursByMonth.set(
         monthName,
-        parseFloat(((this.minutesByMonth!.get(monthName) ?? 0) / 60).toFixed(3))
+        parseFloat((minutesForMonth / 60).toFixed(3))
       )
     }
   }
@@ -87,16 +86,12 @@ export default class SessionGroupData {
   }
 
   private calculateMonthlyAbsentRates = () => {
-    // calculate absent rates for each month
-    for (let i = 0; i <= MONTH_NAMES.length; i++) {
-      const monthIndex = (i + 6) % MONTH_NAMES.length
-      const monthName = MONTH_NAMES[monthIndex]
+    for (const monthName of shiftedMonths(6)) {
+      const presencesForMonth = this.presencesByMonth!.get(monthName) ?? 0
+      const absencesForMonth = this.absencesByMonth!.get(monthName) ?? 0
       this.absenceRatesByMonth.set(
         monthName,
-        calculateAbsentRate(
-          this.presencesByMonth!.get(monthName) ?? 0,
-          this.absencesByMonth!.get(monthName) ?? 0
-        )
+        calculateAbsentRate(presencesForMonth, absencesForMonth)
       )
     }
   }

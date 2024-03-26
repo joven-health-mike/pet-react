@@ -1,4 +1,4 @@
-export const MONTH_NAMES = [
+const MONTH_NAMES = [
   "January",
   "February",
   "March",
@@ -13,7 +13,11 @@ export const MONTH_NAMES = [
   "December",
 ]
 
-export const WEEK_DATES = [[]]
+export function* shiftedMonths(shiftAmount: number = 0) {
+  for (let i = 0; i < MONTH_NAMES.length; i++) {
+    yield MONTH_NAMES[(i + shiftAmount) % 12]
+  }
+}
 
 export const todaysDate = () => {
   return formatDate(new Date())
