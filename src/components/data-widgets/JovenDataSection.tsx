@@ -2,13 +2,7 @@
 
 import React, { useContext, useEffect, useRef, useState } from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-} from "@mui/material"
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import { Box } from "@mui/material"
 import NoShowChart from "./charts/NoShowChart"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 import { sortMapByValue } from "../../utils/SortUtils"
@@ -19,6 +13,7 @@ import styled from "styled-components"
 import { buttonStyles } from "../styles/mixins"
 import { useReactToPrint } from "react-to-print"
 import AllProvidersStackedBarChart from "./charts/AllProvidersStackedBarChart"
+import DefaultAccordion from "../widgets/DefaultAccordion"
 
 const CustomButton = styled.button`
   ${buttonStyles}
@@ -85,21 +80,9 @@ const AllHoursLineSection: React.FC = () => {
   return (
     <>
       {hoursByMonthData && (
-        <Accordion defaultExpanded={true}>
-          <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            id="panel-header"
-            aria-controls="panel-content"
-          >
-            {CHART_LABEL}
-          </AccordionSummary>
-          <AccordionDetails>
-            <AllHoursLineChart
-              chartTitle={CHART_LABEL}
-              data={hoursByMonthData}
-            />
-          </AccordionDetails>
-        </Accordion>
+        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
+          <AllHoursLineChart chartTitle={CHART_LABEL} data={hoursByMonthData} />
+        </DefaultAccordion>
       )}
     </>
   )
@@ -134,21 +117,12 @@ const AllHoursStackedSection: React.FC = () => {
   return (
     <>
       {hoursByServiceData && (
-        <Accordion defaultExpanded={true}>
-          <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            id="panel-header"
-            aria-controls="panel-content"
-          >
-            {CHART_LABEL}
-          </AccordionSummary>
-          <AccordionDetails>
-            <AllHoursStackedBarChart
-              chartTitle={CHART_LABEL}
-              data={hoursByServiceData}
-            />
-          </AccordionDetails>
-        </Accordion>
+        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
+          <AllHoursStackedBarChart
+            chartTitle={CHART_LABEL}
+            data={hoursByServiceData}
+          />
+        </DefaultAccordion>
       )}
     </>
   )
@@ -184,21 +158,12 @@ const HoursByProviderSection: React.FC = () => {
     <>
       (
       {hoursByProviderData && (
-        <Accordion defaultExpanded={true}>
-          <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            id="panel-header"
-            aria-controls="panel-content"
-          >
-            {CHART_LABEL}
-          </AccordionSummary>
-          <AccordionDetails>
-            <AllProvidersStackedBarChart
-              chartTitle={CHART_LABEL}
-              data={hoursByProviderData}
-            />
-          </AccordionDetails>
-        </Accordion>
+        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
+          <AllProvidersStackedBarChart
+            chartTitle={CHART_LABEL}
+            data={hoursByProviderData}
+          />
+        </DefaultAccordion>
       )}
       )
     </>
@@ -229,18 +194,9 @@ const CustomerNoShowSection: React.FC = () => {
   return (
     <>
       {customerNoShowData && (
-        <Accordion defaultExpanded={true}>
-          <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            id="panel-header"
-            aria-controls="panel-content"
-          >
-            {CHART_LABEL}
-          </AccordionSummary>
-          <AccordionDetails>
-            <NoShowChart chartTitle={CHART_LABEL} data={customerNoShowData} />
-          </AccordionDetails>
-        </Accordion>
+        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
+          <NoShowChart chartTitle={CHART_LABEL} data={customerNoShowData} />
+        </DefaultAccordion>
       )}
     </>
   )
@@ -268,18 +224,9 @@ const ProviderNoShowSection: React.FC = () => {
   return (
     <>
       {providerNoShowData && (
-        <Accordion defaultExpanded={true}>
-          <AccordionSummary
-            expandIcon={<ArrowDropDownIcon />}
-            id="panel-header"
-            aria-controls="panel-content"
-          >
-            {CHART_LABEL}
-          </AccordionSummary>
-          <AccordionDetails>
-            <NoShowChart chartTitle={CHART_LABEL} data={providerNoShowData} />
-          </AccordionDetails>
-        </Accordion>
+        <DefaultAccordion defaultExpanded={true} label={CHART_LABEL}>
+          <NoShowChart chartTitle={CHART_LABEL} data={providerNoShowData} />
+        </DefaultAccordion>
       )}
     </>
   )
