@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react"
+import React, { ReactNode, useMemo, useState } from "react"
 import Session, {
   sessionFilterGenerator as sessionSkipper,
   skipAllJovenData,
@@ -66,7 +66,7 @@ export const SessionsProvider: React.FC<SessionsDataProviderProps> = ({
     return "Indirect Time"
   }
 
-  useEffect(() => {
+  useMemo(() => {
     if (sessions.length > 0) {
       setCustomerSessionGroups(
         createSessionGroups(
@@ -93,8 +93,7 @@ export const SessionsProvider: React.FC<SessionsDataProviderProps> = ({
       setCustomerSessionGroups(undefined)
       setProviderSessionGroups(undefined)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessions.length])
+  }, [sessions])
 
   return (
     <SessionsContext.Provider
