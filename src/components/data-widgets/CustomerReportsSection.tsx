@@ -9,10 +9,26 @@ import { SessionsContext } from "../../data/providers/SessionProvider"
 const CustomerReportsSection: React.FC = () => {
   const { customerSessionGroups } = useContext(SessionsContext)
   const [selectedCustomer, setSelectedCustomer] = useState<string>("")
+  const [numCustomers, setNumCustomers] = useState<number>(0)
 
   useEffect(() => {
-    setSelectedCustomer("")
+    if (!customerSessionGroups) {
+      setNumCustomers(0)
+    } else {
+      const customerNames = [...customerSessionGroups.names()]
+      setNumCustomers(customerNames.length)
+    }
   }, [customerSessionGroups])
+
+  useEffect(() => {
+    if (!customerSessionGroups || numCustomers === 0) {
+      setSelectedCustomer("")
+    } else {
+      const customerNames = [...customerSessionGroups.names()]
+      setSelectedCustomer(customerNames[0])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [numCustomers])
 
   return (
     <>

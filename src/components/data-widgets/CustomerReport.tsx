@@ -13,6 +13,7 @@ import { SessionsContext } from "../../data/providers/SessionProvider"
 import DefaultAccordionGroup from "../widgets/DefaultAccordionGroup"
 import { CustomerNameContext } from "./CustomerReportsSection"
 import { sortMapByValue } from "../../utils/SortUtils"
+import SessionGroup from "../../data/SessionGroup"
 
 const CustomerReport: React.FC = () => {
   const customerName = useContext(CustomerNameContext)
@@ -57,6 +58,22 @@ const ServiceOverviewSection: React.FC = () => {
   const [reportViews, setReportViews] = useState<ReactNode[]>([])
 
   useEffect(() => {
+    if (
+      customerSessionGroups &&
+      customerSessionGroups.getSessionGroupForName(customerName)
+    ) {
+      setMonthlyReportData(
+        customerSessionGroups
+          .getSessionGroupForName(customerName)!
+          .sessionTypeTimes()
+      )
+    } else {
+      setMonthlyReportData(new Map())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerSessionGroups, customerName])
+
+  useEffect(() => {
     const data = []
 
     for (const view of sessionListGenerator(
@@ -79,17 +96,6 @@ const ServiceOverviewSection: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    if (customerName.length === 0) {
-      setMonthlyReportData(new Map())
-    } else {
-      const sessionGroup =
-        customerSessionGroups!.getSessionGroupForName(customerName)!
-      setMonthlyReportData(sessionGroup.sessionTypeTimes())
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerName])
-
   return <>{reportViews}</>
 }
 
@@ -100,13 +106,18 @@ const AbsencesMetricsSection: React.FC = () => {
   const [absences, setAbsences] = useState<number>(0)
 
   useEffect(() => {
-    if (!customerSessionGroups) return
-    setPresences(
-      customerSessionGroups!.getSessionGroupForName(customerName)!.presences()!
-    )
-    setAbsences(
-      customerSessionGroups!.getSessionGroupForName(customerName)!.absences()!
-    )
+    if (
+      customerSessionGroups &&
+      customerSessionGroups.getSessionGroupForName(customerName)
+    ) {
+      setPresences(
+        customerSessionGroups.getSessionGroupForName(customerName)!.presences()
+      )
+      setAbsences(
+        customerSessionGroups.getSessionGroupForName(customerName)!.absences()
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerSessionGroups, customerName])
 
   return (
@@ -133,38 +144,74 @@ const AbsencesMetricsSection: React.FC = () => {
 const NoShowRatesByMonthSection: React.FC = () => {
   const { customerSessionGroups } = useContext(SessionsContext)
   const customerName = useContext(CustomerNameContext)
+  const [currentSessionGroup, setCurrentSessionGroup] = useState<
+    SessionGroup | undefined
+  >(undefined)
+
+  useEffect(() => {
+    if (
+      customerSessionGroups &&
+      customerSessionGroups.getSessionGroupForName(customerName)
+    ) {
+      setCurrentSessionGroup(
+        customerSessionGroups.getSessionGroupForName(customerName)
+      )
+    } else {
+      setCurrentSessionGroup(undefined)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerSessionGroups, customerName])
+
   return (
-    <DefaultGrid direction="row">
-      <DefaultGridItem>
-        <NoShowLineChart
-          chartTitle="No-Show Rate by Month"
-          data={
-            customerSessionGroups!
-              .getSessionGroupForName(customerName)!
-              .noShowRatesByMonth()!
-          }
-        />
-      </DefaultGridItem>
-    </DefaultGrid>
+    <>
+      {currentSessionGroup && (
+        <DefaultGrid direction="row">
+          <DefaultGridItem>
+            <NoShowLineChart
+              chartTitle="No-Show Rate by Month"
+              data={currentSessionGroup.noShowRatesByMonth()}
+            />
+          </DefaultGridItem>
+        </DefaultGrid>
+      )}
+    </>
   )
 }
 
 const NoShowRatesByWeekSection: React.FC = () => {
   const { customerSessionGroups } = useContext(SessionsContext)
   const customerName = useContext(CustomerNameContext)
+  const [currentSessionGroup, setCurrentSessionGroup] = useState<
+    SessionGroup | undefined
+  >(undefined)
+
+  useEffect(() => {
+    if (
+      customerSessionGroups &&
+      customerSessionGroups.getSessionGroupForName(customerName)
+    ) {
+      setCurrentSessionGroup(
+        customerSessionGroups.getSessionGroupForName(customerName)
+      )
+    } else {
+      setCurrentSessionGroup(undefined)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerSessionGroups, customerName])
+
   return (
-    <DefaultGrid direction="row">
-      <DefaultGridItem>
-        <NoShowLineChart
-          chartTitle="No-Show Rate by Week"
-          data={
-            customerSessionGroups!
-              .getSessionGroupForName(customerName)!
-              .noShowRatesByWeek()!!
-          }
-        />
-      </DefaultGridItem>
-    </DefaultGrid>
+    <>
+      {currentSessionGroup && (
+        <DefaultGrid direction="row">
+          <DefaultGridItem>
+            <NoShowLineChart
+              chartTitle="No-Show Rate by Week"
+              data={currentSessionGroup.noShowRatesByWeek()}
+            />
+          </DefaultGridItem>
+        </DefaultGrid>
+      )}
+    </>
   )
 }
 
