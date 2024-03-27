@@ -59,6 +59,16 @@ const DefaultMultiSelectInput: React.FC<DefaultMultiSelectInputProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection.length])
 
+  useEffect(() => {
+    // auto select all customers
+    if (items && items.length > 0) {
+      setSelection(items)
+    } else {
+      setSelection([])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items])
+
   return (
     <>
       <Box justifyContent="center" display="flex">
