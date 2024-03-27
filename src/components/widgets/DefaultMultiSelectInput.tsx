@@ -52,7 +52,6 @@ const DefaultMultiSelectInput: React.FC<DefaultMultiSelectInputProps> = ({
   }
 
   useEffect(() => {
-    console.log(`selection changed: ${selection}`)
     if (!selection) return
     onItemsSelected(
       selection.filter((item) => item !== "Select All" && item !== "Clear")
