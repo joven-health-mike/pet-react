@@ -31,6 +31,7 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
   const [selectItems, setSelectItems] = useState<React.JSX.Element[]>()
 
   useEffect(() => {
+    console.log(`selection changed: ${selection}`)
     if (
       enableSelectAll &&
       onAllSelected !== undefined &&
@@ -48,11 +49,9 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
       return
     }
 
-    const newMenuItems = items.map((item, index) => {
-      const adjIndex = enableSelectAll ? index + 1 : index
-      const selection = items[adjIndex]
+    const newMenuItems = items.map((item) => {
       return (
-        <MenuItem value={selection} key={selection}>
+        <MenuItem value={item} key={item}>
           {item}
         </MenuItem>
       )
@@ -96,7 +95,9 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
               setSelection(e.target.value)
             }}
           >
-            {enableSelectAll && <MenuItem value={""}>{"Select All"}</MenuItem>}
+            {enableSelectAll && (
+              <MenuItem value={"Select All"}>{"Select All"}</MenuItem>
+            )}
             {selectItems}
           </Select>
         </FormControl>

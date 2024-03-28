@@ -39,6 +39,7 @@ const CustomerReportsSection: React.FC = () => {
               label="Select a Customer"
               items={customerNames}
               enableSelectAll={false}
+              onAllSelected={() => console.log("select all")}
               onItemSelected={(item) => {
                 setSelectedCustomer(item)
               }}
