@@ -9,26 +9,25 @@ import { SessionsContext } from "../../data/providers/SessionProvider"
 const CustomerReportsSection: React.FC = () => {
   const { customerSessionGroups } = useContext(SessionsContext)
   const [selectedCustomer, setSelectedCustomer] = useState<string>("")
-  const [numCustomers, setNumCustomers] = useState<number>(0)
+  const [customerNames, setCustomerNames] = useState<string[]>([])
 
   useEffect(() => {
-    if (!customerSessionGroups) {
-      setNumCustomers(0)
-    } else {
-      const customerNames = [...customerSessionGroups.names()]
-      setNumCustomers(customerNames.length)
-    }
-  }, [customerSessionGroups])
-
-  useEffect(() => {
-    if (!customerSessionGroups || numCustomers === 0) {
+    if (customerSessionGroups === undefined) {
       setSelectedCustomer("")
+      setCustomerNames([])
     } else {
       const customerNames = [...customerSessionGroups.names()]
-      setSelectedCustomer(customerNames[0])
+      if (
+        selectedCustomer.length > 0 &&
+        !customerNames.join().includes(selectedCustomer)
+      ) {
+        setSelectedCustomer(customerNames[0])
+      }
+
+      setCustomerNames(customerNames)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [numCustomers])
+  }, [customerSessionGroups])
 
   return (
     <>
@@ -38,7 +37,7 @@ const CustomerReportsSection: React.FC = () => {
             <DefaultHeader>Customer Reports</DefaultHeader>
             <DefaultSelectInput
               label="Select a Customer"
-              items={[...customerSessionGroups.names()]}
+              items={customerNames}
               enableSelectAll={false}
               onItemSelected={(item) => {
                 setSelectedCustomer(item)

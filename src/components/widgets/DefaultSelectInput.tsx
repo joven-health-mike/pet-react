@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react"
 type DefaultSelectInputProps = {
   label: string
   items: string[]
-  onItemSelected: (item: string, index: number) => void
+  onItemSelected: (item: string) => void
   onAllSelected?: () => void
   enableSelectAll?: boolean
 }
@@ -25,18 +25,61 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
   onAllSelected,
   enableSelectAll = true,
 }) => {
-  const [selectedIndex, setSelectedIndex] = useState<number>(0)
+  const defaultValue = (items: string[]) =>
+    items && items.length > 0 ? items[0] : ""
+  const [selection, setSelection] = useState<string>(defaultValue(items))
+  const [selectItems, setSelectItems] = useState<React.JSX.Element[]>()
 
   useEffect(() => {
-    if (enableSelectAll && onAllSelected !== undefined && selectedIndex === 0) {
+    if (
+      enableSelectAll &&
+      onAllSelected !== undefined &&
+      selection === "Select All"
+    ) {
       onAllSelected()
-    } else if (enableSelectAll && selectedIndex > 0) {
-      onItemSelected(items[selectedIndex - 1], selectedIndex - 1)
-    } else if (!enableSelectAll) {
-      onItemSelected(items[selectedIndex], selectedIndex)
+    } else if (selection !== "") {
+      onItemSelected(selection)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedIndex])
+  }, [selection])
+
+  useEffect(() => {
+    if (items === undefined || items.length === 0) {
+      return
+    }
+
+    const newMenuItems = items.map((item, index) => {
+      const adjIndex = enableSelectAll ? index + 1 : index
+      const selection = items[adjIndex]
+      return (
+        <MenuItem value={selection} key={selection}>
+          {item}
+        </MenuItem>
+      )
+    })
+
+    if (selection === "") {
+      setSelection(items[0])
+    } else {
+      let shouldUpdateDefault = true
+      for (const item of items) {
+        if (selection === item) {
+          shouldUpdateDefault = false
+          break
+        }
+      }
+      if (shouldUpdateDefault) {
+        setSelection(items[0])
+      }
+    }
+
+    if (selection !== "" && !items.join().includes(selection)) {
+      setSelection(items[0])
+    }
+
+    setSelectItems(newMenuItems)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items])
 
   return (
     <>
@@ -46,22 +89,15 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
           <Select
             labelId={label.toLowerCase()}
             id={label.toLowerCase()}
-            defaultValue=""
-            value={`${selectedIndex}`}
+            defaultValue={defaultValue(items)}
+            value={selection}
             label={label}
             onChange={(e: SelectChangeEvent<string>) => {
-              setSelectedIndex(parseInt(e.target.value))
+              setSelection(e.target.value)
             }}
           >
-            {enableSelectAll && <MenuItem value={"0"}>{"Select All"}</MenuItem>}
-            {items.map((item, index) => {
-              const adjIndex = enableSelectAll ? index + 1 : index
-              return (
-                <MenuItem value={`${adjIndex}`} key={adjIndex}>
-                  {item}
-                </MenuItem>
-              )
-            })}
+            {enableSelectAll && <MenuItem value={""}>{"Select All"}</MenuItem>}
+            {selectItems}
           </Select>
         </FormControl>
       </Box>
