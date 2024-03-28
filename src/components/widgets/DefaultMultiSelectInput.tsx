@@ -16,15 +16,17 @@ import React, { useEffect } from "react"
 type DefaultMultiSelectInputProps = {
   label: string
   items: string[]
+  defaultSelection: string[]
   onItemsSelected: (item: string[]) => void
 }
 
 const DefaultMultiSelectInput: React.FC<DefaultMultiSelectInputProps> = ({
   label,
   items,
+  defaultSelection,
   onItemsSelected,
 }) => {
-  const [selection, setSelection] = React.useState<string[]>([])
+  const [selection, setSelection] = React.useState<string[]>(defaultSelection)
   const [selectAllChecked, setSelectAllChecked] = React.useState<boolean>(false)
   const [clearChecked, setClearChecked] = React.useState<boolean>(false)
 
@@ -68,6 +70,11 @@ const DefaultMultiSelectInput: React.FC<DefaultMultiSelectInputProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items])
+
+  useEffect(() => {
+    setSelection(defaultSelection)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultSelection])
 
   return (
     <>

@@ -10,7 +10,8 @@ export default class SessionGroups {
   }
 
   *names(): IterableIterator<string> {
-    for (const name of [...this.sessions.keys()].sort()) {
+    const sortedKeys = [...this.sessions.keys()].sort()
+    for (const name of sortedKeys) {
       yield name
     }
   }
@@ -22,6 +23,9 @@ export default class SessionGroups {
   }
 }
 
+export const createEmptySessionGroups = () =>
+  new SessionGroups(new Map<string, SessionGroup>())
+
 export const createSessionGroups = (
   allSessions: Session[],
   nameFilter: (session: Session) => string,
@@ -29,7 +33,7 @@ export const createSessionGroups = (
     allSessions
   )
 ) => {
-  if (allSessions.length === 0) return undefined
+  if (allSessions.length === 0) return createEmptySessionGroups()
 
   const newSessions: Map<string, Session[]> = new Map()
   const newNames: Set<string> = new Set()

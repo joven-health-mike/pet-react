@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
 import { Box } from "@mui/material"
 import NoShowChart from "./charts/NoShowChart"
-import { SessionsContext } from "../../data/providers/SessionProvider"
 import { sortMapByValue } from "../../utils/SortUtils"
 import AllHoursStackedBarChart from "./charts/AllHoursStackedBarChart"
 import { shiftedMonths } from "../../utils/DateUtils"
@@ -12,7 +11,7 @@ import AllHoursLineChart from "./charts/AllHoursLineChart"
 import AllProvidersStackedBarChart from "./charts/AllProvidersStackedBarChart"
 import DefaultAccordionGroup from "../widgets/DefaultAccordionGroup"
 import Printable from "../widgets/Printable"
-import CustomerFilter from "./CustomerFilter"
+import { FilteredSessionsContext } from "../../data/providers/FilteredSessionProvider"
 
 const CHART_MONTH_OFFSET = 6
 const TITLE = "Joven Health Analytics"
@@ -29,7 +28,6 @@ const JovenDataSection: React.FC = () => {
         justifyContent="center"
         display="flex"
       >
-        <CustomerFilter />
         <Printable docTitle={`${TITLE}.pdf`}>
           <DefaultAccordionGroup
             labels={[
@@ -63,20 +61,20 @@ type AllHoursLineSectionProps = {
 }
 
 const AllHoursLineSection: React.FC<AllHoursLineSectionProps> = ({ label }) => {
-  const { typeSessionGroups } = useContext(SessionsContext)
+  const { filteredTypeSessionGroups } = useContext(FilteredSessionsContext)
   const [hoursByMonthData, setHoursByMonthData] = useState<Map<string, number>>(
     new Map()
   )
 
   useEffect(() => {
-    if (!typeSessionGroups) {
+    if (!filteredTypeSessionGroups) {
       setHoursByMonthData(new Map())
       return
     }
 
     const newData: Map<string, number> = new Map()
 
-    for (const sessionGroup of typeSessionGroups) {
+    for (const sessionGroup of filteredTypeSessionGroups) {
       const monthGenerator = shiftedMonths(CHART_MONTH_OFFSET)
       for (const month of monthGenerator) {
         const hoursForMonth = sessionGroup.totalHours(month)
@@ -91,7 +89,7 @@ const AllHoursLineSection: React.FC<AllHoursLineSectionProps> = ({ label }) => {
     }
 
     setHoursByMonthData(newData)
-  }, [typeSessionGroups])
+  }, [filteredTypeSessionGroups])
 
   return (
     <>
@@ -109,20 +107,20 @@ type AllHoursStackedSectionProps = {
 const AllHoursStackedSection: React.FC<AllHoursStackedSectionProps> = ({
   label,
 }) => {
-  const { typeSessionGroups } = useContext(SessionsContext)
+  const { filteredTypeSessionGroups } = useContext(FilteredSessionsContext)
   const [hoursByServiceData, setHoursByServiceData] = useState<
     Map<string, Map<string, number>>
   >(new Map())
 
   useEffect(() => {
-    if (!typeSessionGroups) {
+    if (!filteredTypeSessionGroups) {
       setHoursByServiceData(new Map())
       return
     }
 
     const newData: Map<string, Map<string, number>> = new Map()
 
-    for (const sessionGroup of typeSessionGroups) {
+    for (const sessionGroup of filteredTypeSessionGroups) {
       const monthlyMap = new Map()
       const monthGenerator = shiftedMonths(CHART_MONTH_OFFSET)
       for (const month of monthGenerator) {
@@ -134,7 +132,7 @@ const AllHoursStackedSection: React.FC<AllHoursStackedSectionProps> = ({
     }
 
     setHoursByServiceData(newData)
-  }, [typeSessionGroups])
+  }, [filteredTypeSessionGroups])
 
   return (
     <>
@@ -155,17 +153,17 @@ const HoursByProviderSection: React.FC<HoursByProviderSectionProps> = ({
   const [hoursByProviderData, setHoursByProviderData] = useState<
     Map<string, Map<string, number>>
   >(new Map())
-  const { providerSessionGroups } = useContext(SessionsContext)
+  const { filteredProviderSessionGroups } = useContext(FilteredSessionsContext)
 
   useEffect(() => {
-    if (!providerSessionGroups) {
+    if (!filteredProviderSessionGroups) {
       setHoursByProviderData(new Map())
       return
     }
     // TODO: For any provider who has less than 10 hours/month, bundle them into an "Other" category
     const newData: Map<string, Map<string, number>> = new Map()
 
-    for (const sessionGroup of providerSessionGroups) {
+    for (const sessionGroup of filteredProviderSessionGroups) {
       const monthlyMap = new Map()
       const monthGenerator = shiftedMonths(CHART_MONTH_OFFSET)
       for (const month of monthGenerator) {
@@ -177,7 +175,7 @@ const HoursByProviderSection: React.FC<HoursByProviderSectionProps> = ({
     }
 
     setHoursByProviderData(newData)
-  }, [providerSessionGroups])
+  }, [filteredProviderSessionGroups])
 
   return (
     <>
@@ -198,19 +196,19 @@ type CustomerNoShowSectionProps = {
 const CustomerNoShowSection: React.FC<CustomerNoShowSectionProps> = ({
   label,
 }) => {
-  const { customerSessionGroups } = useContext(SessionsContext)
+  const { filteredCustomerSessionGroups } = useContext(FilteredSessionsContext)
   const [customerNoShowData, setCustomerNoShowData] =
     useState<Map<string, number>>()
 
   useEffect(() => {
-    if (!customerSessionGroups) {
+    if (!filteredCustomerSessionGroups) {
       setCustomerNoShowData(new Map())
       return
     }
 
     const customerAbsentRates = new Map<string, number>()
 
-    for (const sessionGroup of customerSessionGroups) {
+    for (const sessionGroup of filteredCustomerSessionGroups) {
       // filter out customers with 0 absent rate
       if (sessionGroup.absentRate() > 0) {
         customerAbsentRates.set(sessionGroup.name, sessionGroup.absentRate())
@@ -218,7 +216,7 @@ const CustomerNoShowSection: React.FC<CustomerNoShowSectionProps> = ({
     }
 
     setCustomerNoShowData(sortMapByValue(customerAbsentRates))
-  }, [customerSessionGroups])
+  }, [filteredCustomerSessionGroups])
 
   return (
     <>
@@ -236,25 +234,27 @@ type ProviderNoShowSectionProps = {
 const ProviderNoShowSection: React.FC<ProviderNoShowSectionProps> = ({
   label,
 }) => {
-  const { providerSessionGroups } = useContext(SessionsContext)
+  const { filteredProviderSessionGroups } = useContext(FilteredSessionsContext)
   const [providerNoShowData, setProviderNoShowData] =
     useState<Map<string, number>>()
 
   useEffect(() => {
-    if (!providerSessionGroups) {
+    if (!filteredProviderSessionGroups) {
       setProviderNoShowData(new Map())
       return
     }
 
     const providerAbsentRates = new Map<string, number>()
 
-    for (const sessionGroup of providerSessionGroups) {
+    for (const sessionGroup of filteredProviderSessionGroups) {
+      // filter out customers with 0 absent rate
       if (sessionGroup.absentRate() > 0) {
         providerAbsentRates.set(sessionGroup.name, sessionGroup.absentRate())
       }
     }
+
     setProviderNoShowData(sortMapByValue(providerAbsentRates))
-  }, [providerSessionGroups])
+  }, [filteredProviderSessionGroups])
 
   return (
     <>

@@ -4,47 +4,47 @@ import React, { useContext, useEffect, useState } from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
 import DefaultSelectInput from "../widgets/DefaultSelectInput"
 import CustomerReport from "./CustomerReport"
-import { SessionsContext } from "../../data/providers/SessionProvider"
+import { FilteredSessionsContext } from "../../data/providers/FilteredSessionProvider"
 
 const CustomerReportsSection: React.FC = () => {
-  const { customerSessionGroups } = useContext(SessionsContext)
+  const { filteredCustomerSessionGroups } = useContext(FilteredSessionsContext)
   const [selectedCustomer, setSelectedCustomer] = useState<string>("")
   const [customerNames, setCustomerNames] = useState<string[]>([])
 
   useEffect(() => {
-    if (customerSessionGroups === undefined) {
+    const newCustomerNames = [...filteredCustomerSessionGroups.names()]
+    if (newCustomerNames.length === 0) {
       setSelectedCustomer("")
       setCustomerNames([])
-    } else {
-      const customerNames = [...customerSessionGroups.names()]
-      if (
-        selectedCustomer.length > 0 &&
-        !customerNames.join().includes(selectedCustomer)
-      ) {
-        setSelectedCustomer(customerNames[0])
-      }
-
-      setCustomerNames(customerNames)
+      return
     }
+    if (selectedCustomer === undefined) {
+      setSelectedCustomer(newCustomerNames[0])
+    } else if (
+      selectedCustomer.length > 0 &&
+      !newCustomerNames.join().includes(selectedCustomer)
+    ) {
+      setSelectedCustomer(newCustomerNames[0])
+    }
+    setCustomerNames(newCustomerNames)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerSessionGroups])
+  }, [filteredCustomerSessionGroups])
 
   return (
     <>
       <>
-        {customerSessionGroups && (
+        {filteredCustomerSessionGroups && (
           <>
             <DefaultHeader>Customer Reports</DefaultHeader>
             <DefaultSelectInput
               label="Select a Customer"
               items={customerNames}
               enableSelectAll={false}
-              onAllSelected={() => console.log("select all")}
               onItemSelected={(item) => {
                 setSelectedCustomer(item)
               }}
             />
-            {selectedCustomer !== "" && (
+            {customerNames.length > 0 && selectedCustomer !== "" && (
               <>
                 <CustomerNameContext.Provider value={selectedCustomer}>
                   <CustomerReport />

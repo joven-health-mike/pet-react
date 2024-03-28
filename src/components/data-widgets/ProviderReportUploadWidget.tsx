@@ -12,8 +12,7 @@ type ProviderReportUploadWidgetProps = {
 const ProviderReportUploadWidget: React.FC<ProviderReportUploadWidgetProps> = ({
   sessionDataAdapter = adaptTeleTeachersData,
 }) => {
-  const { allSessions: sessions, setAllSessions: setSessions } =
-    useContext(SessionsContext)
+  const { sessions, setSessions } = useContext(SessionsContext)
 
   return (
     <>

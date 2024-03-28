@@ -1,64 +1,55 @@
 import React, { ReactNode, useMemo, useState } from "react"
-import Session, {
-  sessionFilterGenerator as sessionSkipper,
-  skipAllJovenData,
-  skipTestData,
-} from "../Session"
-import SessionGroups, { createSessionGroups } from "../SessionGroups"
+import SessionGroups, {
+  createEmptySessionGroups,
+  createSessionGroups,
+} from "../SessionGroups"
+import Session from "../Session"
 
 export type SessionsDataProviderProps = {
-  allSessions: Session[]
+  sessions: Session[]
   children?: ReactNode | undefined
 }
 
 type SessionsContextData = {
-  allSessions: Session[]
-  filteredSessions: Session[]
-  customerSessionGroups: SessionGroups | undefined
-  allCustomerSessionGroups: SessionGroups | undefined
-  providerSessionGroups: SessionGroups | undefined
-  typeSessionGroups: SessionGroups | undefined
-  setAllSessions: (input: Session[]) => void
-  setFilteredSessions: (sessions: Session[]) => void
+  sessions: Session[]
+  customerSessionGroups: SessionGroups
+  providerSessionGroups: SessionGroups
+  typeSessionGroups: SessionGroups
+  setSessions: (input: Session[]) => void
 }
 
+const emptySessionGroups = createEmptySessionGroups()
+
 export const SessionsContext = React.createContext<SessionsContextData>({
-  allSessions: [],
-  filteredSessions: [],
-  customerSessionGroups: undefined,
-  allCustomerSessionGroups: undefined,
-  providerSessionGroups: undefined,
-  typeSessionGroups: undefined,
-  setAllSessions: (data: Session[]) => null,
-  setFilteredSessions: (sessions: Session[]) => null,
+  sessions: [],
+  customerSessionGroups: emptySessionGroups,
+  providerSessionGroups: emptySessionGroups,
+  typeSessionGroups: emptySessionGroups,
+  setSessions: (data: Session[]) => null,
 })
 
-export const SessionsProvider: React.FC<SessionsDataProviderProps> = ({
+export const AllSessionsProvider: React.FC<SessionsDataProviderProps> = ({
   children,
 }) => {
   const [sessions, setSessions] = useState<Session[]>([])
-  const [filteredSessions, setFilteredSessions] = useState<Session[]>([])
   const [customerSessionGroups, setCustomerSessionGroups] =
-    useState<SessionGroups>()
-  const [allCustomerSessionGroups, setAllCustomerSessionGroups] =
-    useState<SessionGroups>()
+    useState<SessionGroups>(emptySessionGroups)
   const [providerSessionGroups, setProviderSessionGroups] =
-    useState<SessionGroups>()
-  const [typeSessionGroups, setTypeSessionGroups] = useState<SessionGroups>()
+    useState<SessionGroups>(emptySessionGroups)
+  const [typeSessionGroups, setTypeSessionGroups] =
+    useState<SessionGroups>(emptySessionGroups)
 
   const delegate: SessionsContextData = {
-    allSessions: sessions,
-    filteredSessions: filteredSessions,
+    sessions: sessions,
     customerSessionGroups: customerSessionGroups,
-    allCustomerSessionGroups: allCustomerSessionGroups,
     providerSessionGroups: providerSessionGroups,
     typeSessionGroups: typeSessionGroups,
-    setAllSessions: setSessions,
-    setFilteredSessions: setFilteredSessions,
+    setSessions: setSessions,
   }
-  const customerFilter = (session: Session) => session.schoolName
-  const providerFilter = (session: Session) => session.providerName
-  const typeFilter = (session: Session) => {
+  const byCustomer = (session: Session) => session.schoolName
+  const byProvider = (session: Session) => session.providerName
+  // TODO: This is very Joven-Specific...
+  const byType = (session: Session) => {
     if (
       session.serviceName.includes("Psych") ||
       session.serviceName.includes("SpEd") ||
@@ -79,47 +70,16 @@ export const SessionsProvider: React.FC<SessionsDataProviderProps> = ({
   }
 
   useMemo(() => {
-    if (filteredSessions.length > 0) {
-      setCustomerSessionGroups(
-        createSessionGroups(
-          filteredSessions,
-          customerFilter,
-          sessionSkipper(filteredSessions, skipAllJovenData)
-        )
-      )
-      setProviderSessionGroups(
-        createSessionGroups(
-          filteredSessions,
-          providerFilter,
-          sessionSkipper(filteredSessions, skipTestData)
-        )
-      )
-      setTypeSessionGroups(
-        createSessionGroups(
-          filteredSessions,
-          typeFilter,
-          sessionSkipper(filteredSessions, skipAllJovenData)
-        )
-      )
-    } else {
-      setCustomerSessionGroups(undefined)
-      setProviderSessionGroups(undefined)
-      setTypeSessionGroups(undefined)
-    }
-  }, [filteredSessions])
-
-  useMemo(() => {
     if (sessions.length > 0) {
-      setAllCustomerSessionGroups(
-        createSessionGroups(
-          sessions,
-          customerFilter,
-          sessionSkipper(sessions, skipAllJovenData)
-        )
-      )
+      setCustomerSessionGroups(createSessionGroups(sessions, byCustomer))
+      setProviderSessionGroups(createSessionGroups(sessions, byProvider))
+      setTypeSessionGroups(createSessionGroups(sessions, byType))
     } else {
-      setAllCustomerSessionGroups(undefined)
+      setCustomerSessionGroups(emptySessionGroups)
+      setProviderSessionGroups(emptySessionGroups)
+      setTypeSessionGroups(emptySessionGroups)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessions])
 
   return (

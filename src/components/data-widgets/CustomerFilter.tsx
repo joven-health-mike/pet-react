@@ -3,73 +3,49 @@
 import React, { useContext, useEffect, useState } from "react"
 import { SessionsContext } from "../../data/providers/SessionProvider"
 import DefaultMultiSelectInput from "../widgets/DefaultMultiSelectInput"
-import Session from "../../data/Session"
+import { FilteredSessionsContext } from "../../data/providers/FilteredSessionProvider"
 
-const CustomerFilter: React.FC = () => {
-  const {
-    allSessions,
-    allCustomerSessionGroups: customerSessionGroups,
-    setFilteredSessions,
-  } = useContext(SessionsContext)
+type CustomerFilterProps = {
+  onCustomerFilterChanged: (selections: string[]) => void
+}
+
+const CustomerFilter: React.FC<CustomerFilterProps> = ({
+  onCustomerFilterChanged,
+}) => {
+  const { customerSessionGroups: allCustomerSessionGroups } =
+    useContext(SessionsContext)
+  const { filteredCustomerSessionGroups } = useContext(FilteredSessionsContext)
   const [customerNames, setCustomerNames] = useState<string[]>([])
   const [customerSelections, setCustomerSelections] = useState<string[]>([])
 
-  const onCustomersSelected = (selections: string[]) => {
-    const filteredSessions = []
-    for (const filteredSession of generateFilteredSessions(
-      allSessions,
-      selections
-    )) {
-      filteredSessions.push(filteredSession)
-    }
-
-    setFilteredSessions(filteredSessions)
-  }
-
-  function* generateFilteredSessions(
-    sessions: Session[],
-    selections: string[]
-  ) {
-    if (selections.length === 0) return
-
-    for (const session of sessions) {
-      for (const selection of selections) {
-        if (selection === session.schoolName) {
-          yield session
-          break
-        }
-      }
-    }
-  }
-
   useEffect(() => {
-    if (!customerSessionGroups) return
-
-    const newCustomerNames = []
-    for (const customerName of customerSessionGroups.names()) {
-      newCustomerNames.push(customerName)
-    }
+    const newCustomerNames = [...allCustomerSessionGroups.names()]
     setCustomerNames(newCustomerNames)
-  }, [customerSessionGroups])
+    setCustomerSelections(newCustomerNames)
+  }, [allCustomerSessionGroups])
 
   useEffect(() => {
-    if (!customerSelections) return
+    if (customerSelections === undefined) {
+      return
+    }
 
-    onCustomersSelected(customerSelections)
+    onCustomerFilterChanged(customerSelections)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerSelections])
+
+  useEffect(() => {
+    const newCustomerSelections = [...filteredCustomerSessionGroups.names()]
+    setCustomerSelections(newCustomerSelections)
+  }, [filteredCustomerSessionGroups])
 
   return (
     <>
       <DefaultMultiSelectInput
         label="Customer"
         items={customerNames}
+        defaultSelection={customerSelections}
         onItemsSelected={(items) => {
-          const newSelections = []
-          for (const item of items) {
-            newSelections.push(item)
-          }
-          setCustomerSelections(newSelections)
+          setCustomerSelections([...items])
         }}
       />
     </>

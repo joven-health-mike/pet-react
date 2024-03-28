@@ -31,7 +31,6 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
   const [selectItems, setSelectItems] = useState<React.JSX.Element[]>()
 
   useEffect(() => {
-    console.log(`selection changed: ${selection}`)
     if (
       enableSelectAll &&
       onAllSelected !== undefined &&
@@ -45,7 +44,7 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
   }, [selection])
 
   useEffect(() => {
-    if (items === undefined || items.length === 0) {
+    if (items === undefined) {
       return
     }
 
@@ -58,7 +57,11 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
     })
 
     if (selection === "") {
-      setSelection(items[0])
+      if (items.length > 0) {
+        setSelection(items[0])
+      } else {
+        setSelection("")
+      }
     } else {
       let shouldUpdateDefault = true
       for (const item of items) {
@@ -68,11 +71,19 @@ const DefaultSelectInput: React.FC<DefaultSelectInputProps> = ({
         }
       }
       if (shouldUpdateDefault) {
-        setSelection(items[0])
+        if (items.length > 0) {
+          setSelection(items[0])
+        } else {
+          setSelection("")
+        }
       }
     }
 
-    if (selection !== "" && !items.join().includes(selection)) {
+    if (
+      items.length > 0 &&
+      selection !== "" &&
+      !items.join().includes(selection)
+    ) {
       setSelection(items[0])
     }
 

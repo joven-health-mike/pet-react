@@ -33,7 +33,7 @@ const InvoicePage: React.FC = () => {
   const [contractors, setContractors] = useState<Contractor[]>([])
   const [customers, setCustomers] = useState<Customer[]>([])
   const [invoiceParams, setInvoiceParams] = useState<InvoiceParams[]>([])
-  const { allSessions: sessions } = useContext(SessionsContext)
+  const { sessions } = useContext(SessionsContext)
   const [accountingCodes, setAccountingCodes] = useState<AccountingCode[]>([])
   const [readyToDownload, setReadyToDownload] = useState<boolean>(false)
 

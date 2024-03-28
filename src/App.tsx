@@ -3,18 +3,18 @@ import "./App.css"
 import AppRouter from "./routes/AppRouter"
 import {
   SessionsContext,
-  SessionsProvider,
+  AllSessionsProvider,
 } from "./data/providers/SessionProvider"
 
 function App() {
-  const { allSessions } = useContext(SessionsContext)
+  const { sessions: allSessions } = useContext(SessionsContext)
 
   return (
-    <SessionsProvider allSessions={allSessions}>
+    <AllSessionsProvider sessions={allSessions}>
       <div className="App">
         <AppRouter />
       </div>
-    </SessionsProvider>
+    </AllSessionsProvider>
   )
 }
 
