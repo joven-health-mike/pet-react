@@ -45,11 +45,12 @@ const DefaultMultiSelectInput: React.FC<DefaultMultiSelectInputProps> = ({
     }
     if (!clearChecked && selectionValue.includes("Clear")) {
       setSelectAllChecked(false)
-      setClearChecked(!clearChecked)
+      setClearChecked(false)
       setSelection([])
       return
     }
 
+    setSelectAllChecked(false)
     setSelection(selectionValue)
   }
 
