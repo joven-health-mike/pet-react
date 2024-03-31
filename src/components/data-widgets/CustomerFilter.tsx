@@ -1,49 +1,38 @@
 // Copyright 2022 Social Fabric, LLC
 
 import React, { useContext, useEffect, useState } from "react"
-import { SessionsContext } from "../../data/providers/SessionProvider"
 import DefaultMultiSelectInput from "../widgets/DefaultMultiSelectInput"
-import { FilteredSessionsContext } from "../../data/providers/FilteredSessionProvider"
+import Session from "../../data/Session"
+import { useSessionGroupFilter } from "../hooks/SessionGroupFilterHook"
+import { FilterContext } from "../../data/providers/FilterProvider"
 
-type CustomerFilterProps = {
-  onCustomerFilterChanged: (selections: string[]) => void
-}
-
-const CustomerFilter: React.FC<CustomerFilterProps> = ({
-  onCustomerFilterChanged,
-}) => {
-  const { customerSessionGroups: allCustomerSessionGroups } =
-    useContext(SessionsContext)
-  const { filteredCustomerSessionGroups } = useContext(FilteredSessionsContext)
+const CustomerFilter: React.FC = () => {
+  const { setFilter } = useContext(FilterContext)
+  const sessionGroupFilter = useSessionGroupFilter()
   const [customerNames, setCustomerNames] = useState<string[]>([])
   const [customerSelections, setCustomerSelections] = useState<string[]>([])
 
   useEffect(() => {
-    const newCustomerNames = [...allCustomerSessionGroups.names()]
+    const newCustomerNames = [...sessionGroupFilter.names()]
     setCustomerNames(newCustomerNames)
     setCustomerSelections(newCustomerNames)
-  }, [allCustomerSessionGroups])
+  }, [sessionGroupFilter])
 
   useEffect(() => {
     if (customerSelections === undefined) {
       return
     }
 
-    onCustomerFilterChanged(customerSelections)
+    setFilter(customerSelections.join())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerSelections])
-
-  useEffect(() => {
-    const newCustomerSelections = [...filteredCustomerSessionGroups.names()]
-    setCustomerSelections(newCustomerSelections)
-  }, [filteredCustomerSessionGroups])
 
   return (
     <>
       <DefaultMultiSelectInput
         label="Customer"
         items={customerNames}
-        defaultSelection={customerSelections}
+        defaultSelection={[...customerSelections]}
         onItemsSelected={(items) => {
           setCustomerSelections([...items])
         }}
@@ -51,5 +40,7 @@ const CustomerFilter: React.FC<CustomerFilterProps> = ({
     </>
   )
 }
+
+export const byCustomer = (session: Session) => session.schoolName
 
 export default CustomerFilter

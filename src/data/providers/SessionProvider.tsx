@@ -4,6 +4,9 @@ import SessionGroups, {
   createSessionGroups,
 } from "../SessionGroups"
 import Session from "../Session"
+import { byCustomer } from "../../components/data-widgets/CustomerFilter"
+import { byProvider } from "../../components/data-widgets/ProviderFilter"
+import { byType } from "../../components/data-widgets/TypeFilter"
 
 export type SessionsDataProviderProps = {
   sessions: Session[]
@@ -45,28 +48,6 @@ export const AllSessionsProvider: React.FC<SessionsDataProviderProps> = ({
     providerSessionGroups: providerSessionGroups,
     typeSessionGroups: typeSessionGroups,
     setSessions: setSessions,
-  }
-  const byCustomer = (session: Session) => session.schoolName
-  const byProvider = (session: Session) => session.providerName
-  // TODO: This is very Joven-Specific...
-  const byType = (session: Session) => {
-    if (
-      session.serviceName.includes("Psych") ||
-      session.serviceName.includes("SpEd") ||
-      session.serviceName.includes("Social Work")
-    ) {
-      return "Special Education"
-    } else if (session.serviceName.includes("Teaching")) {
-      return "Teaching"
-    } else if (session.serviceName.includes("Mental Health Counseling")) {
-      return "Counseling"
-    } else if (
-      session.serviceName.includes("Speech Therapy") ||
-      session.serviceName.includes("Evaluation")
-    ) {
-      return "Speech"
-    }
-    return "Indirect Time"
   }
 
   useMemo(() => {

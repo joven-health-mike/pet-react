@@ -11,10 +11,13 @@ import SessionGroups, {
 } from "../SessionGroups"
 import Session from "../Session"
 import { SessionsContext } from "./SessionProvider"
+import { byCustomer } from "../../components/data-widgets/CustomerFilter"
+import { byProvider } from "../../components/data-widgets/ProviderFilter"
+import { byType } from "../../components/data-widgets/TypeFilter"
+import { FilterContext } from "./FilterProvider"
 
 export type FilteredSessionsDataProviderProps = {
   filteredSessions: Session[]
-  filter: string[]
   children?: ReactNode | undefined
 }
 
@@ -23,7 +26,6 @@ type FilteredSessionsContextData = {
   filteredCustomerSessionGroups: SessionGroups
   filteredProviderSessionGroups: SessionGroups
   filteredTypeSessionGroups: SessionGroups
-  setFilteredSessions: (input: Session[]) => void
 }
 
 const emptySessionGroups = createEmptySessionGroups()
@@ -34,13 +36,13 @@ export const FilteredSessionsContext =
     filteredCustomerSessionGroups: emptySessionGroups,
     filteredProviderSessionGroups: emptySessionGroups,
     filteredTypeSessionGroups: emptySessionGroups,
-    setFilteredSessions: (data: Session[]) => null,
   })
 
 export const FilteredSessionsProvider: React.FC<
   FilteredSessionsDataProviderProps
-> = ({ filter, children }) => {
+> = ({ children }) => {
   const { sessions } = useContext(SessionsContext)
+  const { filter } = useContext(FilterContext)
   const [filteredSessions, setFilteredSessions] = useState<Session[]>([])
   const [customerSessionGroups, setCustomerSessionGroups] =
     useState<SessionGroups>(emptySessionGroups)
@@ -49,34 +51,21 @@ export const FilteredSessionsProvider: React.FC<
   const [typeSessionGroups, setTypeSessionGroups] =
     useState<SessionGroups>(emptySessionGroups)
 
+  useEffect(() => {
+    const newFilteredSessions = sessions.filter(
+      (session) => filter.includes(session.schoolName)
+      // filter.includes(session.providerName) ||
+      // filter.includes(session.enhancedServiceName())
+    )
+    setFilteredSessions(newFilteredSessions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter.length, sessions.length])
+
   const delegate: FilteredSessionsContextData = {
     filteredSessions: filteredSessions,
     filteredCustomerSessionGroups: customerSessionGroups,
     filteredProviderSessionGroups: providerSessionGroups,
     filteredTypeSessionGroups: typeSessionGroups,
-    setFilteredSessions: setFilteredSessions,
-  }
-  const byCustomer = (session: Session) => session.schoolName
-  const byProvider = (session: Session) => session.providerName
-  // TODO: This is very Joven-Specific...
-  const byType = (session: Session) => {
-    if (
-      session.serviceName.includes("Psych") ||
-      session.serviceName.includes("SpEd") ||
-      session.serviceName.includes("Social Work")
-    ) {
-      return "Special Education"
-    } else if (session.serviceName.includes("Teaching")) {
-      return "Teaching"
-    } else if (session.serviceName.includes("Mental Health Counseling")) {
-      return "Counseling"
-    } else if (
-      session.serviceName.includes("Speech Therapy") ||
-      session.serviceName.includes("Evaluation")
-    ) {
-      return "Speech"
-    }
-    return "Indirect Time"
   }
 
   useMemo(() => {
@@ -94,24 +83,6 @@ export const FilteredSessionsProvider: React.FC<
       setTypeSessionGroups(emptySessionGroups)
     }
   }, [filteredSessions])
-
-  useEffect(() => {
-    if (sessions.length > 0) {
-      setFilteredSessions(sessions)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessions.length])
-
-  useEffect(() => {
-    const newFilteredSessions = []
-    for (const session of sessions) {
-      if (filter.join().includes(session.schoolName)) {
-        newFilteredSessions.push(session)
-      }
-    }
-    setFilteredSessions(newFilteredSessions)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter.length])
 
   return (
     <FilteredSessionsContext.Provider
