@@ -58,18 +58,26 @@ function getCustomerForName(customers: Customer[], name: string) {
 }
 
 function getInvoiceParamsForName(invoiceParams: InvoiceParams[], name: string) {
-  return invoiceParams.find(
+  const invoiceParam = invoiceParams.find(
     (invoiceParam) => invoiceParam.customerName === name
   )
+  if (!invoiceParam) {
+    console.log("Invoice Param not found: ", name)
+  }
+  return invoiceParam
 }
 
 function getAccountingCodeForName(
   accountingCodes: AccountingCode[],
   name: string
 ) {
-  return accountingCodes.find(
+  const accountingCode = accountingCodes.find(
     (accountingCode) => accountingCode.sessionType === name
   )
+  if (!accountingCode) {
+    console.log("Accounting Code not found: ", name)
+  }
+  return accountingCode
 }
 
 export function calculateLineAmount(quantity: string, rate: string) {
