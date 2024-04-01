@@ -14,17 +14,17 @@ import {
 import React, { useEffect } from "react"
 
 type DefaultMultiSelectInputProps = {
-  label: string
+  label?: string
   items: string[]
-  defaultSelection: string[]
-  onItemsSelected: (item: string[]) => void
+  defaultSelection?: string[]
+  onItemsSelected?: (item: string[]) => void
 }
 
 const DefaultMultiSelectInput: React.FC<DefaultMultiSelectInputProps> = ({
-  label,
+  label = "",
   items,
-  defaultSelection,
-  onItemsSelected,
+  defaultSelection = [],
+  onItemsSelected = () => {},
 }) => {
   const [selection, setSelection] = React.useState<string[]>(defaultSelection)
   const [selectAllChecked, setSelectAllChecked] = React.useState<boolean>(false)

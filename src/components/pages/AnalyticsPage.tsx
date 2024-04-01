@@ -24,12 +24,8 @@ import SessionGroups, {
 const emptySessionGroups = createEmptySessionGroups()
 
 const AnalyticsPage: React.FC = () => {
-  const {
-    sessions: allSessions,
-    customerSessionGroups: allCustomers,
-    providerSessionGroups: allProviders,
-    typeSessionGroups: allTypes,
-  } = useContext(SessionsContext)
+  const { sessions: allSessions, customerSessionGroups: allCustomers } =
+    useContext(SessionsContext)
   const [filters, setFilters] = useState<Map<string, string[]>>(new Map())
   const [sessionTests, setSessionTests] = useState<
     Map<string, (session: Session) => boolean>
@@ -37,10 +33,6 @@ const AnalyticsPage: React.FC = () => {
   const [filteredSessions, setFilteredSessions] = useState<Session[]>([])
   const [customerNames, setCustomerNames] = useState<string[]>([])
   const [customerSelections, setCustomerSelections] = useState<string[]>([])
-  const [providerNames, setProviderNames] = useState<string[]>([])
-  const [providerSelections, setProviderSelections] = useState<string[]>([])
-  const [typeNames, setTypeNames] = useState<string[]>([])
-  const [typeSelections, setTypeSelections] = useState<string[]>([])
   const [customerSessionGroups, setCustomerSessionGroups] =
     useState<SessionGroups>(emptySessionGroups)
   const [providerSessionGroups, setProviderSessionGroups] =
@@ -49,12 +41,20 @@ const AnalyticsPage: React.FC = () => {
     useState<SessionGroups>(emptySessionGroups)
 
   useEffect(() => {
-    let newSessionGroups = createSessionGroups(allSessions, byCustomer)
-    setCustomerSessionGroups(newSessionGroups)
-    newSessionGroups = createSessionGroups(allSessions, byProvider)
-    setProviderSessionGroups(newSessionGroups)
-    newSessionGroups = createSessionGroups(allSessions, byType)
-    setTypeSessionGroups(newSessionGroups)
+    const newCustomerSessionGroups = createSessionGroups(
+      allSessions,
+      byCustomer
+    )
+    setCustomerSessionGroups(newCustomerSessionGroups)
+    const newProviderSessionGroups = createSessionGroups(
+      allSessions,
+      byProvider
+    )
+    setProviderSessionGroups(newProviderSessionGroups)
+    const newTypeSessionGroups = createSessionGroups(allSessions, byType)
+    setTypeSessionGroups(newTypeSessionGroups)
+
+    setCustomerSelections([...newCustomerSessionGroups.names()])
   }, [allSessions])
 
   useEffect(() => {
@@ -75,39 +75,25 @@ const AnalyticsPage: React.FC = () => {
   useEffect(() => {
     const newFiltersMap = new Map()
     newFiltersMap.set("customer", customerSelections)
-    newFiltersMap.set("provider", providerSelections)
-    newFiltersMap.set("type", typeSelections)
     setFilters(newFiltersMap)
-  }, [customerSelections, providerSelections, typeSelections])
+  }, [customerSelections])
 
   useEffect(() => {
     const newSessionTests = new Map()
     newSessionTests.set("customer", (session: Session) =>
       customerSelections.includes(session.schoolName)
     )
-    newSessionTests.set("provider", (session: Session) =>
-      providerSelections.includes(session.providerName)
-    )
-    newSessionTests.set("type", (session: Session) =>
-      typeSelections.includes(session.enhancedServiceName())
-    )
     setSessionTests(newSessionTests)
-  }, [customerSelections, providerSelections, typeSelections])
+  }, [customerSelections])
 
   useEffect(() => {
     setCustomerNames([...allCustomers.names()])
-    setProviderNames([...allProviders.names()])
-    setTypeNames([...allTypes.names()])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSessions])
 
   function* generateFilteredSessions() {
     for (const session of allSessions) {
-      if (
-        customerSelections.includes(session.schoolName) ||
-        providerSelections.includes(session.providerName) ||
-        typeSelections.includes(session.enhancedServiceName())
-      ) {
+      if (customerSelections.includes(session.schoolName)) {
         yield session
       }
     }
@@ -136,29 +122,9 @@ const AnalyticsPage: React.FC = () => {
                       <SelectByName
                         label={"Customer"}
                         names={customerNames}
-                        selections={customerSelections}
+                        defaultSelectAll
                         onFilterUpdated={(newFilter) =>
                           setCustomerSelections(newFilter)
-                        }
-                      />
-                    </DefaultGridItem>
-                    <DefaultGridItem>
-                      <SelectByName
-                        label={"Provider"}
-                        names={providerNames}
-                        selections={providerSelections}
-                        onFilterUpdated={(newFilter) =>
-                          setProviderSelections(newFilter)
-                        }
-                      />
-                    </DefaultGridItem>
-                    <DefaultGridItem>
-                      <SelectByName
-                        label={"Type"}
-                        names={typeNames}
-                        selections={typeSelections}
-                        onFilterUpdated={(newFilter) =>
-                          setTypeSelections(newFilter)
                         }
                       />
                     </DefaultGridItem>
