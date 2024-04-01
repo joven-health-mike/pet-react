@@ -11,24 +11,34 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 type DefaultMultiSelectInputProps = {
   label?: string
   items: string[]
-  defaultSelection?: string[]
+  defaultSelectAll: boolean
   onItemsSelected?: (item: string[]) => void
 }
 
 const DefaultMultiSelectInput: React.FC<DefaultMultiSelectInputProps> = ({
   label = "",
   items,
-  defaultSelection = [],
+  defaultSelectAll = false,
   onItemsSelected = () => {},
 }) => {
-  const [selection, setSelection] = React.useState<string[]>(defaultSelection)
-  const [selectAllChecked, setSelectAllChecked] = React.useState<boolean>(false)
-  const [clearChecked, setClearChecked] = React.useState<boolean>(false)
+  const [selection, setSelection] = useState<string[]>([])
+  const [selectAllChecked, setSelectAllChecked] = useState<boolean>(false)
+  const [clearChecked, setClearChecked] = useState<boolean>(false)
+  const [defaultSelection, setDefaultSelection] = useState<string[]>([])
+
+  useEffect(() => {
+    const newDefaultSelection = defaultSelectAll ? [...items] : []
+    setDefaultSelection(newDefaultSelection)
+  }, [defaultSelectAll, items])
+
+  useEffect(() => {
+    setSelection(defaultSelection)
+  }, [defaultSelection])
 
   const handleChange = (event: SelectChangeEvent<typeof selection>) => {
     const {
@@ -61,21 +71,6 @@ const DefaultMultiSelectInput: React.FC<DefaultMultiSelectInputProps> = ({
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection.length])
-
-  useEffect(() => {
-    // auto select all customers
-    if (items && items.length > 0) {
-      setSelection(items)
-    } else {
-      setSelection([])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items])
-
-  useEffect(() => {
-    setSelection(defaultSelection)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultSelection])
 
   return (
     <>

@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useEffect, useState } from "react"
+import React from "react"
 import DefaultMultiSelectInput from "../widgets/DefaultMultiSelectInput"
 import Session from "../../data/Session"
 
@@ -17,19 +17,12 @@ const SelectByName: React.FC<SelectByNameProps> = ({
   defaultSelectAll = false,
   onFilterUpdated = () => {},
 }) => {
-  const [defaultSelection, setDefaultSelection] = useState<string[]>([])
-
-  useEffect(() => {
-    const newDefaultSelection = defaultSelectAll ? [...names] : []
-    setDefaultSelection(newDefaultSelection)
-  }, [defaultSelectAll, names])
-
   return (
     <>
       <DefaultMultiSelectInput
         label={label}
         items={names}
-        defaultSelection={defaultSelection}
+        defaultSelectAll={defaultSelectAll}
         onItemsSelected={(items) => {
           onFilterUpdated([...items])
         }}

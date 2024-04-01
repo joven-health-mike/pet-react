@@ -144,7 +144,7 @@ const AnalyticsPage: React.FC = () => {
                       <SelectByName
                         label={"Customer"}
                         names={customerNames}
-                        defaultSelectAll={false}
+                        defaultSelectAll
                         onFilterUpdated={(newFilter) =>
                           setCustomerSelections(newFilter)
                         }
