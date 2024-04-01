@@ -24,8 +24,12 @@ import SessionGroups, {
 const emptySessionGroups = createEmptySessionGroups()
 
 const AnalyticsPage: React.FC = () => {
-  const { sessions: allSessions, customerSessionGroups: allCustomers } =
-    useContext(SessionsContext)
+  const {
+    sessions: allSessions,
+    customerSessionGroups: allCustomers,
+    providerSessionGroups: allProviders,
+    typeSessionGroups: allTypes,
+  } = useContext(SessionsContext)
   const [filters, setFilters] = useState<Map<string, string[]>>(new Map())
   const [sessionTests, setSessionTests] = useState<
     Map<string, (session: Session) => boolean>
@@ -33,6 +37,10 @@ const AnalyticsPage: React.FC = () => {
   const [filteredSessions, setFilteredSessions] = useState<Session[]>([])
   const [customerNames, setCustomerNames] = useState<string[]>([])
   const [customerSelections, setCustomerSelections] = useState<string[]>([])
+  const [providerNames, setProviderNames] = useState<string[]>([])
+  const [providerSelections, setProviderSelections] = useState<string[]>([])
+  const [typeNames, setTypeNames] = useState<string[]>([])
+  const [typeSelections, setTypeSelections] = useState<string[]>([])
   const [customerSessionGroups, setCustomerSessionGroups] =
     useState<SessionGroups>(emptySessionGroups)
   const [providerSessionGroups, setProviderSessionGroups] =
@@ -75,25 +83,39 @@ const AnalyticsPage: React.FC = () => {
   useEffect(() => {
     const newFiltersMap = new Map()
     newFiltersMap.set("customer", customerSelections)
+    newFiltersMap.set("provider", providerSelections)
+    newFiltersMap.set("type", typeSelections)
     setFilters(newFiltersMap)
-  }, [customerSelections])
+  }, [customerSelections, providerSelections, typeSelections])
 
   useEffect(() => {
     const newSessionTests = new Map()
     newSessionTests.set("customer", (session: Session) =>
-      customerSelections.includes(session.schoolName)
+      customerSelections.includes(byCustomer(session))
+    )
+    newSessionTests.set("provider", (session: Session) =>
+      providerSelections.includes(byProvider(session))
+    )
+    newSessionTests.set("type", (session: Session) =>
+      typeSelections.includes(byType(session))
     )
     setSessionTests(newSessionTests)
-  }, [customerSelections])
+  }, [customerSelections, providerSelections, typeSelections])
 
   useEffect(() => {
     setCustomerNames([...allCustomers.names()])
+    setProviderNames([...allProviders.names()])
+    setTypeNames([...allTypes.names()])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSessions])
 
   function* generateFilteredSessions() {
     for (const session of allSessions) {
-      if (customerSelections.includes(session.schoolName)) {
+      if (
+        customerSelections.includes(byCustomer(session)) ||
+        providerSelections.includes(byProvider(session)) ||
+        typeSelections.includes(byType(session))
+      ) {
         yield session
       }
     }
@@ -122,9 +144,29 @@ const AnalyticsPage: React.FC = () => {
                       <SelectByName
                         label={"Customer"}
                         names={customerNames}
-                        defaultSelectAll
+                        defaultSelectAll={false}
                         onFilterUpdated={(newFilter) =>
                           setCustomerSelections(newFilter)
+                        }
+                      />
+                    </DefaultGridItem>
+                    <DefaultGridItem>
+                      <SelectByName
+                        label={"Provider"}
+                        names={providerNames}
+                        defaultSelectAll={false}
+                        onFilterUpdated={(newFilter) =>
+                          setProviderSelections(newFilter)
+                        }
+                      />
+                    </DefaultGridItem>
+                    <DefaultGridItem>
+                      <SelectByName
+                        label={"Type"}
+                        names={typeNames}
+                        defaultSelectAll={false}
+                        onFilterUpdated={(newFilter) =>
+                          setTypeSelections(newFilter)
                         }
                       />
                     </DefaultGridItem>
