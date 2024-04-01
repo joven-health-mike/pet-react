@@ -1,6 +1,6 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useEffect, useState } from "react"
+import React from "react"
 import DefaultMultiSelectInput from "../widgets/DefaultMultiSelectInput"
 import Session from "../../data/Session"
 
@@ -17,13 +17,6 @@ const SelectByName: React.FC<SelectByNameProps> = ({
   selections,
   onFilterUpdated,
 }) => {
-  const [loadingSelections, setLoadingSelections] = useState<boolean>(false)
-
-  useEffect(() => {
-    console.log(`SelectByName: selections changed`)
-    setLoadingSelections(true)
-  }, [selections])
-
   return (
     <>
       <DefaultMultiSelectInput
@@ -31,10 +24,7 @@ const SelectByName: React.FC<SelectByNameProps> = ({
         items={names}
         defaultSelection={selections}
         onItemsSelected={(items) => {
-          if (!loadingSelections) {
-            onFilterUpdated([...items])
-          }
-          setLoadingSelections(false)
+          onFilterUpdated([...items])
         }}
       />
     </>

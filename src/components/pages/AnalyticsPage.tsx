@@ -95,7 +95,6 @@ const AnalyticsPage: React.FC = () => {
   }, [customerSelections, providerSelections, typeSelections])
 
   useEffect(() => {
-    console.log(`AnalyticsPage.allSessions changed`)
     setCustomerNames([...allCustomers.names()])
     setProviderNames([...allProviders.names()])
     setTypeNames([...allTypes.names()])
