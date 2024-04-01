@@ -60,7 +60,7 @@ export const getFullWeeksBetweenDates = (date1: Date, date2: Date) => {
   var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24))
 
   // Calculate number of full weeks
-  var fullWeeks = Math.floor(diffDays / 7)
+  var fullWeeks = Math.ceil(diffDays / 7)
 
   return fullWeeks
 }
@@ -157,6 +157,7 @@ export const getWeekOfYear = (date: Date) => {
 }
 
 export function* weekIterator(first: Date, second: Date) {
+  // TODO: test this. dates might not be getting placed in the correct week
   const numberOfWeeks = getFullWeeksBetweenDates(first, second)
   let previousWeek = first
 

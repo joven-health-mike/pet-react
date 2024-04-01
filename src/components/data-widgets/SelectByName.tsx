@@ -1,45 +1,48 @@
 // Copyright 2022 Social Fabric, LLC
 
-import React, { useContext, useEffect, useState } from "react"
-import { SessionsContext } from "../../data/providers/SessionProvider"
+import React, { useEffect, useState } from "react"
 import DefaultMultiSelectInput from "../widgets/DefaultMultiSelectInput"
 import Session from "../../data/Session"
 
-const TypeFilter: React.FC = () => {
-  const { typeSessionGroups: allTypeSessionGroups } =
-    useContext(SessionsContext)
-  const [names, setNames] = useState<string[]>([])
-  const [selections, setSelections] = useState<string[]>([])
+type SelectByNameProps = {
+  label: string
+  names: string[]
+  selections: string[]
+  onFilterUpdated: (newFilter: string[]) => void
+}
+
+const SelectByName: React.FC<SelectByNameProps> = ({
+  label,
+  names,
+  selections,
+  onFilterUpdated,
+}) => {
+  const [loadingSelections, setLoadingSelections] = useState<boolean>(false)
 
   useEffect(() => {
-    const newNames = [...allTypeSessionGroups.names()]
-    setNames(newNames)
-    setSelections(newNames)
-  }, [allTypeSessionGroups])
-
-  useEffect(() => {
-    if (selections === undefined) {
-      return
-    }
-
-    // onTypeFilterChanged(selections)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log(`SelectByName: selections changed`)
+    setLoadingSelections(true)
   }, [selections])
 
   return (
     <>
       <DefaultMultiSelectInput
-        label="Type"
+        label={label}
         items={names}
-        defaultSelection={[...selections]}
+        defaultSelection={selections}
         onItemsSelected={(items) => {
-          setSelections([...items])
+          if (!loadingSelections) {
+            onFilterUpdated([...items])
+          }
+          setLoadingSelections(false)
         }}
       />
     </>
   )
 }
 
+export const byCustomer = (session: Session) => session.schoolName
+export const byProvider = (session: Session) => session.providerName
 export const byType = (session: Session) => {
   if (
     session.serviceName.includes("Psych") ||
@@ -60,4 +63,4 @@ export const byType = (session: Session) => {
   return "Indirect Time"
 }
 
-export default TypeFilter
+export default SelectByName

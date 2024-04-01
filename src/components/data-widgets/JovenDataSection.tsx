@@ -11,12 +11,14 @@ import AllHoursLineChart from "./charts/AllHoursLineChart"
 import AllProvidersStackedBarChart from "./charts/AllProvidersStackedBarChart"
 import DefaultAccordionGroup from "../widgets/DefaultAccordionGroup"
 import Printable from "../widgets/Printable"
-import { FilteredSessionsContext } from "../../data/providers/FilteredSessionProvider"
+import {
+  CustomerSessionGroupsContext,
+  ProviderSessionGroupsContext,
+  TypeSessionGroupsContext,
+} from "../pages/AnalyticsPage"
 
 const CHART_MONTH_OFFSET = 6
 const TITLE = "Joven Health Analytics"
-
-// TODO: Add new component which allows filtering customers/providers that are included in the graph data
 
 const JovenDataSection: React.FC = () => {
   return (
@@ -61,7 +63,7 @@ type AllHoursLineSectionProps = {
 }
 
 const AllHoursLineSection: React.FC<AllHoursLineSectionProps> = ({ label }) => {
-  const { filteredTypeSessionGroups } = useContext(FilteredSessionsContext)
+  const filteredTypeSessionGroups = useContext(CustomerSessionGroupsContext)
   const [hoursByMonthData, setHoursByMonthData] = useState<Map<string, number>>(
     new Map()
   )
@@ -107,7 +109,7 @@ type AllHoursStackedSectionProps = {
 const AllHoursStackedSection: React.FC<AllHoursStackedSectionProps> = ({
   label,
 }) => {
-  const { filteredTypeSessionGroups } = useContext(FilteredSessionsContext)
+  const filteredTypeSessionGroups = useContext(TypeSessionGroupsContext)
   const [hoursByServiceData, setHoursByServiceData] = useState<
     Map<string, Map<string, number>>
   >(new Map())
@@ -153,7 +155,7 @@ const HoursByProviderSection: React.FC<HoursByProviderSectionProps> = ({
   const [hoursByProviderData, setHoursByProviderData] = useState<
     Map<string, Map<string, number>>
   >(new Map())
-  const { filteredProviderSessionGroups } = useContext(FilteredSessionsContext)
+  const filteredProviderSessionGroups = useContext(ProviderSessionGroupsContext)
 
   useEffect(() => {
     if (!filteredProviderSessionGroups) {
@@ -196,7 +198,7 @@ type CustomerNoShowSectionProps = {
 const CustomerNoShowSection: React.FC<CustomerNoShowSectionProps> = ({
   label,
 }) => {
-  const { filteredCustomerSessionGroups } = useContext(FilteredSessionsContext)
+  const filteredCustomerSessionGroups = useContext(CustomerSessionGroupsContext)
   const [customerNoShowData, setCustomerNoShowData] =
     useState<Map<string, number>>()
 
@@ -234,7 +236,7 @@ type ProviderNoShowSectionProps = {
 const ProviderNoShowSection: React.FC<ProviderNoShowSectionProps> = ({
   label,
 }) => {
-  const { filteredProviderSessionGroups } = useContext(FilteredSessionsContext)
+  const filteredProviderSessionGroups = useContext(ProviderSessionGroupsContext)
   const [providerNoShowData, setProviderNoShowData] =
     useState<Map<string, number>>()
 

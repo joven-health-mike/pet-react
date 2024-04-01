@@ -4,9 +4,11 @@ import SessionGroups, {
   createSessionGroups,
 } from "../SessionGroups"
 import Session from "../Session"
-import { byCustomer } from "../../components/data-widgets/CustomerFilter"
-import { byProvider } from "../../components/data-widgets/ProviderFilter"
-import { byType } from "../../components/data-widgets/TypeFilter"
+import {
+  byCustomer,
+  byProvider,
+  byType,
+} from "../../components/data-widgets/SelectByName"
 
 export type SessionsDataProviderProps = {
   sessions: Session[]

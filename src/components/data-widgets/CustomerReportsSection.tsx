@@ -4,15 +4,40 @@ import React, { useContext, useEffect, useState } from "react"
 import DefaultHeader from "../widgets/DefaultHeader"
 import DefaultSelectInput from "../widgets/DefaultSelectInput"
 import CustomerReport from "./CustomerReport"
-import { FilteredSessionsContext } from "../../data/providers/FilteredSessionProvider"
+import { FilteredSessionsContext } from "../pages/AnalyticsPage"
+import SessionGroups, {
+  createEmptySessionGroups,
+  createSessionGroups,
+} from "../../data/SessionGroups"
+import { SessionsContext } from "../../data/providers/SessionProvider"
+import { byCustomer } from "./SelectByName"
 
 const CustomerReportsSection: React.FC = () => {
-  const { filteredCustomerSessionGroups } = useContext(FilteredSessionsContext)
+  const { sessions: allSessions } = useContext(SessionsContext)
+  const filteredSessions = useContext(FilteredSessionsContext)
   const [selectedCustomer, setSelectedCustomer] = useState<string>("")
   const [customerNames, setCustomerNames] = useState<string[]>([])
+  const [customerSessionGroups, setCustomerSessionGroups] =
+    useState<SessionGroups>(createEmptySessionGroups())
 
   useEffect(() => {
-    const newCustomerNames = [...filteredCustomerSessionGroups.names()]
+    const newCustomerSessionGroups = createSessionGroups(
+      allSessions,
+      byCustomer
+    )
+    setCustomerSessionGroups(newCustomerSessionGroups)
+  }, [allSessions])
+
+  useEffect(() => {
+    const newCustomerSessionGroups = createSessionGroups(
+      filteredSessions,
+      byCustomer
+    )
+    setCustomerSessionGroups(newCustomerSessionGroups)
+  }, [filteredSessions])
+
+  useEffect(() => {
+    const newCustomerNames = [...customerSessionGroups.names()]
     if (newCustomerNames.length === 0) {
       setSelectedCustomer("")
       setCustomerNames([])
@@ -28,12 +53,12 @@ const CustomerReportsSection: React.FC = () => {
     }
     setCustomerNames(newCustomerNames)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filteredCustomerSessionGroups])
+  }, [customerSessionGroups])
 
   return (
     <>
       <>
-        {filteredCustomerSessionGroups && (
+        {customerSessionGroups && (
           <>
             <DefaultHeader>Customer Reports</DefaultHeader>
             <DefaultSelectInput
