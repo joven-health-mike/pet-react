@@ -17,6 +17,9 @@ import { ProviderNameContext } from "./ProviderReportsSection"
 import { ProviderSessionGroupsContext } from "../pages/AnalyticsPage"
 import { shiftedMonths } from "../../utils/DateUtils"
 import AllHoursLineChart from "./charts/AllHoursLineChart"
+import AllHoursStackedBarChart from "./charts/AllHoursStackedBarChart"
+import { createSessionGroups } from "../../data/SessionGroups"
+import { byType } from "./SelectByName"
 
 const CHART_MONTH_OFFSET = 6
 
@@ -38,16 +41,18 @@ const ProviderReport: React.FC = () => {
             "Absence Metrics",
             "No-Show Rates by Month",
             "No-Show Rates by Week",
-            "Hours Delivered by Month",
+            "Hours Delivered",
+            "Services Delivered",
           ]}
           nodes={[
             <ServiceOverviewSection />,
             <AbsencesMetricsSection />,
             <NoShowRatesByMonthSection />,
             <NoShowRatesByWeekSection />,
-            <AllHoursLineSection />,
+            <ProviderHoursLineSection />,
+            <ProviderHoursStackedSection />,
           ]}
-          defaultExpanded={[false, true, true, true]}
+          defaultExpanded={[false, true, true, true, true, true]}
         />
 
         <Box sx={{ mb: 2 }}></Box>
@@ -222,7 +227,7 @@ const NoShowRatesByWeekSection: React.FC = () => {
   )
 }
 
-const AllHoursLineSection: React.FC = () => {
+const ProviderHoursLineSection: React.FC = () => {
   const filteredTypeSessionGroups = useContext(ProviderSessionGroupsContext)
   const providerName = useContext(ProviderNameContext)
   const [hoursByMonthData, setHoursByMonthData] = useState<Map<string, number>>(
@@ -259,8 +264,56 @@ const AllHoursLineSection: React.FC = () => {
     <>
       {hoursByMonthData && (
         <AllHoursLineChart
-          chartTitle={"Hours Delivered by Month"}
+          chartTitle={"Hours Delivered"}
           data={hoursByMonthData}
+        />
+      )}
+    </>
+  )
+}
+
+const ProviderHoursStackedSection: React.FC = () => {
+  const filteredProviderSessionGroups = useContext(ProviderSessionGroupsContext)
+  const providerName = useContext(ProviderNameContext)
+  const [hoursByServiceData, setHoursByServiceData] = useState<
+    Map<string, Map<string, number>>
+  >(new Map())
+
+  useEffect(() => {
+    if (!filteredProviderSessionGroups) {
+      setHoursByServiceData(new Map())
+      return
+    }
+
+    const newData: Map<string, Map<string, number>> = new Map()
+
+    for (const sessionGroup of filteredProviderSessionGroups) {
+      if (sessionGroup.name !== providerName) continue
+      const providerSessions = [...sessionGroup]
+
+      const typeSessionGroups = createSessionGroups(providerSessions, byType)
+
+      for (const typeSessionGroup of typeSessionGroups) {
+        const monthlyMap = new Map()
+        const monthGenerator = shiftedMonths(CHART_MONTH_OFFSET)
+        for (const month of monthGenerator) {
+          const hoursForMonth = typeSessionGroup.totalHours(month)
+          const newHoursValue = (monthlyMap.get(month) ?? 0) + hoursForMonth
+          monthlyMap.set(month, newHoursValue)
+        }
+        newData.set(typeSessionGroup.name, monthlyMap)
+      }
+    }
+
+    setHoursByServiceData(newData)
+  }, [filteredProviderSessionGroups, providerName])
+
+  return (
+    <>
+      {hoursByServiceData && (
+        <AllHoursStackedBarChart
+          chartTitle={"Services Delivered"}
+          data={hoursByServiceData}
         />
       )}
     </>
