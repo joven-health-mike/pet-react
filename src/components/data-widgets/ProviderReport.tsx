@@ -14,6 +14,11 @@ import DefaultAccordionGroup from "../widgets/DefaultAccordionGroup"
 import { sortMapByValue } from "../../utils/SortUtils"
 import SessionGroup from "../../data/SessionGroup"
 import { ProviderNameContext } from "./ProviderReportsSection"
+import { ProviderSessionGroupsContext } from "../pages/AnalyticsPage"
+import { shiftedMonths } from "../../utils/DateUtils"
+import AllHoursLineChart from "./charts/AllHoursLineChart"
+
+const CHART_MONTH_OFFSET = 6
 
 const ProviderReport: React.FC = () => {
   const providerName = useContext(ProviderNameContext)
@@ -33,12 +38,14 @@ const ProviderReport: React.FC = () => {
             "Absence Metrics",
             "No-Show Rates by Month",
             "No-Show Rates by Week",
+            "Hours Delivered by Month",
           ]}
           nodes={[
             <ServiceOverviewSection />,
             <AbsencesMetricsSection />,
             <NoShowRatesByMonthSection />,
             <NoShowRatesByWeekSection />,
+            <AllHoursLineSection />,
           ]}
           defaultExpanded={[false, true, true, true]}
         />
@@ -210,6 +217,51 @@ const NoShowRatesByWeekSection: React.FC = () => {
             />
           </DefaultGridItem>
         </DefaultGrid>
+      )}
+    </>
+  )
+}
+
+const AllHoursLineSection: React.FC = () => {
+  const filteredTypeSessionGroups = useContext(ProviderSessionGroupsContext)
+  const providerName = useContext(ProviderNameContext)
+  const [hoursByMonthData, setHoursByMonthData] = useState<Map<string, number>>(
+    new Map()
+  )
+
+  useEffect(() => {
+    if (!filteredTypeSessionGroups) {
+      setHoursByMonthData(new Map())
+      return
+    }
+
+    const newData: Map<string, number> = new Map()
+
+    for (const sessionGroup of filteredTypeSessionGroups) {
+      if (sessionGroup.name !== providerName) continue
+      const monthGenerator = shiftedMonths(CHART_MONTH_OFFSET)
+      for (const month of monthGenerator) {
+        const hoursForMonth = sessionGroup.totalHours(month)
+        const newHoursValue = (newData.get(month) ?? 0) + hoursForMonth
+        newData.set(month, newHoursValue)
+      }
+    }
+
+    // round all values after adding them up. reduces error
+    for (const [key, value] of newData.entries()) {
+      newData.set(key, parseFloat(value.toFixed(1)))
+    }
+
+    setHoursByMonthData(newData)
+  }, [filteredTypeSessionGroups, providerName])
+
+  return (
+    <>
+      {hoursByMonthData && (
+        <AllHoursLineChart
+          chartTitle={"Hours Delivered by Month"}
+          data={hoursByMonthData}
+        />
       )}
     </>
   )
