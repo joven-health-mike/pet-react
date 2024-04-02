@@ -47,6 +47,12 @@ export default class SessionGroup {
     return this.sessionGroupData.sessionTypeTimes
   }
 
+  *[Symbol.iterator](): IterableIterator<Session> {
+    for (const session of this.sessions) {
+      yield session
+    }
+  }
+
   private loadMetrics(): void {
     if (this.loaded === false) {
       const sortedSessions = [...this.sessions]
