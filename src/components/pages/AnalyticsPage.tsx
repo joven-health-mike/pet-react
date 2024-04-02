@@ -20,6 +20,7 @@ import SessionGroups, {
   createEmptySessionGroups,
   createSessionGroups,
 } from "../../data/SessionGroups"
+import ProviderReportsSection from "../data-widgets/ProviderReportsSection"
 
 const emptySessionGroups = createEmptySessionGroups()
 
@@ -174,6 +175,8 @@ const AnalyticsPage: React.FC = () => {
                   <JovenDataSection />
                   <HorizontalLine />
                   <CustomerReportsSection />
+                  <HorizontalLine />
+                  <ProviderReportsSection />
                   <HorizontalLine />
                 </TypeSessionGroupsContext.Provider>
               </ProviderSessionGroupsContext.Provider>
