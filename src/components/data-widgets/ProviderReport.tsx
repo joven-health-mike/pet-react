@@ -20,6 +20,7 @@ import AllHoursLineChart from "./charts/AllHoursLineChart"
 import AllHoursStackedBarChart from "./charts/AllHoursStackedBarChart"
 import { createSessionGroups } from "../../data/SessionGroups"
 import { byCustomer, byType } from "./SelectByName"
+import Printable from "../widgets/Printable"
 
 const CHART_MONTH_OFFSET = 6
 
@@ -33,29 +34,31 @@ const ProviderReport: React.FC = () => {
         display="flex"
         sx={{ p: 2 }}
       >
-        <DefaultHeader props={{ mt: 0 }}>{providerName}</DefaultHeader>
+        <Printable docTitle={`Provider Report - ${providerName}`}>
+          <DefaultHeader props={{ mt: 0 }}>{providerName}</DefaultHeader>
 
-        <DefaultAccordionGroup
-          labels={[
-            "Service Overview",
-            "Absence Metrics",
-            "No-Show Rates by Month",
-            "No-Show Rates by Week",
-            "Hours Delivered",
-            "Services Delivered",
-            "Customers Serviced",
-          ]}
-          nodes={[
-            <ServiceOverviewSection />,
-            <AbsencesMetricsSection />,
-            <NoShowRatesByMonthSection />,
-            <NoShowRatesByWeekSection />,
-            <ProviderHoursLineSection />,
-            <ProviderHoursStackedSection />,
-            <ProviderCustomerStackedSection />,
-          ]}
-          defaultExpanded={[false, false, false, false, false, false, true]}
-        />
+          <DefaultAccordionGroup
+            labels={[
+              "Service Overview",
+              "Absence Metrics",
+              "No-Show Rates by Month",
+              "No-Show Rates by Week",
+              "Hours Delivered",
+              "Services Delivered",
+              "Customers Serviced",
+            ]}
+            nodes={[
+              <ServiceOverviewSection />,
+              <AbsencesMetricsSection />,
+              <NoShowRatesByMonthSection />,
+              <NoShowRatesByWeekSection />,
+              <ProviderHoursLineSection />,
+              <ProviderHoursStackedSection />,
+              <ProviderCustomerStackedSection />,
+            ]}
+            defaultExpanded={[false, false, false, false, false, false, true]}
+          />
+        </Printable>
 
         <Box sx={{ mb: 2 }}></Box>
       </Box>
