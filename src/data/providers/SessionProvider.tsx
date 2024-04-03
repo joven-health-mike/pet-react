@@ -4,11 +4,6 @@ import SessionGroups, {
   createSessionGroups,
 } from "../SessionGroups"
 import Session from "../Session"
-import {
-  byCustomer,
-  byProvider,
-  byType,
-} from "../../components/data-widgets/SelectByName"
 
 export type SessionsDataProviderProps = {
   sessions: Session[]
@@ -74,4 +69,26 @@ export const AllSessionsProvider: React.FC<SessionsDataProviderProps> = ({
       {children}
     </SessionsContext.Provider>
   )
+}
+
+export const byCustomer = (session: Session) => session.schoolName
+export const byProvider = (session: Session) => session.providerName
+export const byType = (session: Session) => {
+  if (
+    session.serviceName.includes("Psych") ||
+    session.serviceName.includes("SpEd") ||
+    session.serviceName.includes("Social Work")
+  ) {
+    return "Special Education"
+  } else if (session.serviceName.includes("Teaching")) {
+    return "Teaching"
+  } else if (session.serviceName.includes("Mental Health Counseling")) {
+    return "Counseling"
+  } else if (
+    session.serviceName.includes("Speech Therapy") ||
+    session.serviceName.includes("Evaluation")
+  ) {
+    return "Speech"
+  }
+  return "Indirect Time"
 }
