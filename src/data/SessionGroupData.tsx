@@ -98,6 +98,7 @@ export default class SessionGroupData {
   }
 
   private calculateWeeklyAbsentRates = () => {
+    // TODO: Test this. weeks might be off by 1...
     for (const weekName of weekIterator(this.earliestDate, this.latestDate)) {
       this.absenceRatesByWeek.set(
         weekName,
