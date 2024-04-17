@@ -32,13 +32,13 @@ export default class InvoiceCalculator {
         session.enhancedServiceName()
       )!.accountCode
 
-      sessionInfo.lineDescription = session.toString()
+      sessionInfo.lineDescription = `"${session.toString()}"`
       sessionInfo.lineQuantity = `${parseFloat(
         minutesToHours(parseFloat(session.totalTime)).toFixed(3)
       )}`
       sessionInfo.lineRate = customer!.hourlyRate
       sessionInfo.lineAmount = `${calculateLineAmount(
-        minutesToHours(parseFloat(session.totalTime)).toString(),
+        minutesToHours(parseFloat(session.totalTime)).toFixed(2),
         sessionInfo.lineRate
       )}`
 

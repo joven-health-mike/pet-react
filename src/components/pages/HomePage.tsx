@@ -40,11 +40,6 @@ const HomePage: React.FC = () => {
         <DefaultGridItem>
           <CustomButton onClick={() => navigate("/tools")}>Tools</CustomButton>
         </DefaultGridItem>
-        <DefaultGridItem>
-          <CustomButton onClick={() => navigate("/analytics")}>
-            Analytics
-          </CustomButton>
-        </DefaultGridItem>
       </DefaultGrid>
     </>
   )

@@ -36,9 +36,15 @@ export default class Session {
     }${this.isDirect() ? (this.isPresent() ? "" : " - Absent") : ""}`
   }
 
+  superEnhancedServiceName(): string {
+    return `${this.enhancedServiceName()} - ${this.sessionStudents} - FROM: ${
+      this.timeFrom
+    }, TO: ${this.timeTo}`
+  }
+
   toString(): string {
-    return `${formatDateStr(this.date)} - ${this.enhancedServiceName()}: ${
-      this.sessionTime
+    return `${formatDateStr(this.date)} - ${this.superEnhancedServiceName()}: ${
+      this.totalTime
     } min`
   }
 }
