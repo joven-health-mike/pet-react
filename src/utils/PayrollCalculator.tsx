@@ -15,17 +15,11 @@ export default class PayrollCalculator {
       if (!counselorMap.has(contractor)) {
         counselorMap.set(contractor, new ContractorTime(0, 0, 0, 0))
       }
-      if (
-        session.directIndirect === "Direct Service" &&
-        session.presentAbsent === "Present"
-      ) {
+      if (session.isDirect() && session.isPresent()) {
         counselorMap.get(contractor).directTime += parseFloat(session.totalTime)
         counselorMap.get(contractor).adminTime +=
           parseFloat(session.totalTime) * 0.2
-      } else if (
-        session.directIndirect === "Direct Service" &&
-        session.presentAbsent === "Absent - No Notice"
-      ) {
+      } else if (session.isDirect() && !session.isPresent()) {
         counselorMap.get(contractor).noShowTime += parseFloat(session.totalTime)
       } else if (session.directIndirect === "InDirect Service") {
         counselorMap.get(contractor).indirectTime += parseFloat(
