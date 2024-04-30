@@ -2,7 +2,7 @@ import AccountingCode from "../data/AccountingCode"
 import Contractor from "../data/Contractor"
 import Customer from "../data/Customer"
 import InvoiceParams from "../data/InvoiceParams"
-import Session from "../data/Session"
+import Session, { skipAllJovenData } from "../data/Session"
 
 export default class InvoiceCalculator {
   constructor(
@@ -17,6 +17,10 @@ export default class InvoiceCalculator {
     const customerMap = new Map()
 
     for (const session of this.sessions) {
+      if (skipAllJovenData(session)) {
+        continue
+      }
+
       const invoiceParams = getInvoiceParamsForName(
         this.invoiceParams,
         session.schoolName
